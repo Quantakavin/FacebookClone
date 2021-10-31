@@ -1,10 +1,23 @@
 const express = require("express");
-const ApiRouter = require('./routers/api');
-const app = express();
+const cors = require("cors");
+const config = require('./src/config/config');
 
-app.use(express.json());
-app.use('/api', ApiRouter);
+let app = express();
+app.use('*', cors());
 
-app.listen(8000, () => {
-    console.log("Backend is running")
-})
+
+const PORT = 5000;
+const bodyParser = require("body-parser");
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+const router = express.Router();
+app.use(router);
+
+app.listen(PORT, err => {
+    if (err) return console.log(`Cannot Listen on PORT: ${PORT}`);
+    console.log(`Server is Listening on: http://localhost:${PORT}/`);
+});
