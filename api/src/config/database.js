@@ -84,11 +84,29 @@ PRIMARY KEY(user_id, friend_id)
 
 DROP TABLE IF EXISTS conversation;
 CREATE TABLE conversation (
-user_id INT NOT NULL REFERENCES users(id),
-friend_id INT NOT NULL REFERENCES users(id),
-PRIMARY KEY(user_id, friend_id)
+sender_id INT NOT NULL REFERENCES users(id),
+receiver_id INT NOT NULL REFERENCES users(id),
+PRIMARY KEY(sender_id, receiver_id)
 )
 
+DROP TABLE IF EXISTS message;
+CREATE TABLE message (
+id SERIAL PRIMARY KEY,
+sender_id INT NOT NULL,
+reciever_id INT NOT NULL,
+Foreign Key (sender_id, reciever_id ) REFERENCES conversation(sender_id, receiver_id),
+date TIMESTAMP,
+read BOOLEAN DEFAULT false
+)
+
+ALTER TABLE users
+DROP COLUMN active;
+
+ALTER TABLE post
+ADD COLUMN date TIMESTAMP
+
+ALTER TABLE comment
+ADD COLUMN date TIMESTAMP
 
 
 
