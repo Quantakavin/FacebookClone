@@ -1,0 +1,65 @@
+
+
+.logincontainer {
+
+  background-color: white !important;
+
+  @media screen and (min-width: 800px) {
+    width: 60%;
+    margin-bottom: 27%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    margin-top: 130px;
+    padding:2%;
+  }
+  @media screen and (max-width: 800px) {
+    width: auto;
+    margin-left: -3%;
+    margin-right: -3%;
+    text-align: center;
+    padding-top: 15%;
+    padding-bottom: 20px;
+    height: 100%;
+  }
+  @media screen and (min-width: 1200px) {
+  width: 40% !important;
+  }
+
+}
+
+.loginlabels {
+@media screen and (min-width: 800px) {
+  margin-left: 8%;
+  font-weight: 500;
+}
+@media screen and (max-width: 800px) {
+  margin-left: 8%;
+  font-weight: 500;
+  text-align: left !important;
+}
+
+}
+
+.formfield {
+width: 85% !important;
+padding-top: 8px !important;
+padding-bottom: 8px !important;
+padding-left: 10px;
+margin-top: 5px;
+margin-bottom: 5px;
+border: 1px solid #d3d3d3; 
+border-radius: 5px;
+}
+
+.submitbutton {
+width: 85%; 
+padding-top: 8px !important; 
+padding-bottom: 8px !important; 
+margin-bottom: 10px; 
+font-size: 1.2em !important; 
+font-weight: 500 !important;
+border-radius: 5px !important;
+background-color: #4267B2 !important;
+}

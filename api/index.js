@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const config = require('./src/config/config');
+const routes = require("./src/routes");
 
 let app = express();
 app.use('*', cors());
@@ -21,3 +22,5 @@ app.listen(PORT, err => {
     if (err) return console.log(`Cannot Listen on PORT: ${PORT}`);
     console.log(`Server is Listening on: http://localhost:${PORT}/`);
 });
+
+routes(router);
