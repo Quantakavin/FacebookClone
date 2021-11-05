@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Container} from 'react-bootstrap';
+import { Button, Form, Container, Spinner} from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 import '../Styles/form.scss';
   
-  const Login = () => { 
+  const EditNote = ({match}) => { 
     const [Input, setInput] = useState({
-        email: '',
-        password: ''
+        content: ''
       });
+
+      const [loading,setLoading] = useState(false);
+
+      const history = useHistory();
 
       const handleChange = (event) => {
           setInput({
@@ -19,39 +23,40 @@ import '../Styles/form.scss';
 
       const handleSubmit = (event) => {
         event.preventDefault();
+        setLoading(true);
         axios
-        .post('http://localhost:5000/api/login', {"email": Input.email,"password": Input.password})
+        .put(`http://localhost:5000/api/note/${match.params.id}`, {"content": Input.content})
         .then(response => {
+            setLoading(false)
             console.log(response);
-            alert(response)
+            history.push(`/note/${match.params.id}`)
         })
         .catch(error => {
+            setLoading(false)
             console.log(error);
-            alert(error.response.status)
         })
     }
 
       return(
         <Container className="formcontainer shadow">
-                <h2 style={{marginLeft: '8%', paddingBottom: 20, fontWeight: 600}}>Log in to your account</h2>
+                <h2 style={{marginLeft: '8%', paddingBottom: 20, fontWeight: 600}}>Edit Note</h2>
             <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label className="formlabels">Email address</Form.Label>
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control name="email" className="formfield" type="email" placeholder="Enter email" value={Input.email} onChange={handleChange}/>
-                </div>
-            </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label className="formlabels">Password</Form.Label>
+                <Form.Label className="formlabels">Content</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control name="password" className="formfield" type="password" placeholder="Password" value={Input.password} onChange={handleChange}/>
+                <Form.Control name="content" className="formfield" as="textarea" rows={5} placeholder="Type your note here..." value={Input.content} onChange={handleChange}/>
                 </div>
             </Form.Group>
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
+            {!loading? 
             <Button variant="primary" type="submit" className="submitbutton">
-            Continue
+            Submit
+            </Button> :
+            <Button variant="primary" disabled className="submitbutton">
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
             </Button>
+  }
             </div>
         </Form>
         </Container>
@@ -59,4 +64,4 @@ import '../Styles/form.scss';
 
   }
 
-  export default Login;
+  export default EditNote;

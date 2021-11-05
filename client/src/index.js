@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {
   BrowserRouter as Router,
@@ -12,6 +11,10 @@ import {
 import Login from './Pages/Login';
 import Home from './Pages/Home';
 import Register from './Pages/Register';
+import NewNote from './Pages/NewNote';
+import Notes from './Pages/Notes';
+import Note from './Pages/Note';
+import EditNote from './Pages/EditNote';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
@@ -24,6 +27,14 @@ ReactDOM.render(
             <Route path="/register">
                 <Register></Register>
             </Route>  
+            <Route path="/newnote">
+                <NewNote></NewNote>
+            </Route>
+            <Route path="/notes">
+                <Notes></Notes>
+            </Route>
+            <Route path="/editnote/:id" render={(props) => <EditNote {...props} />} />
+            <Route path="/note/:id" render={(props) => <Note {...props} />} />
             <Route path="/">
                 <Home></Home>
             </Route>        

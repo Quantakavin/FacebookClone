@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Container} from 'react-bootstrap';
-import '../Styles/register.scss';
+import '../Styles/form.scss';
   
   const Register = () => {
 
-      const [Input, setInput] = React.useState({
+      const [Input, setInput] = useState({
         name: '',
         email: '',
         password: ''
@@ -33,26 +33,26 @@ import '../Styles/register.scss';
           })
       }
       return(
-        <Container className="registercontainer shadow">
+        <Container className="formcontainer shadow">
                 <h2 style={{marginLeft: '8%', paddingBottom: 20, fontWeight: 600}}>Create a new account</h2>
             <Form onSubmit={handleSubmit}>
             
             <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label className="registerlabels">Full Name</Form.Label>
+                <Form.Label className="formlabels">Full Name</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                 <Form.Control name="name" className="formfield" type="text" placeholder="Your Name" value={Input.name} onChange={handleChange} />
                 </div>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label className="registerlabels">Email address</Form.Label>
+                <Form.Label className="formlabels">Email address</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                 <Form.Control name="email" className="formfield" type="email" placeholder="Enter Email" value={Input.email} onChange={handleChange}/>
                 </div>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label className="registerlabels">Password</Form.Label>
+                <Form.Label className="formlabels">Password</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
                 <Form.Control name="password" className="formfield" type="password" placeholder="Password" value={Input.password} onChange={handleChange} />
                 </div>

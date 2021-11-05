@@ -13,7 +13,24 @@ validateRegister: (req,res,next) => {
     }
 
 
-}
+},
+
+validateLogin:function(req,res,next){
+    //Validation code to check register form input values
+    //return response with status 400 if validation fails
+        //var username = req.body.username;
+        var email = req.body.email;
+        var password = req.body.password;
+        textFieldRegex = new RegExp(`^[a-zA-Z0-9 ,]+$`);
+        if (textFieldRegex.test(password) && validator.isEmail(email)) {
+            next()
+        } else {
+            res.status(400);
+            res.send(`{"Message":"Error!"}`)
+        }
+    
+    
+},
 
 }
 
