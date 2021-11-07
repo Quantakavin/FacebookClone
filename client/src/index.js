@@ -16,7 +16,7 @@ import Notes from './Pages/Notes';
 import Note from './Pages/Note';
 import EditNote from './Pages/EditNote';
 import 'bootstrap/dist/css/bootstrap.min.css';
-//test 
+// "/whatever" leads to the .jsx pages
 ReactDOM.render(
   <React.StrictMode>
     <Router>

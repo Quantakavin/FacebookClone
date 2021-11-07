@@ -40,7 +40,7 @@ module.exports.registerUser = async(req,res) => {
 
 }
 
-module.exports.retrieveUserById = (req,res) => {
+module.exports.retrieveUserById = async (req,res) => {
     
 
 }
