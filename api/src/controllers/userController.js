@@ -42,7 +42,8 @@ module.exports.registerUser = async (req, res) => {
 
 module.exports.retrieveUserById = async (req, res) => {
     try {
-        //var getterID = req.body.getterID no need yet
+        //var getterID = req.body.getterID 
+        //no need yet
         var gottenID = req.body.gottenID
         await user.getUserByID( gottenID, (results, issue) => {
             if (issue) {
