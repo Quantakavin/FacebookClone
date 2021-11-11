@@ -1,6 +1,5 @@
 const { Pool, Client } = require('pg')
 const config = require('./config');
-
 const connectionString = "postgres://jquycoxe:xICSB_6qAsC-SnqW10a0_B3oy-1enV8H@fanny.db.elephantsql.com/jquycoxe";
 
 const pool = new Pool({

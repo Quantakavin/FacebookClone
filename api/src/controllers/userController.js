@@ -3,17 +3,17 @@ const user = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-module.exports.loginUser = async (req,res) => {
-    let {email, password} = req.body;
+module.exports.loginUser = async (req, res) => {
+    let { email, password } = req.body;
 
 
 
 }
 
-module.exports.registerUser = async(req,res) => {
+module.exports.registerUser = async (req, res) => {
     try {
-        let {name, email, password} = req.body;
-        bcrypt.hash(password, 10, async(err, hash) => {
+        let { name, email, password } = req.body;
+        bcrypt.hash(password, 10, async (err, hash) => {
             if (err) {
                 console.log("Hashing error");
                 return res.status(500).send(err);
@@ -21,7 +21,7 @@ module.exports.registerUser = async(req,res) => {
             else {
                 await user.insert(name, email, hash, (results, issue) => {
                     if (issue) {
-                        if (issue.code=="ER_DUP_ENTRY") {
+                        if (issue.code == "ER_DUP_ENTRY") {
                             res.status(422).send(issue);
                         } else {
                             console.log(issue)
@@ -40,12 +40,26 @@ module.exports.registerUser = async(req,res) => {
 
 }
 
-module.exports.retrieveUserById = (req,res) => {
-    
+module.exports.retrieveUserById = async (req, res) => {
+    try {
+        var getterID = req.body.getterID
+        var gottenID = req.body.gottenID
+        await user.getUserByID( gottenID, (results, issue) => {
+            if (issue) {
+                console.log(issue)
+                return res.status(404).send("lol fuck you")
+            } else {
+                return res.status(201).send(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send(error);
+    }
 
 }
 
-module.exports.updateUser = (req,res) => {
-    
+module.exports.updateUser = (req, res) => {
+
 
 }
