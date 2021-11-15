@@ -15,6 +15,7 @@ import NewNote from './Pages/NewNote';
 import Notes from './Pages/Notes';
 import Note from './Pages/Note';
 import EditNote from './Pages/EditNote';
+import UserHome from './Pages/UserHome';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
@@ -35,6 +36,7 @@ ReactDOM.render(
             </Route>
             <Route path="/editnote/:id" render={(props) => <EditNote {...props} />} />
             <Route path="/note/:id" render={(props) => <Note {...props} />} />
+            <Route path="/userhome" render={(props) => <UserHome {...props} />} />
             <Route path="/">
                 <Home></Home>
             </Route>        

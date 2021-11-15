@@ -4,7 +4,41 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 module.exports.loginUser = async (req,res) => {
-    let {email, password} = req.body;
+    let {email, password} = req.body; 
+    try {
+        await user.login(email, function(error, results) {
+            if (error) {
+                console.log(error);
+                return res.status(500).json({message: "Internal Server Error!"});
+
+            } else {
+                console.log(results)
+                    if (results.rows[0] == null) {
+                        return res.status(500).json({ message: "User with email doesn't exist" });
+                    }
+                    if (bcrypt.compareSync(password, results.rows[0].password) == true) {
+
+                        let data = {
+                            id: results.rows[0].id,
+                            name: results.rows[0].name,
+                            token: jwt.sign({ id: results.rows[0].id}, config.JWTKey, {
+                                expiresIn: 86400 
+                            })
+                        };
+
+                        return res.status(200).json(data);
+                    } else {
+                        //return res.status(500).json({ message: error });
+                        return res.status(500).json({ message: 'Invalid Email/Password Combination' });
+                    }
+
+            }
+
+        })
+
+    } catch (error) {
+        return res.status(500).json({ message: error });
+    } 
 
 
 
@@ -15,17 +49,20 @@ module.exports.registerUser = async(req,res) => {
         let {name, email, password} = req.body;
         bcrypt.hash(password, 10, async(err, hash) => {
             if (err) {
-                console.log("Hashing error");
-                return res.status(500).send(err);
+                console.log(err);
+                //return res.status(500).send(err);
+                return res.status(500).json({message: "Internal Server Error!"});
             }
             else {
                 await user.insert(name, email, hash, (results, issue) => {
                     if (issue) {
-                        if (issue.code=="ER_DUP_ENTRY") {
-                            res.status(422).send(issue);
+                        if (issue.code=="23505") {
+                            //res.status(422).send(issue);
+                            return res.status(422).json({message: "User with that email already exists"});
                         } else {
                             console.log(issue)
-                            res.status(500).send(issue);
+                            //res.status(500).send(issue);
+                            res.status(500).json({message: "Internal Server Error!"});
                         }
                     } else {
                         return res.status(201).send(results);
@@ -35,7 +72,8 @@ module.exports.registerUser = async(req,res) => {
         })
     } catch (error) {
         console.log("Error with registration")
-        return res.status(500).send(error);
+        //return res.status(500).send(error);
+        return res.status(500).json({message: "Internal Server Error!"});
     }
 
 }

@@ -1,7 +1,7 @@
 const { Pool, Client } = require('pg')
 const config = require('./config');
 
-const connectionString = "postgres://jquycoxe:xICSB_6qAsC-SnqW10a0_B3oy-1enV8H@fanny.db.elephantsql.com/jquycoxe";
+const connectionString = config.database;
 
 const pool = new Pool({
   connectionString,
@@ -33,7 +33,7 @@ profilepic bytea,
 coverpic bytea,
 CONSTRAINT fk_user
       FOREIGN KEY(user_id) 
-	  REFERENCES users(id)
+    REFERENCES users(id)
 )
 
 DROP TABLE IF EXISTS page; 
@@ -46,7 +46,7 @@ pagepic bytea,
 coverpic bytea,
 CONSTRAINT fk_user
       FOREIGN KEY(user_id) 
-	  REFERENCES users(id)
+    REFERENCES users(id)
 )
 
 DROP TABLE IF EXISTS post; 
@@ -107,6 +107,9 @@ ADD COLUMN date TIMESTAMP
 
 ALTER TABLE comment
 ADD COLUMN date TIMESTAMP
+
+ALTER TABLE post
+ADD COLUMN caption VARCHAR;
 
 
 

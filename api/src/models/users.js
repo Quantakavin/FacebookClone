@@ -12,6 +12,11 @@ module.exports.insert = (name, email, password, callback) => {
     .catch(err => callback(null, err))
 }
 
-module.exports.login = () => {
-    
+module.exports.login = (email, callback) => {
+    const loginUserQuery = `SELECT id, name, password FROM users WHERE email=$1`;
+    connection.query(loginUserQuery, [email])
+    .then(results=> {
+        callback(null, results);
+    })
+    .catch(err => callback(err, null))
 }
