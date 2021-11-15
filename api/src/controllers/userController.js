@@ -37,7 +37,6 @@ module.exports.registerUser = async (req, res) => {
         console.log("Error with registration")
         return res.status(500).send(error);
     }
-
 }
 
 module.exports.retrieveUserById = async (req, res) => {
@@ -61,6 +60,11 @@ module.exports.retrieveUserById = async (req, res) => {
 }
 
 module.exports.updateUser = (req, res) => {
-
+    try{
+        
+    }catch(error){
+        console.log(error)
+        return res.status(500).send(error);
+    }
 
 }

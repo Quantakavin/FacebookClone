@@ -26,3 +26,8 @@ module.exports.getUserByID = ( gottenID, callback) => {
         .catch(err => callback(null, err))
 
 }
+module.exports.updateUser = ( userid, newName, newEmail, password, privacy, bio, profilePic, coverPic ) =>{
+    //sql to get their old info.
+    //if they dont put new info for specific attributes, set new attributes to be old attributes
+    //update
+}
