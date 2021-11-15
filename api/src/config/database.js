@@ -53,10 +53,10 @@ DROP TABLE IF EXISTS post;
 CREATE TABLE post (
 id SERIAL PRIMARY KEY,
 user_id INT NOT NULL REFERENCES users(id),
-page_id INT REFERENCES page(id),
 content VARCHAR,
 file bytea,
-type VARCHAR NOT NULL
+type VARCHAR NOT NULL,
+caption VARCHAR
 )
 
 DROP TABLE IF EXISTS comment; 
