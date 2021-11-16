@@ -51,6 +51,7 @@ import { useHistory } from "react-router-dom";
           <header>
               <TopBar />
           </header>
+        <div  style={{backgroundColor: "#e3e8ee", height: "100vh"}}>
         <Container className="formlogo d-none d-sm-block">
           <Image src={facebooklogo} fluid />
         </Container>
@@ -88,6 +89,7 @@ import { useHistory } from "react-router-dom";
             </div>
         </Form>
         </Container>
+        </div>
         </>
       )
 

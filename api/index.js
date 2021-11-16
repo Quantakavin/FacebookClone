@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const config = require('./src/config/config');
+const formData = require('express-form-data');
 const routes = require("./src/routes");
 
 let app = express();
@@ -10,6 +11,10 @@ app.use('*', cors());
 const PORT = (process.env.PORT || 5000);
 const bodyParser = require("body-parser");
 
+app.use(formData.parse({}));
+app.use(formData.format());
+app.use(formData.stream());
+app.use(formData.union());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

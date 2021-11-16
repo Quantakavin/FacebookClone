@@ -65,7 +65,14 @@ module.exports.registerUser = async (req, res) => {
                             res.status(500).json({message: "Internal Server Error!"});
                         }
                     } else {
-                        return res.status(201).send(results);
+                        let data = {
+                            id: results.rows[0].id,
+                            name: name,
+                            token: jwt.sign({ id: results.rows[0].id}, config.JWTKey, {
+                                expiresIn: 86400 
+                            })
+                        };
+                        return res.status(201).send(data);
                     }
                 })
             }
@@ -85,7 +92,7 @@ module.exports.retrieveUserById = async (req, res) => {
         await user.getUserByID( gottenID, (results, issue) => {
             if (issue) {
                 console.log(issue)
-                return res.status(404).send("lol fuck you")
+                return res.status(404).send("Cannot find user with that id")
             } else {
                 return res.status(201).send(results);
             }

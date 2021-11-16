@@ -4,12 +4,14 @@ import { Button, Form, Container, Image, Spinner, Alert} from 'react-bootstrap';
 import '../Styles/form.scss';
 import TopBar from '../Components/TopBar';
 import facebooklogo from '../Images/facebooklogo.png';
+import { useHistory } from "react-router-dom";
   
   const Register = () => {
 
       const [loading,setLoading] = useState(false);
       const [alert, setAlert] = useState(false);
       const [alertContent, setAlertContent] = useState('');
+      const history = useHistory();
 
       const [Input, setInput] = useState({
         name: '',
@@ -34,6 +36,10 @@ import facebooklogo from '../Images/facebooklogo.png';
           .then(response => {
               setLoading(false)
               console.log(response);
+              localStorage.setItem('token', response.data.token);
+              localStorage.setItem('user_id', response.data.id);
+              localStorage.setItem('username', response.data.name);
+              history.push("/userhome");
           })
           .catch(error => {
               setLoading(false)
@@ -48,6 +54,7 @@ import facebooklogo from '../Images/facebooklogo.png';
         <header>
             <TopBar />
         </header>
+        <div  style={{backgroundColor: "#e3e8ee", height: "100vh"}}>
         <Container className="formlogo d-none d-sm-block">
           <Image src={facebooklogo} fluid />
         </Container>
@@ -93,9 +100,10 @@ import facebooklogo from '../Images/facebooklogo.png';
             </div>
         </Form>
         </Container>
+        </div>
         </>
       )
 
   }
 
-  export default Register;
+  export default Register; 
