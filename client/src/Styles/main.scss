@@ -1,0 +1,15 @@
+.background {
+    background: linear-gradient(#e3e8ee, #A7C7E7) !important;
+}
+
+.heading {
+    @media screen and (min-width: 1200px) {
+        width: 40% !important;
+    }
+    @media screen and (min-width: 800px) {
+        width: 60% ;
+    }
+    @media screen and (max-width: 800px) {
+        text-align: "center" !important ;
+    }
+}

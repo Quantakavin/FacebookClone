@@ -51,7 +51,7 @@ import { useHistory } from "react-router-dom";
           <header>
               <TopBar />
           </header>
-        <div  style={{backgroundColor: "#e3e8ee", height: "100vh"}}>
+        <div  style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto'}}>
         <Container className="formlogo d-none d-sm-block">
           <Image src={facebooklogo} fluid />
         </Container>
@@ -88,6 +88,7 @@ import { useHistory } from "react-router-dom";
   }
             </div>
         </Form>
+        <p className="registerlink" style={{ marginTop: 10, marginBottom: -5, fontSize: "0.8em"}}>Don't have an account? <a style={{color: "#4267B2"}} href="/register">Register Now!</a></p>
         </Container>
         </div>
         </>

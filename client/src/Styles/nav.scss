@@ -1,0 +1,35 @@
+.brand {
+    font-weight: 600;
+    @media screen and (min-width: 800px) {
+        margin-left: 10% !important;
+    }
+
+}
+nav a {
+    font-weight: 500;
+}
+
+.navitems {
+    @media screen and (min-width: 800px) {
+        margin-left: 1% !important;
+    }
+}
+
+#navbarScrollingDropdown {
+    color: white !important;
+}
+
+.navlinks {
+    @media screen and (min-width: 800px) {
+        margin-right: 10% !important;
+    }
+
+}
+
+.searchform {
+    @media screen and (min-width: 1000px) {
+        margin-left: 5% !important;
+        width: 40%;
+    }
+
+}
