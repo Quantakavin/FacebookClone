@@ -41,3 +41,33 @@ module.exports.insertImage = (userid, caption, cloudinaryurl, cloudinaryid, call
         callback(null, err)
     })
 } 
+
+module.exports.feed = (userid, callback) => {
+    let followids = [userid]
+    const followQuery = "SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1";
+    connection.query(followQuery , [userid])
+    .then(result => {
+        for (let i=0; i< result.rows.length; i++) {
+            if (result.rows[i].user_id != userid) {
+                followids.push(result.rows[i].user_id)
+            }
+            if (result.rows[i].friend_id != userid) {
+                followids.push(result.rows[i].friend_id)
+            }
+        }
+        console.log(followids)
+        const feedQuery = `SELECT users.id, users.name, users.picurl, post.date, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE users.id = ANY ($1) ORDER BY post.date DESC`;
+        connection.query(feedQuery, [followids])
+        .then(results2 => {
+            callback(results2.rows, null)
+        })
+        .catch(error => {
+            console.log(error)
+            callback(null, error)
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}

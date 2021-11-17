@@ -52,3 +52,19 @@ module.exports.createVideo = async (req,res) => {
     
 }
 
+module.exports.getFeed = async (req,res) => {
+    try {
+        var userid = req.body.userid;
+        await post.feed(userid, (results, err) => {
+            if(err) {
+                return res.status(500).json({message: "Cannot retrieve posts"});
+            } else {
+                return res.status(200).json(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "Internal Server Error!"});
+    }
+}
+
