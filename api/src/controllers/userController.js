@@ -113,3 +113,19 @@ module.exports.updateUser = (req, res) => {
     }
 
 }
+
+module.exports.allUsers = async (req, res) => {
+    try {
+        var userid = req.body.userid;
+        await user.getAll(userid, (results, err) => {
+            if(err) {
+                return res.status(500).json({message: "Cannot retrieve users"});
+            } else {
+                return res.status(200).json(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "Internal Server Error!"});
+    }
+}

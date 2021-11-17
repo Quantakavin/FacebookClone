@@ -39,7 +39,7 @@ import { useHistory } from "react-router-dom";
               localStorage.setItem('token', response.data.token);
               localStorage.setItem('user_id', response.data.id);
               localStorage.setItem('username', response.data.name);
-              history.push("/userhome");
+              history.push("/users");
           })
           .catch(error => {
               setLoading(false)

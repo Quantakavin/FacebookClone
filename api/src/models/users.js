@@ -37,3 +37,45 @@ module.exports.updateUser = ( userid, newName, newEmail, password, privacy, bio,
     //if they dont put new info for specific attributes, set new attributes to be old attributes
     //update
 }
+
+/*
+module.exports.getAll = (userid, callback) => {
+    const sql = "SELECT * FROM users where id != $1 "
+    connection.query(sql , [userid])
+    .then(results => {
+        callback(results.rows, null)
+    })
+    .catch(err => callback(null, err))
+}
+
+*/
+module.exports.getAll = (userid, callback) => {
+    const sql = "SELECT * FROM users where id != $1 "
+    // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
+    connection.query(sql , [userid])
+        .then(result => { 
+            let counter = 0;
+
+            for (let i=0; i< result.rows.length;i++) {
+                let sql2 = "SELECT * FROM friendship WHERE (user_id = $1 AND friend_id=$2) OR (user_id = $2 AND friend_id=$1)"
+
+                connection.query(sql2 , [userid, result.rows[i].id])  
+                .then(result2 => {
+                    counter ++;
+                    if (result2.rows.length == 0) {
+                        result.rows[i].friended = false;
+                    } else {
+                        result.rows[i].friended = true;
+                    }
+                    if (counter == (result.rows.length)) {
+                        callback(result.rows, null)
+                    }  
+                }
+                )
+                .catch(error => {
+                    console.log(error)
+                    callback(null, error)
+                })     
+            }
+        })
+}

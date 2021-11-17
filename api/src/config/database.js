@@ -121,5 +121,24 @@ ALTER TABLE post
 DROP COLUMN file;
 
 
+ALTER TABLE users
+ADD COLUMN picurl VARCHAR;
+
+ALTER TABLE users
+ADD COLUMN picid VARCHAR;
+
+ALTER TABLE users
+ADD COLUMN coverurl VARCHAR;
+
+ALTER TABLE users
+ADD COLUMN coverid VARCHAR;
+
+ALTER TABLE users
+DROP COLUMN profilepic;
+
+ALTER TABLE users
+DROP COLUMN coverpic;
+
+
 
   */
