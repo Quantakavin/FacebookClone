@@ -15,16 +15,16 @@ module.exports.insert = (name, email, password, callback) => {
 module.exports.login = (email, callback) => {
     const loginUserQuery = `SELECT id, name, password FROM users WHERE email=$1`;
     connection.query(loginUserQuery, [email])
-    .then(results=> {
-        callback(null, results);
-    })
-    .catch(err => callback(err, null))
+        .then(results => {
+            callback(null, results);
+        })
+        .catch(err => callback(err, null))
 }
 
-module.exports.getUserByID = ( gottenID, callback) => {
+module.exports.getUserByID = (gottenID, callback) => {
     const sql = "SELECT * FROM users where id = $1 "
     // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
-    connection.query(sql , [gottenID])
+    connection.query(sql, [gottenID])
         .then(result => {
             console.log(result.rows[0])
             callback(result.rows[0], null)
@@ -32,12 +32,28 @@ module.exports.getUserByID = ( gottenID, callback) => {
         .catch(err => callback(null, err))
 
 }
-module.exports.updateUser = ( userid, newName, newEmail, password, privacy, bio, profilePic, coverPic ) =>{
-    //sql to get their old info.
-    //if they dont put new info for specific attributes, set new attributes to be old attributes
-    //update
+module.exports.updateNonSensitiveData = (userid, newName, newEmail, bio) => {
+    const getOldData = "SELECT * FROM users where id = $1"
+    var oldName = "", oldEmail = "", oldBio = ""
+    connection.query(sql, [gottenID])
+        .then(result => {
+            console.log(result.rows[0])
+            callback(result.rows[0], null)
+        })
+        .catch(err => callback(null, err))
 }
 
+module.exports.updatePassword = () =>{
+
+}
+
+module.exports.updatePFP = () => {
+
+}
+
+module.exports.updateCoverPic = () => {
+
+}
 /*
 module.exports.getAll = (userid, callback) => {
     const sql = "SELECT * FROM users where id != $1 "
@@ -52,30 +68,30 @@ module.exports.getAll = (userid, callback) => {
 module.exports.getAll = (userid, callback) => {
     const sql = "SELECT * FROM users where id != $1 "
     // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
-    connection.query(sql , [userid])
-        .then(result => { 
+    connection.query(sql, [userid])
+        .then(result => {
             let counter = 0;
 
-            for (let i=0; i< result.rows.length;i++) {
+            for (let i = 0; i < result.rows.length; i++) {
                 let sql2 = "SELECT * FROM friendship WHERE (user_id = $1 AND friend_id=$2) OR (user_id = $2 AND friend_id=$1)"
 
-                connection.query(sql2 , [userid, result.rows[i].id])  
-                .then(result2 => {
-                    counter ++;
-                    if (result2.rows.length == 0) {
-                        result.rows[i].friended = false;
-                    } else {
-                        result.rows[i].friended = true;
+                connection.query(sql2, [userid, result.rows[i].id])
+                    .then(result2 => {
+                        counter++;
+                        if (result2.rows.length == 0) {
+                            result.rows[i].friended = false;
+                        } else {
+                            result.rows[i].friended = true;
+                        }
+                        if (counter == (result.rows.length)) {
+                            callback(result.rows, null)
+                        }
                     }
-                    if (counter == (result.rows.length)) {
-                        callback(result.rows, null)
-                    }  
-                }
-                )
-                .catch(error => {
-                    console.log(error)
-                    callback(null, error)
-                })     
+                    )
+                    .catch(error => {
+                        console.log(error)
+                        callback(null, error)
+                    })
             }
         })
 }

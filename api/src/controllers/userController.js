@@ -3,34 +3,34 @@ const user = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-module.exports.loginUser = async (req,res) => {
-    let {email, password} = req.body; 
+module.exports.loginUser = async (req, res) => {
+    let { email, password } = req.body;
     try {
-        await user.login(email, function(error, results) {
+        await user.login(email, function (error, results) {
             if (error) {
                 console.log(error);
-                return res.status(500).json({message: "Internal Server Error!"});
+                return res.status(500).json({ message: "Internal Server Error!" });
 
             } else {
                 console.log(results)
-                    if (results.rows[0] == null) {
-                        return res.status(500).json({ message: "User with email doesn't exist" });
-                    }
-                    if (bcrypt.compareSync(password, results.rows[0].password) == true) {
+                if (results.rows[0] == null) {
+                    return res.status(500).json({ message: "User with email doesn't exist" });
+                }
+                if (bcrypt.compareSync(password, results.rows[0].password) == true) {
 
-                        let data = {
-                            id: results.rows[0].id,
-                            name: results.rows[0].name,
-                            token: jwt.sign({ id: results.rows[0].id}, config.JWTKey, {
-                                expiresIn: 86400 
-                            })
-                        };
+                    let data = {
+                        id: results.rows[0].id,
+                        name: results.rows[0].name,
+                        token: jwt.sign({ id: results.rows[0].id }, config.JWTKey, {
+                            expiresIn: 86400
+                        })
+                    };
 
-                        return res.status(200).json(data);
-                    } else {
-                        //return res.status(500).json({ message: error });
-                        return res.status(500).json({ message: 'Invalid Email/Password Combination' });
-                    }
+                    return res.status(200).json(data);
+                } else {
+                    //return res.status(500).json({ message: error });
+                    return res.status(500).json({ message: 'Invalid Email/Password Combination' });
+                }
 
             }
 
@@ -38,7 +38,7 @@ module.exports.loginUser = async (req,res) => {
 
     } catch (error) {
         return res.status(500).json({ message: error });
-    } 
+    }
 
 
 
@@ -51,25 +51,25 @@ module.exports.registerUser = async (req, res) => {
             if (err) {
                 console.log(err);
                 //return res.status(500).send(err);
-                return res.status(500).json({message: "Internal Server Error!"});
+                return res.status(500).json({ message: "Internal Server Error!" });
             }
             else {
                 await user.insert(name, email, hash, (results, issue) => {
                     if (issue) {
-                        if (issue.code=="23505") {
+                        if (issue.code == "23505") {
                             //res.status(422).send(issue);
-                            return res.status(422).json({message: "User with that email already exists"});
+                            return res.status(422).json({ message: "User with that email already exists" });
                         } else {
                             console.log(issue)
                             //res.status(500).send(issue);
-                            res.status(500).json({message: "Internal Server Error!"});
+                            res.status(500).json({ message: "Internal Server Error!" });
                         }
                     } else {
                         let data = {
                             id: results.rows[0].id,
                             name: name,
-                            token: jwt.sign({ id: results.rows[0].id}, config.JWTKey, {
-                                expiresIn: 86400 
+                            token: jwt.sign({ id: results.rows[0].id }, config.JWTKey, {
+                                expiresIn: 86400
                             })
                         };
                         return res.status(201).send(data);
@@ -80,7 +80,7 @@ module.exports.registerUser = async (req, res) => {
     } catch (error) {
         console.log("Error with registration")
         //return res.status(500).send(error);
-        return res.status(500).json({message: "Internal Server Error!"});
+        return res.status(500).json({ message: "Internal Server Error!" });
     }
 }
 
@@ -89,7 +89,7 @@ module.exports.retrieveUserById = async (req, res) => {
         //var getterID = req.body.getterID 
         //no need yet
         var gottenID = req.body.gottenID
-        await user.getUserByID( gottenID, (results, issue) => {
+        await user.getUserByID(gottenID, (results, issue) => {
             if (issue) {
                 console.log(issue)
                 return res.status(404).send("Cannot find user with that id")
@@ -105,9 +105,11 @@ module.exports.retrieveUserById = async (req, res) => {
 }
 
 module.exports.updateUser = (req, res) => {
-    try{
-        
-    }catch(error){
+    try {
+        var userid = req.body.userid
+        var { newName, newEmail, newPassword, newBio } = req.body
+        user.updateNonSensitiveData
+    } catch (error) {
         console.log(error)
         return res.status(500).send(error);
     }
@@ -118,14 +120,14 @@ module.exports.allUsers = async (req, res) => {
     try {
         var userid = req.body.userid;
         await user.getAll(userid, (results, err) => {
-            if(err) {
-                return res.status(500).json({message: "Cannot retrieve users"});
+            if (err) {
+                return res.status(500).json({ message: "Cannot retrieve users" });
             } else {
                 return res.status(200).json(results);
             }
         })
     } catch (error) {
         console.log(error)
-        return res.status(500).json({message: "Internal Server Error!"});
+        return res.status(500).json({ message: "Internal Server Error!" });
     }
 }
