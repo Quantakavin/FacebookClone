@@ -13,9 +13,12 @@ module.exports = router => {
 
     router.post('/api/text', authorization.verifyUser, validation.validateText, postController.createText);
     router.post('/api/photo', authorization.verifyUser, validation.validateImage,postController.createPhoto);
+    router.put('/api/text/:id', authorization.verifyUser, validation.validateText, postController.updateText);
+    router.put('/api/photo/:id', authorization.verifyUser, validation.validateImage,postController.updatePhoto);
     router.post('/api/video', authorization.verifyUser, postController.createVideo);
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
+    router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
 
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
-    router.delete('/api/friend/:id', authorization.verifyUser, friendController.unfriend);
+    router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 }
