@@ -71,3 +71,9 @@
   border-radius: 5px !important;
   background-color: #4267B2 !important;
   }
+
+  .registerlink {
+    @media screen and (min-width: 800px) {
+      margin-left: 10%;
+    }
+  }

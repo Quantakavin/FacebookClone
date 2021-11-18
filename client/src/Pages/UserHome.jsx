@@ -1,15 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import { Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
 import '../Styles/home.scss';
 import photo from '../Images/photo.png'; 
 import video from '../Images/video.png'; 
+import profilephoto from '../Images/profilephoto.png'; 
 
-const UserHome = () => {
-
+const UserHome = () => { 
+    const [posts, setPosts] = useState([]);
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
+
+    useEffect(() => {
+        getFeed()
+    }, [])
+
+    const getFeed = () => {
+        axios
+        .get('http://localhost:5000/api/feed', {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+        .then(response => {
+          console.log('promise fulfilled')
+          setPosts(response.data)
+        })
+        .catch(error => {
+          console.log(error);
+      })
+
+    }
 
     const [showTextForm, setShowTextForm] = useState(false);
     const handleCloseTextForm = () => {
@@ -21,7 +43,7 @@ const UserHome = () => {
             content: ''
 
         })
-    }
+    } 
     const handleShowTextForm = () => setShowTextForm(true);
 
     const [textFormLoading,setTextFormLoading] = useState(false);
@@ -50,6 +72,7 @@ const UserHome = () => {
             setTextFormLoading(false)
             console.log(response);
             handleCloseTextForm()
+            getFeed()
         })
         .catch(error => {
             setTextFormLoading(false)
@@ -114,6 +137,7 @@ const UserHome = () => {
             setImageFormLoading(false)
             console.log(response);
             handleCloseImageForm()
+            getFeed()
         })
         .catch(error => {
             setImageFormLoading(false)
@@ -123,7 +147,7 @@ const UserHome = () => {
     }
 
 
-    return(
+    return( 
         <>
         <header>
             <TopBar />
@@ -169,8 +193,8 @@ const UserHome = () => {
         </Modal.Body>
         </Modal>
 
-        <div style={{backgroundColor: "#e3e8ee", height: "100vh",paddingTop: "50px"}}>
-            <Container className="formcontainer shadow" style={{display: "flex", flexDirection: "row"}}>
+        <div style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
+            <Container className="formcontainer shadow" style={{height: "auto", marginBottom: 0, display: "flex", flexDirection: "row"}}>
             <div style={{flexGrow: 12,marginBottom: "-3%"}}>
             <button onClick={handleShowTextForm} style={{backgroundColor: "#e3e8ee", borderRadius: "20px", width: "100%",textAlign: "left"}} type="button" className="btn text-secondary">Whats on your mind, {localStorage.getItem("username")}?</button>
             </div>
@@ -180,6 +204,32 @@ const UserHome = () => {
             <div style={{flexShrink: 0.5,marginBottom: "-3%"}}>
             <Button style={{border:"none", backgroundColor: "transparent"}}><Image src={video} alt="Upload video" height="30px"  /></Button>
             </div>
+            </Container>
+            <Container className="postscontainer">
+                <h2 style={{marginTop: 10, marginBottom: 20}}>Your Feed</h2>
+                {posts.length==0? 
+                <p style={{color: "#838383"}}>No content to display</p>
+                
+                :<></>}    
+                {posts.map(post => 
+                <Container className="shadow post">
+                    <div style={{display: "flex", flexDirection: "row", padding: 5}}>
+                    {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
+                    <div style={{flexGrow: 1}}>
+                        <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>
+                        <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")}</p>
+                    </div>
+                    </div>
+                    <hr style={{marginTop: -5, marginRight:"-2%",marginLeft:"-2%",color: "d3d3d3"}}/>
+                    {post.cloudinaryurl == null ?
+                    <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.content}</p>:
+                    <>
+                    {post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.caption}</p>}
+                    <Image style={{marginBottom: 15}}src={post.cloudinaryurl} fluid />
+                    </>
+                }
+                </Container>
+               )}
             </Container>
         </div>
         </>

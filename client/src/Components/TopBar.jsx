@@ -1,38 +1,22 @@
 import { Navbar, Nav, Container, Form, FormControl, Button, NavDropdown} from 'react-bootstrap';
 import facebookicon from '../Images/facebookicon.png';
+import '../Styles/nav.scss';
+import { useHistory } from "react-router-dom";
+//import profilephoto from '../Images/profilephoto.png';
 
 const TopBar = () => {
+  const history = useHistory();
+
+  const logout = () => {
+    localStorage.clear();
+    history.push('/')
+  }
   if(localStorage.getItem("token")==null) {
     return(
         <>
-  <Navbar  variant="dark" style={{backgroundColor: "#4267B2"}}>
-    <Container>
-    <Navbar.Brand style={{fontWeight: '500'}} href="/home"><img
-          alt=""
-          src={facebookicon}
-          width="30"
-          height="30"
-          className="d-inline-block align-top"
-          style={{marginRight: 10}}
-        />{' '}Facebook</Navbar.Brand>
-    <Nav className="me-auto">
-      <Nav.Link href="/home">Home</Nav.Link>
-      <Nav.Link href="/login">Login</Nav.Link>
-      <Nav.Link href="/register">Register</Nav.Link>
-    </Nav>
-    </Container>
-  </Navbar>
-
-
-</>
-    )
-  } else {
-    return(
-      <>
-
-<Navbar variant="dark" expand="lg" style={{backgroundColor: "#4267B2"}}>
+  <Navbar variant="dark" expand="lg" style={{backgroundColor: "#4267B2"}}>
   <Container fluid>
-    <Navbar.Brand style={{fontWeight: '500'}} href="/userhome"><img
+    <Navbar.Brand className="brand" href="/home"><img
         alt=""
         src={facebookicon}
         width="30"
@@ -43,33 +27,59 @@ const TopBar = () => {
     <Navbar.Toggle aria-controls="navbarScroll" />
     <Navbar.Collapse id="navbarScroll">
       <Nav
-        className="me-auto my-2 my-lg-0"
+        className="me-auto my-2 my-lg-0 navitems"
         style={{ maxHeight: '100px' }}
         navbarScroll
       >
-        <Nav.Link href="/home">Home</Nav.Link>
-        <Nav.Link href="/users">Users</Nav.Link>
-        <NavDropdown title="Link" id="navbarScrollingDropdown">
-          <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-          <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item href="#action5">
-            Something else here
-          </NavDropdown.Item>
-        </NavDropdown>
-        <Nav.Link href="#" disabled>
-          Link
-        </Nav.Link>
+        <Nav.Link style={{color: "white"}} href="/login">Login</Nav.Link>
+        <Nav.Link style={{color: "white"}} href="/register">Register</Nav.Link>
       </Nav>
-      <Form className="d-flex">
+    </Navbar.Collapse>
+  </Container>
+</Navbar>
+
+
+</>
+    )
+  } else {
+    return(
+      <>
+
+<Navbar variant="dark" expand="lg" style={{backgroundColor: "#4267B2"}}>
+  <Container fluid>
+    <Navbar.Brand className="brand" href="/userhome"><img
+        alt=""
+        src={facebookicon}
+        width="30"
+        height="30"
+        className="d-inline-block align-top"
+        style={{marginRight: 10}}
+      />{' '}Facebook</Navbar.Brand>
+      <Form className="d-flex searchform">
         <FormControl
           type="search"
           placeholder="Search"
           className="me-2"
           aria-label="Search"
         />
-        <Button variant="outline-success">Search</Button>
+        <Button style={{backgroundColor: "white", border: "solid 1px #28a745", color: "#28a745"}}>Search</Button>
       </Form>
+    <Navbar.Toggle aria-controls="navbarScroll" />
+    <Navbar.Collapse id="navbarScroll">
+      <Nav
+        className="ms-auto my-2 my-lg-0 navlinks"
+        style={{ maxHeight: '100px' }}
+        navbarScroll
+      >
+        <Nav.Link style={{color: "white"}} href="/users">Friends</Nav.Link>
+        <NavDropdown style={{color: "white", textTransform: "capitalize"}} title={localStorage.getItem("username")}  id="navbarScrollingDropdown">
+          <NavDropdown.Item href="#action3">Profile</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={() => logout() }>
+            Logout
+          </NavDropdown.Item>
+        </NavDropdown>
+      </Nav>
     </Navbar.Collapse>
   </Container>
 </Navbar>
