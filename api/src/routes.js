@@ -9,6 +9,7 @@ module.exports = router => {
     router.post('/api/register', validation.validateRegister, userController.registerUser);
     router.get('/api/user', userController.retrieveUserById)
     router.put('/api/user/:id', userController.updateUser)
+    router.put('/api/updatePassword',userController.updateUserPassword)
     router.get('/api/users', authorization.verifyUser, userController.allUsers)
 
     router.post('/api/text', authorization.verifyUser, validation.validateText, postController.createText);
