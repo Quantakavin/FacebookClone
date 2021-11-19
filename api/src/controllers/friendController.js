@@ -19,7 +19,7 @@ module.exports.friend = async (req, res) => {
 module.exports.unfriend = async (req, res) => {
     try {
         let userid = req.body.userid;
-        let friendid = req.params.id;
+        let friendid = req.query.id;
         await friendship.delete(userid, friendid, (results, error) => {
             if (error) {
                 res.status(500).json({message: "Internal Server Error!"});

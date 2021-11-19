@@ -6,8 +6,8 @@ cloudinary.config({
     api_secret: 'YMrgc-rB2Rhbeqk8_3kip_9rkhc' 
 });
 
-module.exports.insertText = (userid, content, callback) => {
-    const insertPostQuery = `INSERT INTO post (type, user_id, content, date) VALUES ($1, $2, $3, current_timestamp) RETURNING id;`;
+module.exports.insertText =  async (userid, content, callback) => {
+    const insertPostQuery = `INSERT INTO post (type, user_id, content, date) VALUES ($1, $2, $3, NOW() at time zone 'SGT') RETURNING id;`;
     connection.query(insertPostQuery, ["text", userid,content])
     .then(returnid => {
         callback(returnid, null)
@@ -18,7 +18,20 @@ module.exports.insertText = (userid, content, callback) => {
     })
 } 
 
-module.exports.uploadFile = (file, callback) => {
+module.exports.updateText =  async (postid, content, callback) => {
+    const updatePostQuery = `UPDATE post SET content=$1, editdate=NOW() at time zone 'SGT' WHERE id=$2;`;
+    connection.query(updatePostQuery, [content, postid])
+    .then(returnid => {
+        callback(returnid, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+} 
+
+
+module.exports.uploadFile = async (file, callback) => {
     cloudinary.uploader.upload(file.path, { upload_preset: 'image_upload' })
     .then((result) => {
         //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
@@ -30,8 +43,8 @@ module.exports.uploadFile = (file, callback) => {
 
 }
 
-module.exports.insertImage = (userid, caption, cloudinaryurl, cloudinaryid, callback) => {
-    const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, current_timestamp) RETURNING id;`;
+module.exports.insertImage = async (userid, caption, cloudinaryurl, cloudinaryid, callback) => {
+    const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, NOW() at time zone 'SGT') RETURNING id;`;
     connection.query(insertPostQuery, ["image", userid, caption, cloudinaryurl, cloudinaryid])
     .then(returnid => {
         callback(returnid, null)
@@ -42,7 +55,19 @@ module.exports.insertImage = (userid, caption, cloudinaryurl, cloudinaryid, call
     })
 } 
 
-module.exports.feed = (userid, callback) => {
+module.exports.updateImage = async (postid, caption, cloudinaryurl, cloudinaryid, callback) => {
+    const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`;
+    connection.query(updatePostQuery, [caption, cloudinaryurl, cloudinaryid, postid])
+    .then(returnid => {
+        callback(returnid, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+} 
+
+module.exports.feed = async (userid, callback) => {
     let followids = [userid]
     const followQuery = "SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1";
     connection.query(followQuery , [userid])
@@ -56,7 +81,7 @@ module.exports.feed = (userid, callback) => {
             }
         }
         console.log(followids)
-        const feedQuery = `SELECT users.id, users.name, users.picurl, post.date, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE users.id = ANY ($1) ORDER BY post.date DESC`;
+        const feedQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE users.id = ANY ($1) ORDER BY post.date DESC`;
         connection.query(feedQuery, [followids])
         .then(results2 => {
             callback(results2.rows, null)
@@ -65,6 +90,18 @@ module.exports.feed = (userid, callback) => {
             console.log(error)
             callback(null, error)
         })
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}
+
+module.exports.getById = async (id, callback) => {
+    const getPostByIdQuery = `SELECT * FROM post WHERE id = ($1);`;
+    connection.query(getPostByIdQuery, [id])
+    .then(results => {
+        callback(results, null)
     })
     .catch(err => {
         console.log(err)

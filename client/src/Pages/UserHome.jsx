@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import { Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
 import '../Styles/home.scss';
 import photo from '../Images/photo.png'; 
 import video from '../Images/video.png'; 
 import profilephoto from '../Images/profilephoto.png'; 
+import dots from '../Images/dots.png'; 
+import { useHistory } from "react-router-dom";
 
 const UserHome = () => { 
+    //const [postid,setPostid] = useState(0);
+    const history = useHistory();
     const [posts, setPosts] = useState([]);
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
@@ -80,8 +84,6 @@ const UserHome = () => {
             setErrorMsg(error.response.data.message);
         })
     }
-
-
 
     const [showImageForm, setShowImageForm] = useState(false);
     const handleCloseImageForm = () => {
@@ -159,7 +161,7 @@ const UserHome = () => {
         <Modal.Body>
         <Form onSubmit={createTextPost}>
             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <Form.Control style={{borderColor: borderColor}} name="content" className="text-secondary" as="textarea" rows={5} placeholder={`Whats on your mind, ${localStorage.getItem("username")}?`} value={TextInput.Content} onChange={handleTextChange}/>
+                <Form.Control style={{borderColor: borderColor}} name="content" className="text-secondary" as="textarea" rows={5} placeholder={`Whats on your mind, ${localStorage.getItem("username")}?`} value={TextInput.content} onChange={handleTextChange}/>
             </Form.Group>
             {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: 15}}>{errorMsg}!</p>: <></>}
             {!textFormLoading?
@@ -217,7 +219,10 @@ const UserHome = () => {
                     {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
                     <div style={{flexGrow: 1}}>
                         <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>
+                        {post.editdate == null ?
                         <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")}</p>
+                        : <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")} (Edited {post.editdate.substring(0, 16).replace("T", " ")})</p>
+                        }
                     </div>
                     </div>
                     <hr style={{marginTop: -5, marginRight:"-2%",marginLeft:"-2%",color: "d3d3d3"}}/>
@@ -228,6 +233,23 @@ const UserHome = () => {
                     <Image style={{marginBottom: 15}}src={post.cloudinaryurl} fluid />
                     </>
                 }
+                {post.id == localStorage.getItem("user_id")? 
+                    <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
+                    <DropdownButton
+                      id={`dropdown-button-drop-up`}
+                      drop={"up"}
+                      title={
+                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
+
+                          </Image>
+                      }
+                    >
+                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${post.postid}`)} }>Edit</Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item eventKey="2" style={{color: "red"}}>Delete</Dropdown.Item>
+                    </DropdownButton>
+                    </div>
+                : <></>}
                 </Container>
                )}
             </Container>

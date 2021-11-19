@@ -51,7 +51,7 @@ const Users = () => {
 
       const unfriend = (id) => { 
         axios
-        .delete(`http://localhost:5000/api/friend/${id}`, {
+        .delete(`http://localhost:5000/api/friend/?id=${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }

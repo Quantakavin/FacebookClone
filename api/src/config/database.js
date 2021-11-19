@@ -139,6 +139,12 @@ DROP COLUMN profilepic;
 ALTER TABLE users
 DROP COLUMN coverpic;
 
+ALTER TABLE post
+ADD COLUMN editdate TIMESTAMP;
+
+ALTER TABLE comment
+ADD COLUMN editdate TIMESTAMP;
+
 
 
   */

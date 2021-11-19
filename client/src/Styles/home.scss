@@ -46,3 +46,14 @@
   margin-bottom: 10px;
   padding-top: 5px;
 }
+
+#dropdown-button-drop-up::after{
+  display: none; 
+}
+
+#dropdown-button-drop-up {
+  outline: none;
+  border: 0;
+  box-shadow: none;
+  background-color: transparent;
+}
