@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const connection = require('../config/database');
+var validator = require('validator');
 module.exports.insert = (name, email, password, callback) => {
     const insertUserQuery = `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`;
     const values = [name, email, password];
@@ -32,19 +33,48 @@ module.exports.getUserByID = (gottenID, callback) => {
         .catch(err => callback(null, err))
 
 }
-module.exports.updateNonSensitiveData = (userid, newName, newEmail, bio) => {
-    const getOldData = "SELECT * FROM users where id = $1"
-    var oldName = "", oldEmail = "", oldBio = ""
-    connection.query(sql, [gottenID])
+module.exports.updateNonSensitiveData = (userid, newName, newEmail, newBio, callback) => {
+    //in profile page, show original data in form. that way, no need to wory about  updating it to be "" 
+    if (!validator.isEmail(newEmail)) return callback(null, "Email not accepted")
+    const updateProfile = "Update users set name = $1, email = $2, bio = $3 where id = $4 returning name AS newName, email AS newEmail, bio AS newBio"
+    connection.query(updateProfile, [newName, newEmail, newBio, userid])
         .then(result => {
-            console.log(result.rows[0])
+            console.log(result.rows[0], "in users.js")
             callback(result.rows[0], null)
         })
         .catch(err => callback(null, err))
 }
 
-module.exports.updatePassword = () =>{
-
+module.exports.updatePassword = (userid, newPwd, callback) => {
+    const getOldData = "SELECT password FROM users where id = $1"
+    var oldPwd = "";
+    connection.query(getOldData, [userid])
+        .then(result => {
+            console.log(result.rows[0].password,"line 52")
+            oldPwd = result.rows[0].password
+            if (bcrypt.compareSync(newPwd, oldPwd) == true) {
+                return callback(null, "new password cant be same as old password")
+            } else {
+                console.log("new pwd is "+newPwd)
+                bcrypt.hash(newPwd, 10, (err, newHashedPwd) => {
+                if (err) {
+                    console.log(err);
+                    //return res.status(500).send(err);
+                    return res.status(500).json({ message: "Internal Server Error!" });
+                } else {
+                    const updatePassword = "update users set password = $1 where id = $2 returning id"
+                    connection.query(updatePassword, [newHashedPwd, userid])
+                        .then(result => {
+                            console.log(result)
+                            callback(result, null)
+                        }).catch(err => callback(null, err))
+                }
+            })
+            }
+        })
+        .catch(err => callback(null, err))
+    
+    
 }
 
 module.exports.updatePFP = () => {
