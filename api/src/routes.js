@@ -19,6 +19,8 @@ module.exports = router => {
     router.post('/api/video', authorization.verifyUser, postController.createVideo);
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
+    router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
+
 
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
