@@ -109,8 +109,8 @@ module.exports.getById = async (id, callback) => {
     })
 }
 module.exports.delete =  async (id,callback) => {
-    const deletePostQuery = `DELETE FROM post Where id =?`;
-    connection.query(deletePostQuery, [ id])
+    const deletePostQuery = `DELETE FROM post Where id = $1`;
+    connection.query(deletePostQuery, [id])
     .then(returnid => {
         callback(returnid, null)
     })

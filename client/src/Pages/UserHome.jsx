@@ -149,7 +149,12 @@ const UserHome = () => {
     }
     const handleDelete = (id) => {
         axios
-        .delete(`http://localhost:5000/api/post/${id}`)
+        .delete(`http://localhost:5000/api/post/${id}`, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
         .then(response => {
             getFeed()
         })
@@ -224,7 +229,7 @@ const UserHome = () => {
                 
                 :<></>}    
                 {posts.map(post => 
-                <Container className="shadow post">
+                <Container key={post.postid} className="shadow post">
                     <div style={{display: "flex", flexDirection: "row", padding: 5}}>
                     {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
                     <div style={{flexGrow: 1}}>
