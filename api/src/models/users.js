@@ -26,7 +26,7 @@ module.exports.login = async (email, callback) => {
 }
 
 
-module.exports.getUserByID = async ( gottenID, callback) => {
+module.exports.getUserByID = async (gottenID, callback) => {
 
     const sql = "SELECT * FROM users where id = $1 "
     // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
@@ -39,7 +39,7 @@ module.exports.getUserByID = async ( gottenID, callback) => {
 
 }
 
-module.exports.updateNonSensitiveData = (userid, newName, newEmail, newBio, callback) => {
+module.exports.updateNonSensitiveData = (userid, newName, newBio, callback) => {
     //in profile page, show original data in form. that way, no need to wory about  updating it to be "" 
     if (!validator.isEmail(newEmail)) return callback(null, "Email not accepted")
     const updateProfile = "Update users set name = $1, email = $2, bio = $3 where id = $4 returning name AS newName, email AS newEmail, bio AS newBio"
@@ -57,35 +57,41 @@ module.exports.updatePassword = (userid, newPwd, callback) => {
     var oldPwd = "";
     connection.query(getOldData, [userid])
         .then(result => {
-            console.log(result.rows[0].password,"line 52")
+            console.log(result.rows[0].password, "line 52")
             oldPwd = result.rows[0].password
             if (bcrypt.compareSync(newPwd, oldPwd) == true) {
                 return callback(null, "new password cant be same as old password")
             } else {
-                console.log("new pwd is "+newPwd)
+                console.log("new pwd is " + newPwd)
                 bcrypt.hash(newPwd, 10, (err, newHashedPwd) => {
-                if (err) {
-                    console.log(err);
-                    //return res.status(500).send(err);
-                    return res.status(500).json({ message: "Internal Server Error!" });
-                } else {
-                    const updatePassword = "update users set password = $1 where id = $2 returning id"
-                    connection.query(updatePassword, [newHashedPwd, userid])
-                        .then(result => {
-                            console.log(result)
-                            callback(result, null)
-                        }).catch(err => callback(null, err))
-                }
-            })
+                    if (err) {
+                        console.log(err);
+                        //return res.status(500).send(err);
+                        return res.status(500).json({ message: "Internal Server Error!" });
+                    } else {
+                        const updatePassword = "update users set password = $1 where id = $2 returning id"
+                        connection.query(updatePassword, [newHashedPwd, userid])
+                            .then(result => {
+                                console.log(result)
+                                callback(result, null)
+                            }).catch(err => callback(null, err))
+                    }
+                })
             }
         })
         .catch(err => callback(null, err))
-    
-    
+
+
 }
 
-module.exports.updatePFP = () => {
-
+module.exports.updatePFP = (userid, cloudinaryurl, cloudinaryid, callback) => {
+    const updatePFP = "update users set picurl = $1, picid = $2 where userid = $3"
+    connection.query(updatePFP, [cloudinaryurl, cloudinaryid, userid])
+        .then(result => {
+            console.log("in users.js update pfp" + result)
+            callback(result, null)
+        })
+        .catch(err => callback(null, err))
 }
 
 module.exports.updateCoverPic = () => {

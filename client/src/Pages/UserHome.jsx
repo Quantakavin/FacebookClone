@@ -28,13 +28,13 @@ const UserHome = () => {
             }
         })
         .then(response => {
-          console.log('promise fulfilled')
+            console.log("promise fulfilled")
+          console.log('response at userhome.js line 31 is \n' + JSON.stringify(response.data))
           setPosts(response.data)
         })
         .catch(error => {
           console.log(error);
       })
-
     }
 
     const [showTextForm, setShowTextForm] = useState(false);
@@ -215,7 +215,9 @@ const UserHome = () => {
                 :<></>}    
                 {posts.map(post => 
                 <Container className="shadow post">
-                    <div style={{display: "flex", flexDirection: "row", padding: 5}}>
+                    <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
+                        history.push(`./profile/${post.id}`)
+                    }}>
                     {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
                     <div style={{flexGrow: 1}}>
                         <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>
