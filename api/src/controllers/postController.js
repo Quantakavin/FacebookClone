@@ -134,4 +134,21 @@ module.exports.getPost = async (req,res) => {
         return res.status(500).json({error: "Cannot find post"});
     }
 }
+module.exports.deletePost = async (req,res) => {
+    let id = req.params.id;
+    try {
+        await post.delete(id, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find post"});
+            } else {
+                return res.status(204).json({message:"Post deleted successfully"});
+            }
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: "Cannot find post"});
+    }
+}
 

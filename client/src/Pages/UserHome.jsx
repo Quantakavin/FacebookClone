@@ -147,6 +147,21 @@ const UserHome = () => {
             setErrorMsg(error.response.data.message);
         })
     }
+    const handleDelete = (id) => {
+        axios
+        .delete(`http://localhost:5000/api/post/${id}`, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+        .then(response => {
+            getFeed()
+        })
+        .catch(error => {
+            console.log(error);
+        })
+      }
 
 
     return( 
@@ -248,7 +263,7 @@ const UserHome = () => {
                     >
                       <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${post.postid}`)} }>Edit</Dropdown.Item>
                       <Dropdown.Divider />
-                      <Dropdown.Item eventKey="2" style={{color: "red"}}>Delete</Dropdown.Item>
+                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(post.postid)}>Delete</Dropdown.Item>
                     </DropdownButton>
                     </div>
                 : <></>}
