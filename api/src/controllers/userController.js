@@ -174,7 +174,7 @@ module.exports.updatePFP = async (req, res) => {
                     })
                 } catch (err) {
                     console.log(err)
-                    res.status(500).json({ message: "Error with file record updating" });
+                    res.status(500).json({ message: "Error with file record updating line 178" });
                 }
             }
         })

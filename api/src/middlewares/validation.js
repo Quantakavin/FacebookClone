@@ -77,7 +77,7 @@ validateImage: (req,res,next) => {
             res.status(400).json({message: "Please upload a file"})
         } else {
             console.log(file.path)
-            if (file.path.endsWith(".png") || file.path.endsWith(".jpg") || file.path.endsWith(".jpeg") || file.path.endsWith(".gif")) {
+            if (file.path.endsWith(".png") || file.path.endsWith(".jpg") || file.path.endsWith(".jpeg") || file.path.endsWith(".gif") || file.path.endsWith(".PNG") || file.path.endsWith(".JPG") || file.path.endsWith(".JPEG") || file.path.endsWith(".GIF")) {
                 next()
             } else {
                 res.status(400).json({message: "Only png, jpg and gif files are allowed"})
@@ -85,26 +85,6 @@ validateImage: (req,res,next) => {
         }
     }
 },
-
-validateImageForProfile: (req,res,next) => {
-    var file = req.body.file;
-    var userid = req.body.userid;
-    
-    if (userid == null || userid == "") {
-        res.status(401).json({message: "Please login first"})
-    } else {
-        if(file == null || file==[]) {
-            next()
-        } else {
-            console.log(file.path)
-            if (file.path.endsWith(".png") || file.path.endsWith(".jpg") || file.path.endsWith(".jpeg") || file.path.endsWith(".gif")) {
-                next()
-            } else {
-                res.status(400).json({message: "Only png, jpg and gif files are allowed"})
-            }
-        }
-    }
-}
 
 
 }

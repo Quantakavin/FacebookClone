@@ -24,7 +24,6 @@ const Profile = ({ match }) => {
         getFeed()
         getUsersProfile()
         getPageProfile()
-        compare()
     }, [])
     const [Input, setInput] = useState({
         name: '',
@@ -51,17 +50,16 @@ const Profile = ({ match }) => {
                 console.log("you are user " + localStorage.getItem('user_id'))
                 console.log(response)
                 setUserProfile(response.data)
+                if (localStorage.getItem("user_id") == match.params.id) {
+                    setInput({ name: response.data.name, bio: response.data.bio })
+                }
             }
             ).catch(error => {
                 console.log("error in frontend")
                 console.log(error);
             })
     }
-    const compare = () => {
-        if (localStorage.getItem("user_id") == match.params.id) {
-            setInput({ name: userProfile.name, bio: userProfile.bio })
-        }
-    }
+    
     const getPageProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
             .then(response => {
@@ -85,14 +83,14 @@ const Profile = ({ match }) => {
         event.preventDefault();
         axios
             //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "name": Input.name, "email": Input.email, "bio": Input.bio }, {
+            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "name": Input.name, "bio": Input.bio, "userid":localStorage.getItem("user_id") }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
-            .then(response => {
-
+            .then((response) => {
+                console.log(response.data)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -187,7 +185,7 @@ const Profile = ({ match }) => {
                                     <Form>
                                         <Form.Group className="mb-3" controlId="formBasicEmail" onSubmit={handleSubmit}>
                                             <Form.Label>Name</Form.Label>
-                                            <Form.Control type="text" name="name" onChange={handleChange}  value={Input.name} />
+                                            <Form.Control type="text" name="name" onChange={handleChange} value={Input.name} />
                                         </Form.Group>
 
                                         <Form.Group className="mb-3" controlId="formBasicPassword">
