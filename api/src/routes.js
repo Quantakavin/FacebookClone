@@ -9,7 +9,7 @@ module.exports = router => {
     router.post('/api/register', validation.validateRegister, userController.registerUser);
     // router.get('/api/getUser/:gottenID ', userController.retrieveUserById) //this one dont work and idk why, it is replaced with next line
     router.get('/api/getDataOfUser/:gottenID',userController.retrieveUserById)
-    router.put('/api/updateUser/', authorization.verifyUser,userController.updateUser)
+    router.put('/api/updateUser/', authorization.verifyUser, userController.updateUser)
     router.put('/api/updatePassword', authorization.verifyUser,userController.updateUserPassword)
     router.put('/api/updatePFP', authorization.verifyUser,validation.validateImage, userController.updatePFP)
     router.get('/api/users', authorization.verifyUser, userController.allUsers)

@@ -48,7 +48,11 @@ module.exports.updateNonSensitiveData = (userid, newName, newBio, callback) => {
             console.log(result.rows[0], "in users.js")
             callback(result.rows[0], null)
         })
-        .catch(err => callback(null, err))
+        .catch((err) => { 
+            console.log("users.js line 52")
+            console.log(err)
+            callback(null, err)
+        })
 
 }
 
@@ -85,10 +89,10 @@ module.exports.updatePassword = (userid, newPwd, callback) => {
 }
 
 module.exports.updatePFP = (userid, cloudinaryurl, cloudinaryid, callback) => {
-    const updatePFP = "update users set picurl = $1, picid = $2 where userid = $3"
+    const updatePFP = "update users set picurl = $1, picid = $2 where id = $3"
     connection.query(updatePFP, [cloudinaryurl, cloudinaryid, userid])
         .then(result => {
-            console.log("in users.js update pfp" + result)
+            console.log("in users.js update pfp" + result.data)
             callback(result, null)
         })
         .catch(err => callback(null, err))
