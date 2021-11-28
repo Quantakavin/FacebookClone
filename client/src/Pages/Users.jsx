@@ -4,7 +4,7 @@ import { Image, Container, Row, Card, Button } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import TopBar from '../Components/TopBar';
 import profilephoto from '../Images/profilephoto.png';
-
+import config from '../config/config';
 
 
 const Users = () => {
@@ -16,7 +16,7 @@ const Users = () => {
 
       const getUsers = () => {
         axios
-        .get('http://localhost:5000/api/users', {
+        .get(`${config.baseURL}/users`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
@@ -33,7 +33,7 @@ const Users = () => {
 
       const friend = (id) => {
         axios
-        .post('http://localhost:5000/api/friend', {"friendid": id}, {
+        .post(`${config.baseURL}/friend`, {"friendid": id}, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
@@ -51,7 +51,7 @@ const Users = () => {
 
       const unfriend = (id) => { 
         axios
-        .delete(`http://localhost:5000/api/friend/?id=${id}`, {
+        .delete(`${config.baseURL}/friend/?id=${id}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }

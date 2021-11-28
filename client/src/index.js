@@ -20,6 +20,8 @@ import Users from './Pages/Users';
 import EditPost from './Pages/EditPost';
 import ViewProfile from './Pages/ViewProfile'
 import 'bootstrap/dist/css/bootstrap.min.css';
+const dotenv = require('dotenv');
+dotenv.config();
 
 ReactDOM.render(
     <React.StrictMode>

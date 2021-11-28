@@ -5,6 +5,7 @@ import '../Styles/form.scss';
 import TopBar from '../Components/TopBar';
 import facebooklogo from '../Images/facebooklogo.png';
 import { useHistory } from "react-router-dom";
+import config from '../config/config';
 
 const profileView = () => {
     const history = useHistory();
@@ -24,8 +25,7 @@ const profileView = () => {
         event.preventDefault();
         setLoading(true);
         axios
-            //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-            .post('http://localhost:5000/api/login', { "email": Input.email, "password": Input.password })
+            .post(`${config.baseURL}/login`, { "email": Input.email, "password": Input.password })
             .then(response => {
                 setLoading(false)
                 console.log(response);

@@ -3,11 +3,10 @@ import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
-import photo from '../Images/photo.png';
-import video from '../Images/video.png';
 import profilephoto from '../Images/profilephoto.png';
 import dots from '../Images/dots.png';
 import { useHistory } from "react-router-dom";
+import config from '../config/config';
 //picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
 
 const Profile = ({ match }) => {

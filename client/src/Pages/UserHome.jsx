@@ -8,6 +8,7 @@ import video from '../Images/video.png';
 import profilephoto from '../Images/profilephoto.png'; 
 import dots from '../Images/dots.png'; 
 import { useHistory } from "react-router-dom";
+import config from '../config/config';
 
 const UserHome = () => { 
     //const [postid,setPostid] = useState(0);
@@ -22,7 +23,7 @@ const UserHome = () => {
 
     const getFeed = () => {
         axios
-        .get('http://localhost:5000/api/feed', {
+        .get(`${config.baseURL}/feed`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -66,8 +67,7 @@ const UserHome = () => {
         event.preventDefault();
         setTextFormLoading(true);
         axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .post('http://localhost:5000/api/text', {"content": TextInput.content}, {
+        .post(`${config.baseURL}/text`, {"content": TextInput.content}, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -128,8 +128,7 @@ const UserHome = () => {
         webFormData.append("file", ImageInput.file);
 
         axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .post('http://localhost:5000/api/photo', webFormData, {
+        .post(`${config.baseURL}/photo`, webFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
@@ -149,7 +148,7 @@ const UserHome = () => {
     }
     const handleDelete = (id) => {
         axios
-        .delete(`http://localhost:5000/api/post/${id}`, {
+        .delete(`${config.baseURL}/post/${id}`, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 

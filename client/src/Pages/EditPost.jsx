@@ -4,6 +4,7 @@ import TopBar from '../Components/TopBar';
 import { Alert, Button, Form, Container, Spinner } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import '../Styles/form.scss';
+import config from '../config/config';
 
 const EditPost = ({match}) => { 
     const [post, setPost] = useState([]);
@@ -14,7 +15,7 @@ const EditPost = ({match}) => {
 
     useEffect(() => {
         axios
-        .get(`http://localhost:5000/api/post/${match.params.id}`, {
+        .get(`${config.baseURL}/post/${match.params.id}`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -44,7 +45,7 @@ const EditPost = ({match}) => {
         setTextFormLoading(true);
         axios
         //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .put(`http://localhost:5000/api/text/${match.params.id}`, {"content": TextInput.content}, {
+        .put(`${config.baseURL}/text/${match.params.id}`, {"content": TextInput.content}, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -93,7 +94,7 @@ const EditPost = ({match}) => {
 
         axios
         //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .put(`http://localhost:5000/api/photo/${match.params.id}`, webFormData, {
+        .put(`${config.baseURL}/photo/${match.params.id}`, webFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
