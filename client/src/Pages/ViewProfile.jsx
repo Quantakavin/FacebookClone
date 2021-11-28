@@ -47,7 +47,7 @@ const Profile = ({ match }) => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
                 console.log("you are user " + localStorage.getItem('user_id'))
-                console.log(response)
+                console.log(response.data)
                 setUserProfile(response.data)
                 if (localStorage.getItem("user_id") == match.params.id) {
                     setInput({ name: response.data.name, bio: response.data.bio })
@@ -81,10 +81,8 @@ const Profile = ({ match }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "name": Input.name, "bio": Input.bio, "userid":localStorage.getItem("user_id") }, {
+            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "newName": Input.name, "newBio": Input.bio, "userid":localStorage.getItem("user_id") }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })

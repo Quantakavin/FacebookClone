@@ -74,12 +74,11 @@ const TopBar = () => {
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">
                   <NavDropdown.Item 
-                  // onClick={() => {
-                  //   if (localStorage.getItem(user_id) !== null) {
-                  //     history.push(`/profile/${localStorage.getItem("user_id")}`)
-
-                  //   } 
-                  // }}
+                  onClick={() => {
+                    if (localStorage.getItem("user_id") != null) {
+                      history.push(`/profile/${localStorage.getItem("user_id")}`)
+                    } 
+                  }}
                   
                   >Profile</NavDropdown.Item>
                   <NavDropdown.Divider />

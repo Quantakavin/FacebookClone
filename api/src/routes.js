@@ -1,9 +1,9 @@
 const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
 const friendController = require('./controllers/friendController');
+const commentController = require('./controllers/commentController');
 const validation = require('./middlewares/validation');
 const authorization = require('./middlewares/authorization');
-
 module.exports = router => {
     router.post('/api/login', validation.validateLogin, userController.loginUser);
     router.post('/api/register', validation.validateRegister, userController.registerUser);
@@ -23,7 +23,8 @@ module.exports = router => {
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
-
+    router.put('/api/updateComment', commentController.updateComment)
+    router.post('/api/createComment', commentController.createComment)
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 }
