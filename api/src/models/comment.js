@@ -1,6 +1,6 @@
 const connection = require('../config/database');
 
-module.exports.getComments = async (callback) => {
+module.exports.getComments = async (userid, callback) => {
 
 }
 

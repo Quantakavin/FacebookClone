@@ -99,7 +99,7 @@ module.exports.retrieveUserById = async (req, res) => {
 
 module.exports.updateUser = (req, res) => {
     try {
-        var { newName, newBio, userid } = req.body
+        const { newName, newBio, userid } = req.body
         user.updateNonSensitiveData(userid, newName, newBio, (results, issue) => {
             if (issue) {
                 console.log(issue + " in usercontroller")

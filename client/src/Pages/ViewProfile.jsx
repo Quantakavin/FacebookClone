@@ -28,6 +28,7 @@ const Profile = ({ match }) => {
         name: '',
         bio: ''
     });
+
     const getFeed = () => {
         axios
             .get(`http://localhost:5000/api/post/${match.params.id}`, {
@@ -43,6 +44,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
+
     const getUsersProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
@@ -58,7 +60,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    
+
     const getPageProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
             .then(response => {
@@ -71,6 +73,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
+
     const handleChange = (event) => {
         setInput({
             ...Input,
@@ -78,16 +81,27 @@ const Profile = ({ match }) => {
 
         })
     }
+
     const handleSubmit = (event) => {
+        // console.log(event.target.name.value)
+        // console.log(event.target.bio.value)
+        // console.log(localStorage.getItem("user_id"))
+
         event.preventDefault();
         axios
-            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "newName": Input.name, "newBio": Input.bio, "userid":localStorage.getItem("user_id") }, {
+            .put(`http://localhost:5000/api/updateUser`,
+                {
+                    "newName": event.target.name.value,
+                    "newBio": event.target.bio.value,
+                    "userid": localStorage.getItem("user_id")
+                }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
             .then((response) => {
                 console.log(response.data)
+                history.push(`/profile/${localStorage.getItem("user_id")}`)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -109,6 +123,7 @@ const Profile = ({ match }) => {
     }
 
     const createImagePost = (event) => {
+
         setImageFormLoading(true);
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
@@ -179,8 +194,8 @@ const Profile = ({ match }) => {
                         <Col>
                             {PageProfile.id == userProfile.id ?
                                 <Container>
-                                    <Form>
-                                        <Form.Group className="mb-3" controlId="formBasicEmail" onSubmit={handleSubmit}>
+                                    <Form onSubmit={handleSubmit}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail" onChange={handleChange}>
                                             <Form.Label>Name</Form.Label>
                                             <Form.Control type="text" name="name" onChange={handleChange} value={Input.name} />
                                         </Form.Group>
