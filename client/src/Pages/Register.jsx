@@ -5,6 +5,7 @@ import '../Styles/form.scss';
 import TopBar from '../Components/TopBar';
 import facebooklogo from '../Images/facebooklogo.png';
 import { useHistory } from "react-router-dom";
+import config from '../config/config';
   
   const Register = () => {
 
@@ -31,8 +32,7 @@ import { useHistory } from "react-router-dom";
           event.preventDefault();
           setLoading(true);
           axios
-          //.post('http://evening-plateau-18994.herokuapp.com/api/register', {"name": Input.name, "email": Input.email,"password": Input.password})
-          .post('http://localhost:5000/api/register', {"name": Input.name, "email": Input.email,"password": Input.password})
+          .post(`${config.baseURL}/register`, {"name": Input.name, "email": Input.email,"password": Input.password})
           .then(response => {
               setLoading(false)
               console.log(response);

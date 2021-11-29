@@ -8,6 +8,7 @@ import video from '../Images/video.png';
 import profilephoto from '../Images/profilephoto.png'; 
 import dots from '../Images/dots.png'; 
 import { useHistory } from "react-router-dom";
+import config from '../config/config';
 
 const UserHome = () => { 
     //const [postid,setPostid] = useState(0);
@@ -22,19 +23,19 @@ const UserHome = () => {
 
     const getFeed = () => {
         axios
-        .get('http://localhost:5000/api/feed', {
+        .get(`${config.baseURL}/feed`, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
         })
         .then(response => {
-          console.log('promise fulfilled')
+            console.log("promise fulfilled")
+          console.log('response at userhome.js line 31 is \n' + JSON.stringify(response.data))
           setPosts(response.data)
         })
         .catch(error => {
           console.log(error);
       })
-
     }
 
     const [showTextForm, setShowTextForm] = useState(false);
@@ -66,8 +67,7 @@ const UserHome = () => {
         event.preventDefault();
         setTextFormLoading(true);
         axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .post('http://localhost:5000/api/text', {"content": TextInput.content}, {
+        .post(`${config.baseURL}/text`, {"content": TextInput.content}, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -128,8 +128,7 @@ const UserHome = () => {
         webFormData.append("file", ImageInput.file);
 
         axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .post('http://localhost:5000/api/photo', webFormData, {
+        .post(`${config.baseURL}/photo`, webFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
@@ -149,7 +148,7 @@ const UserHome = () => {
     }
     const handleDelete = (id) => {
         axios
-        .delete(`http://localhost:5000/api/post/${id}`, {
+        .delete(`${config.baseURL}/post/${id}`, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
@@ -229,8 +228,10 @@ const UserHome = () => {
                 
                 :<></>}    
                 {posts.map(post => 
-                <Container key={post.postid} className="shadow post">
-                    <div style={{display: "flex", flexDirection: "row", padding: 5}}>
+                <Container className="shadow post">
+                    <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
+                        history.push(`./profile/${post.id}`)
+                    }}>
                     {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
                     <div style={{flexGrow: 1}}>
                         <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>

@@ -3,7 +3,7 @@ const user = require('../models/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var validator = require('validator');
-
+var post = require('../models/post')
 module.exports.loginUser = async (req, res) => {
     let { email, password } = req.body;
     try {
@@ -79,9 +79,10 @@ module.exports.retrieveUserById = async (req, res) => {
     try {
         //var getterID = req.body.getterID 
         //no need yet
-        var gottenID = req.body.gottenID
+        var gottenID = req.params.gottenID
         await user.getUserByID(gottenID, (results, issue) => {
             if (issue) {
+                console.log("error in backend")
                 console.log(issue)
                 return res.status(404).send("Cannot find user with that id")
             } else {
@@ -89,6 +90,7 @@ module.exports.retrieveUserById = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log("error in backend")
         console.log(error)
         return res.status(500).send(error);
     }
@@ -97,17 +99,16 @@ module.exports.retrieveUserById = async (req, res) => {
 
 module.exports.updateUser = (req, res) => {
     try {
-        var userid = req.body.userid
-        var { newName, newEmail, newBio } = req.body
-            user.updateNonSensitiveData(userid, newName, newEmail, newBio, (results, issue) => {
-                if (issue) {
-                    console.log(issue)
-                    return res.status(404).send("Cannot find user with that id")
-                } else {
-                    console.log(results.toString()+" in userController.js")
-                    return res.status(200).send(results)
-                }
-            })
+        var { newName, newBio, userid } = req.body
+        user.updateNonSensitiveData(userid, newName, newBio, (results, issue) => {
+            if (issue) {
+                console.log(issue + " in usercontroller")
+                return res.status(404).send("Some data missing")
+            } else {
+                console.log(results.toString() + " in userController.js")
+                return res.status(200).send(results)
+            }
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).send(error);
@@ -142,6 +143,38 @@ module.exports.allUsers = async (req, res) => {
                 return res.status(500).json({ message: "Cannot retrieve users" });
             } else {
                 return res.status(200).json(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Internal Server Error!" });
+    }
+}
+
+module.exports.updatePFP = async (req, res) => {
+    try {
+        var userid = req.body.userid;
+        var pfp = req.body.file
+        await post.uploadFile(pfp, async function (result, posterror) {
+            if (posterror) {
+                console.log(posterror)
+                res.status(500).json({ message: "Error with file submission" });
+            } else {
+                let cloudinaryurl = result.url;
+                let cloudinaryid = result.public_id
+                try {
+                    user.updatePFP(userid, cloudinaryurl, cloudinaryid, (updateRecordSuccess, updateRecordFail) => {
+                        if (updateRecordFail) {
+                            console.log(updateRecordFail)
+                            res.status(500).json({ message: "Error with file record updating" });
+                        } else {
+                            return res.status(204).json({ message: "Post Updated!" });
+                        }
+                    })
+                } catch (err) {
+                    console.log(err)
+                    res.status(500).json({ message: "Error with file record updating line 178" });
+                }
             }
         })
     } catch (error) {

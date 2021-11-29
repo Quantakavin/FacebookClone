@@ -125,7 +125,7 @@ module.exports.getPost = async (req,res) => {
                 console.log(error)
                 return res.status(500).json({error: "Cannot find post"});
             } else {
-                return res.status(200).json(results.rows[0]);
+                return res.status(200).json(results);
             }
         })
 
@@ -151,4 +151,5 @@ module.exports.deletePost = async (req,res) => {
         return res.status(500).json({error: "Cannot find post"});
     }
 }
+
 

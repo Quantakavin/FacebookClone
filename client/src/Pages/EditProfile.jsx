@@ -1,53 +1,47 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Button, Form, Container, Image, Spinner, Alert} from 'react-bootstrap';
+import { Button, Form, Container, Image, Spinner, Alert } from 'react-bootstrap';
 import '../Styles/form.scss';
 import TopBar from '../Components/TopBar';
-import facebooklogo from '../Images/facebooklogo.png'; 
+import facebooklogo from '../Images/facebooklogo.png';
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
-  
-  const Login = () => { 
-    const [loading,setLoading] = useState(false);
-    const [alert, setAlert] = useState(false);
-    const [alertContent, setAlertContent] = useState('');
+
+const profileView = () => {
     const history = useHistory();
-
     const [Input, setInput] = useState({
+        name:'',
         email: '',
-        password: ''
-      });
+        bio: ''
+    });
+    const handleChange = (event) => {
+        setInput({
+            ...Input,
+            [event.target.name]: event.target.value
 
-      const handleChange = (event) => {
-          setInput({
-              ...Input,
-              [event.target.name]: event.target.value
-
-          })
-      }
-
-      const handleSubmit = (event) => {
+        })
+    }
+    const handleSubmit = (event) => {
         event.preventDefault();
         setLoading(true);
         axios
-        .post(`${config.baseURL}/login`, {"email": Input.email,"password": Input.password})
-        .then(response => {
-            setLoading(false)
-            console.log(response);
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user_id', response.data.id);
-            localStorage.setItem('username', response.data.name);
-            history.push("/userhome");
-        })
-        .catch(error => {
-            setLoading(false)
-            setAlertContent(error.response.data.message);  
-            setAlert(true);
-        })
+            .post(`${config.baseURL}/login`, { "email": Input.email, "password": Input.password })
+            .then(response => {
+                setLoading(false)
+                console.log(response);
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user_id', response.data.id);
+                localStorage.setItem('username', response.data.name);
+                history.push("/userhome");
+            })
+            .catch(error => {
+                setLoading(false)
+                setAlertContent(error.response.data.message);
+                setAlert(true);
+            })
     }
-
-      return(
-          <>
+    return (
+        <>
           <header>
               <TopBar />
           </header>
@@ -56,19 +50,25 @@ import config from '../config/config';
           <Image src={facebooklogo} fluid />
         </Container>
         <Container className="formcontainer shadow">
-                <h2 style={{marginLeft: '8%', paddingBottom: 20, fontWeight: 600}}>Log in to your account</h2>
+                <h2 style={{marginLeft: '8%', paddingBottom: 20, fontWeight: 600}}>Edit your account information</h2>
             <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label className="formlabels">Name</Form.Label>
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Form.Control name="name" className="formfield" type="text" placeholder="Enter new name" value={Input.name} onChange={handleChange}/>
+                </div>
+            </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label className="formlabels">Email address</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control name="email" className="formfield" type="email" placeholder="Enter email" value={Input.email} onChange={handleChange}/>
+                <Form.Control name="email" className="formfield" type="email" placeholder="Enter new email" value={Input.email} onChange={handleChange}/>
                 </div>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label className="formlabels">Password</Form.Label>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label className="formlabels">Bio</Form.Label>
                 <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control name="password" className="formfield" type="password" placeholder="Password" value={Input.password} onChange={handleChange}/>
+                <Form.Control name="bio" className="formfield" type="text" placeholder="Enter new bio" value={Input.bio} onChange={handleChange}/>
                 </div>
             </Form.Group>
             {alert ?    <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 20, marginBottom: -20}}>   <Alert style={{width: "80%"}} variant="danger" onClose={() => setAlert(false)} dismissible>
@@ -92,8 +92,5 @@ import config from '../config/config';
         </Container>
         </div>
         </>
-      )
-
-  }
-
-  export default Login;
+    )
+}
