@@ -98,7 +98,67 @@ module.exports.updatePhoto = async (req,res) => {
 }
 
 module.exports.createVideo = async (req,res) => {
-    
+    let {userid, caption, file} = req.body;
+    try {
+        await post.uploadVideo(file, async function(result, posterror) {
+            if(posterror) {
+                console.log(posterror)
+                res.status(500).json({ message: "Error with file submission" });
+            } else {
+                let cloudinaryurl = result.url;
+                let cloudinaryid = result.public_id
+                try {
+                    await post.insertVideo(userid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
+                        if (issue) {
+                            console.log(issue)
+                            res.status(500).json({ message: "Error with file submission" });
+                        } else {
+                            res.status(201).send(returnresults);
+                        }
+                    })
+                } catch (err) {
+                    console.log(err)
+                    res.status(500).json({ message: "Error with file submission" });
+                }
+            }
+        }) 
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "Internal Server Error!"});
+    }
+}
+module.exports.updateVideo = async (req,res) => {
+    let postid = req.params.id;
+    let {userid, caption, file} = req.body;
+    try {
+        await post.uploadVideo(file, async function(result, posterror) {
+            if(posterror) {
+                console.log(posterror)
+                res.status(500).json({ message: "Error with file submission" });
+            } else {
+                let cloudinaryurl = result.url;
+                let cloudinaryid = result.public_id
+                try {
+                    await post.updateVideo(postid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
+                        if (issue) {
+                            console.log(issue)
+                            res.status(500).json({ message: "Error with file submission" });
+                        } else {
+                            return res.status(204).json({message: "Post Updated!"});
+                        }
+                    })
+                } catch (err) {
+                    console.log(err)
+                    res.status(500).json({ message: "Error with file submission" });
+                }
+            }
+        }) 
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: "Internal Server Error!"});
+    }
 }
 
 module.exports.getFeed = async (req,res) => {

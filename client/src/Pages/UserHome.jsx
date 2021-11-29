@@ -146,21 +146,71 @@ const UserHome = () => {
             setErrorMsg(error.response.data.message);
         })
     }
-    const handleDelete = (id) => {
+
+
+    const [showVideoForm, setShowVideoForm] = useState(false);
+    const handleCloseVideoForm = () => {
+        setBorderColor('transparent')
+        setErrorMsg('');
+        setShowVideoForm(false);
+        setVideoInput({
+            ...VideoInput,
+            caption: '',
+            file: []
+
+        })
+    }
+    const handleShowVideoForm = () => setShowVideoForm(true);
+
+    const [VideoFormLoading,setVideoFormLoading] = useState(false);
+
+    const [VideoInput, setVideoInput] = useState({
+        caption: '',
+        file: ''
+      });
+    const handleVideoChange = (event) => {
+        setVideoInput({
+            ...VideoInput,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleVideoUploadChange = (event) => {
+        let files = event.target.files
+        setVideoInput({
+            ...VideoInput,
+            file: files[0]
+        })
+    }
+    const createVideoPost = (event) => { 
+        event.preventDefault();
+        setVideoFormLoading(true);
+
+        let webFormData = new FormData();
+        webFormData.append('caption', VideoInput.caption);
+        webFormData.append("file", VideoInput.file);
+
         axios
-        .delete(`${config.baseURL}/post/${id}`, {
+        .post(`${config.baseURL}/video`, webFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
-        })
+          })
         .then(response => {
+            setVideoFormLoading(false)
+            console.log(response);
+            handleCloseVideoForm()
             getFeed()
         })
         .catch(error => {
-            console.log(error);
+            setVideoFormLoading(false)
+            setBorderColor('red')
+            setErrorMsg(error.response.data.message);
         })
-      }
+    }
+
+
 
 
     return( 
@@ -209,6 +259,28 @@ const UserHome = () => {
         </Modal.Body>
         </Modal>
 
+        <Modal show={showVideoForm} onHide={handleCloseVideoForm} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center" style={{fontWeight: 600,fontSize: "1.25em"}}>Upload Video</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Form onSubmit={createVideoPost}>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <Form.Control style={{borderColor: borderColor}} name="caption" className="text-secondary" as="textarea" rows={1} placeholder="Video caption (optional)" value={ImageInput.caption} onChange={handleVideoChange}/>
+            </Form.Group>
+            <Form.Group controlId="formFileSm" className="mb-3">
+                <Form.Control name="file" type="file" size="sm" onChange={handleVideoUploadChange} />
+            </Form.Group>
+            {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: 15}}>{errorMsg}!</p>: <></>}
+            {!VideoFormLoading?
+            <Button style={{backgroundColor: "#4267B2", width: "100%"}} variant="primary" type="submit" >Submit</Button>:
+            <Button variant="primary" disabled style={{backgroundColor: "#4267B2", width: "100%"}}>
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+        </Button>}
+        </Form>
+        </Modal.Body>
+        </Modal>
+
         <div style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
             <Container className="formcontainer shadow" style={{height: "auto", marginBottom: 0, display: "flex", flexDirection: "row"}}>
             <div style={{flexGrow: 12,marginBottom: "-3%"}}>
@@ -218,7 +290,7 @@ const UserHome = () => {
             <Button onClick={handleShowImageForm} style={{border:"none", backgroundColor: "transparent"}}><Image src={photo} alt="Upload photo" height="30px" /></Button>
             </div>
             <div style={{flexShrink: 0.5,marginBottom: "-3%"}}>
-            <Button style={{border:"none", backgroundColor: "transparent"}}><Image src={video} alt="Upload video" height="30px"  /></Button>
+            <Button onClick={handleShowVideoForm} style={{border:"none", backgroundColor: "transparent"}}><Image src={video} alt="Upload video" height="30px"  /></Button>
             </div>
             </Container>
             <Container className="postscontainer">

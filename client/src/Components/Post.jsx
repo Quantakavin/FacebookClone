@@ -7,6 +7,7 @@ import dots from '../Images/dots.png';
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
 import '../Styles/post.scss';
+import ReactPlayer from 'react-player'
 
 const Post = (props) => { 
     const history = useHistory();
@@ -79,7 +80,10 @@ const Post = (props) => {
                     <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{props.post.content}</p>:
                     <>
                     {props.post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{props.post.caption}</p>}
-                    <Image style={{marginBottom: 15}}src={props.post.cloudinaryurl} fluid />
+                    {props.post.type=="image" ?
+                    <Image width="100%" style={{marginBottom: 15}}src={props.post.cloudinaryurl} fluid />:
+                    <ReactPlayer width="100%" controls="true" style={{marginBottom: 15}} url={props.post.cloudinaryurl}/>
+                    }
                     </>
                 }
                 {props.post.id == localStorage.getItem("user_id")? 
@@ -109,8 +113,7 @@ const Post = (props) => {
                 <button onClick={() => setShowComments(showComments => !showComments)}>Hide all comments</button> :
                 <button onClick={() => setShowComments(showComments => !showComments)}>Show all comments</button>
                 }
-                {comments.map(comment => 
-                {!showComments? 
+                {comments.map(comment =>  
                   <Container key={comment.commentid} style={{paddingLeft: 25, paddingRight: 25, paddingTop: 10, paddingBottom: 10}}>
                     <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
                       history.push(`./profile/${comment.id}`)
@@ -125,7 +128,7 @@ const Post = (props) => {
                   </div>
                   </div>
                 <p>{comment.content}</p>
-                </Container> :<></>}
+                </Container> 
 
                )}
 
