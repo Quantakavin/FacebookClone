@@ -33,6 +33,16 @@ module.exports.createComment = async (userid, postid, commentText,callback) => {
         })
 }
 
-module.exports.deleteComment = async (callback) => {
+module.exports.deleteComment = async (commentid,callback) => {
+    var deleteComment = `Delete From comment where id = $1`
+    connection.query(deleteComment, [commentid])
+        .then(result => {
+            console.log(result)
+            callback(result, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
 
 }

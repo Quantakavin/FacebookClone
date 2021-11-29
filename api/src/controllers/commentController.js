@@ -39,8 +39,16 @@ module.exports.createComment = async (req, res) => {
 }
 
 module.exports.deleteComment = async (req, res) => {
-    var { userid, postid, comment } = req.body
+    var { commentid } = req.body
     try {
+        comment.deleteComment(commentid, (results, err) => {
+            if (err) {
+                console.log(err)
+                return res.status(500).json({ message:"delete comment failed in backend" });
+            } else {
+                return res.status(204).json({ results })
+            }
+        })
 
     } catch (error) {
         console.log(error)
