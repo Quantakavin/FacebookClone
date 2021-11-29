@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
+import Post from '../Components/Post'
 import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
 import '../Styles/home.scss';
 import photo from '../Images/photo.png'; 
@@ -16,10 +17,11 @@ const UserHome = () => {
     const [posts, setPosts] = useState([]);
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
+    const [rerender, setRerender]= useState(false);
 
     useEffect(() => {
         getFeed()
-    }, [])
+    }, [rerender])
 
     const getFeed = () => {
         axios
@@ -228,45 +230,7 @@ const UserHome = () => {
                 
                 :<></>}    
                 {posts.map(post => 
-                <Container className="shadow post">
-                    <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
-                        history.push(`./profile/${post.id}`)
-                    }}>
-                    {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
-                    <div style={{flexGrow: 1}}>
-                        <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>
-                        {post.editdate == null ?
-                        <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")}</p>
-                        : <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")} (Edited {post.editdate.substring(0, 16).replace("T", " ")})</p>
-                        }
-                    </div>
-                    </div>
-                    <hr style={{marginTop: -5, marginRight:"-2%",marginLeft:"-2%",color: "d3d3d3"}}/>
-                    {post.cloudinaryurl == null ?
-                    <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.content}</p>:
-                    <>
-                    {post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.caption}</p>}
-                    <Image style={{marginBottom: 15}}src={post.cloudinaryurl} fluid />
-                    </>
-                }
-                {post.id == localStorage.getItem("user_id")? 
-                    <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
-                    <DropdownButton
-                      id={`dropdown-button-drop-up`}
-                      drop={"up"}
-                      title={
-                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
-
-                          </Image>
-                      }
-                    >
-                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${post.postid}`)} }>Edit</Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(post.postid)}>Delete</Dropdown.Item>
-                    </DropdownButton>
-                    </div>
-                : <></>}
-                </Container>
+                <Post post={post} setRerender={setRerender}></Post>
                )}
             </Container>
         </div>
