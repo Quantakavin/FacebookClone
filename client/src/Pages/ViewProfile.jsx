@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal, Row, Col, Alert } from 'react-bootstrap';
+import {  Image, Spinner, Form, Button, Container, Modal, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
-import dots from '../Images/dots.png';
 import { useHistory } from "react-router-dom";
-import config from '../config/config';
+import Post from '../Components/Post'
 //picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
 
 const Profile = ({ match }) => {
@@ -18,19 +17,21 @@ const Profile = ({ match }) => {
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
+    const [rerender, setRerender]= useState(false);
 
     useEffect(() => {
         getFeed()
-        getUsersProfile()
+        //getUsersProfile()
         getPageProfile()
-    }, [])
+    }, [rerender])
     const [Input, setInput] = useState({
         name: '',
         bio: ''
     });
+
     const getFeed = () => {
         axios
-            .get(`http://localhost:5000/api/post/${match.params.id}`, {
+            .get(`http://localhost:5000/api/posts`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -43,11 +44,13 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
+
+    /*
     const getUsersProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
                 console.log("you are user " + localStorage.getItem('user_id'))
-                console.log(response)
+                console.log(response.data)
                 setUserProfile(response.data)
                 if (localStorage.getItem("user_id") == match.params.id) {
                     setInput({ name: response.data.name, bio: response.data.bio })
@@ -58,7 +61,8 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    
+    */
+
     const getPageProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
             .then(response => {
@@ -71,6 +75,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
+
     const handleChange = (event) => {
         setInput({
             ...Input,
@@ -78,18 +83,27 @@ const Profile = ({ match }) => {
 
         })
     }
+
     const handleSubmit = (event) => {
+        // console.log(event.target.name.value)
+        // console.log(event.target.bio.value)
+        // console.log(localStorage.getItem("user_id"))
+
         event.preventDefault();
         axios
-            //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-            .put('http://localhost:5000/api/updateUser/' + localStorage.getItem("user_id"), { "name": Input.name, "bio": Input.bio, "userid":localStorage.getItem("user_id") }, {
+            .put(`http://localhost:5000/api/updateUser`,
+                {
+                    "newName": event.target.name.value,
+                    "newBio": event.target.bio.value,
+                    "userid": localStorage.getItem("user_id")
+                }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
             .then((response) => {
                 console.log(response.data)
+                history.push(`/profile/${localStorage.getItem("user_id")}`)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -111,6 +125,7 @@ const Profile = ({ match }) => {
     }
 
     const createImagePost = (event) => {
+
         setImageFormLoading(true);
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
@@ -181,8 +196,8 @@ const Profile = ({ match }) => {
                         <Col>
                             {PageProfile.id == userProfile.id ?
                                 <Container>
-                                    <Form>
-                                        <Form.Group className="mb-3" controlId="formBasicEmail" onSubmit={handleSubmit}>
+                                    <Form onSubmit={handleSubmit}>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail" onChange={handleChange}>
                                             <Form.Label>Name</Form.Label>
                                             <Form.Control type="text" name="name" onChange={handleChange} value={Input.name} />
                                         </Form.Group>
@@ -224,43 +239,7 @@ const Profile = ({ match }) => {
                         <p style={{ color: "#838383" }}>No content to display</p>
                         : <></>}
                     {posts.map(post =>
-                        <Container className="shadow post">
-                            <div style={{ display: "flex", flexDirection: "row", padding: 5 }}>
-                                {post.picurl == null ? <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={profilephoto} width="50px" height="50px" roundedCircle /> : <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={post.picurl} width="50px" height="50px" roundedCircle />}
-                                <div style={{ flexGrow: 1 }}>
-                                    <p style={{ marginLeft: 10, fontWeight: 600, textTransform: "capitalize" }}>{post.name}</p>
-                                    {post.editdate == null ?
-                                        <p style={{ marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383" }}>{post.date.substring(0, 16).replace("T", " ")}</p>
-                                        : <p style={{ marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383" }}>{post.date.substring(0, 16).replace("T", " ")} (Edited {post.editdate.substring(0, 16).replace("T", " ")})</p>
-                                    }
-                                </div>
-                            </div>
-                            <hr style={{ marginTop: -5, marginRight: "-2%", marginLeft: "-2%", color: "d3d3d3" }} />
-                            {post.cloudinaryurl == null ?
-                                <p style={{ marginLeft: "1%", fontSize: "1.15em" }}>{post.content}</p> :
-                                <>
-                                    {post.caption == null ? <></> : <p style={{ marginLeft: "1%", fontSize: "1.15em" }}>{post.caption}</p>}
-                                    <Image style={{ marginBottom: 15 }} src={post.cloudinaryurl} fluid />
-                                </>
-                            }
-                            {post.id == localStorage.getItem("user_id") ?
-                                <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
-                                    <DropdownButton
-                                        id={`dropdown-button-drop-up`}
-                                        drop={"up"}
-                                        title={
-                                            <Image style={{ marginBottom: 15, height: 20 }} src={dots} fluid>
-
-                                            </Image>
-                                        }
-                                    >
-                                        <Dropdown.Item eventKey="1" onClick={() => { history.push(`/editpost/${post.postid}`) }}>Edit</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item eventKey="2" style={{ color: "red" }}>Delete</Dropdown.Item>
-                                    </DropdownButton>
-                                </div>
-                                : <></>}
-                        </Container>
+                    <Post key={post.postid} post={post} setRerender={setRerender}></Post>
                     )}
                 </Container>
             </div>

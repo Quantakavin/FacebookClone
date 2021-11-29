@@ -119,7 +119,7 @@ const EditPost = ({match}) => {
           <TopBar />
       </header>
     <div  style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto'}}>
-      {localStorage.getItem("user_id")==post.user_id?
+      {localStorage.getItem("user_id")==post.id?
     <Container className="formcontainer shadow" style={{marginTop: 100}}>
           {post.type == "text" ? 
           <>
@@ -172,7 +172,7 @@ const EditPost = ({match}) => {
        <Alert style={{width: "80%"}} variant="danger">
         <Alert.Heading>Forbidden!</Alert.Heading>
         <p>
-          You do not have access to edit this post.
+          You do not have access to edit this post. 
         </p>
       </Alert>
     </Container>

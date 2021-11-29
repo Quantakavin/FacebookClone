@@ -117,6 +117,24 @@ module.exports.getFeed = async (req,res) => {
     }
 }
 
+module.exports.getPosts = async (req,res) => {
+    var userid = req.body.userid;
+    try {
+        await post.getByUserId(userid, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find post"});
+            } else {
+                return res.status(200).json(results);
+            }
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: "Cannot find post"});
+    }
+}
+
 module.exports.getPost = async (req,res) => {
     let id = req.params.id;
     try {
@@ -125,7 +143,7 @@ module.exports.getPost = async (req,res) => {
                 console.log(error)
                 return res.status(500).json({error: "Cannot find post"});
             } else {
-                return res.status(200).json(results);
+                return res.status(200).json(results[0]);
             }
         })
 

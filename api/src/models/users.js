@@ -40,10 +40,8 @@ module.exports.getUserByID = async (gottenID, callback) => {
 }
 
 module.exports.updateNonSensitiveData = (userid, newName, newBio, callback) => {
-    //in profile page, show original data in form. that way, no need to wory about  updating it to be "" 
-    if (!validator.isEmail(newEmail)) return callback(null, "Email not accepted")
-    const updateProfile = "Update users set name = $1, email = $2, bio = $3 where id = $4 returning name AS newName, email AS newEmail, bio AS newBio"
-    connection.query(updateProfile, [newName, newEmail, newBio, userid])
+    const updateProfile = "Update users set name = $1, bio = $2 where id = $3 returning name AS newName, bio AS newBio"
+    connection.query(updateProfile, [newName, newBio, userid])
         .then(result => {
             console.log(result.rows[0], "in users.js")
             callback(result.rows[0], null)

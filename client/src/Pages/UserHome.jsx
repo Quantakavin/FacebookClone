@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import Post from '../Components/Post'
-import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
+import { Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
 import '../Styles/home.scss';
 import photo from '../Images/photo.png'; 
 import video from '../Images/video.png'; 
-import profilephoto from '../Images/profilephoto.png'; 
-import dots from '../Images/dots.png'; 
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
 
@@ -230,7 +228,7 @@ const UserHome = () => {
                 
                 :<></>}    
                 {posts.map(post => 
-                <Post post={post} setRerender={setRerender}></Post>
+                <Post key={post.postid} post={post} setRerender={setRerender}></Post>
                )}
             </Container>
         </div>

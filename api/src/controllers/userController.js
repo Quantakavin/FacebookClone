@@ -99,11 +99,10 @@ module.exports.retrieveUserById = async (req, res) => {
 
 module.exports.updateUser = (req, res) => {
     try {
-        var userid = req.body.userid
-        var { newName,  newBio } = req.body
-        user.updateNonSensitiveData(userid, newName,  newBio, (results, issue) => {
+        const { newName, newBio, userid } = req.body
+        user.updateNonSensitiveData(userid, newName, newBio, (results, issue) => {
             if (issue) {
-                console.log(issue +" in usercontroller")
+                console.log(issue + " in usercontroller")
                 return res.status(404).send("Some data missing")
             } else {
                 console.log(results.toString() + " in userController.js")
@@ -164,12 +163,12 @@ module.exports.updatePFP = async (req, res) => {
                 let cloudinaryurl = result.url;
                 let cloudinaryid = result.public_id
                 try {
-                    user.updatePFP(userid,cloudinaryurl, cloudinaryid, (updateRecordSuccess, updateRecordFail) => {
+                    user.updatePFP(userid, cloudinaryurl, cloudinaryid, (updateRecordSuccess, updateRecordFail) => {
                         if (updateRecordFail) {
                             console.log(updateRecordFail)
                             res.status(500).json({ message: "Error with file record updating" });
                         } else {
-                            return res.status(204).json({message: "Post Updated!"});
+                            return res.status(204).json({ message: "Post Updated!" });
                         }
                     })
                 } catch (err) {

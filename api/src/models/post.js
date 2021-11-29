@@ -98,9 +98,24 @@ module.exports.feed = async (userid, callback) => {
 }
 
 module.exports.getById = async (id, callback) => {
-    const getPostByIdQuery = `select post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post, users where users.id = $1 AND post.user_id = users.id order by  post.date DESC`;
+    const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`;
     connection.query(getPostByIdQuery, [id])
     .then(results => {
+        console.log("called")
+        console.log(results.rows)
+        callback(results.rows, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}
+
+module.exports.getByUserId = async (userid, callback) => {
+    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`;
+    connection.query(getPostByUserIdQuery, [userid])
+    .then(results => {
+        console.log("called")
         console.log(results.rows)
         callback(results.rows, null)
     })
