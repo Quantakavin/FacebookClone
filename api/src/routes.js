@@ -27,4 +27,7 @@ module.exports = router => {
     router.post('/api/createComment', commentController.createComment)
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
+
+    router.post('/api/like', authorization.verifyUser,likeController.like )
+    router.delete('/api/like', authorization.verifyUser,likeController.unlike )
 }
