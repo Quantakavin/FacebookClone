@@ -1,7 +1,20 @@
 const comment = require('../models/comment');
 
 module.exports.getAllComments = async (req, res) => {
-
+    var { userid } = req.body
+    try {
+        comment.getComments(userid, (results,err) =>{
+            if (err) {
+                console.log(err)
+                return res.status(500).json({ err });
+            } else {
+                return res.status(200).json({ results })
+            }
+        })
+    }catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "comments cannot be retrieved" })
+    }
 }
 
 module.exports.updateComment = async (req, res) => {
@@ -27,7 +40,7 @@ module.exports.createComment = async (req, res) => {
         comment.createComment(userid, postid, commentText, (results, err) => {
             if (err) {
                 console.log(err)
-                return res.status(500).json({ message:"Create comment failed in backend" });
+                return res.status(500).json({ message: "Create comment failed in backend" });
             } else {
                 return res.status(200).json({ results })
             }
