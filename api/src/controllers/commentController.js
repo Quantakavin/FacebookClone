@@ -1,20 +1,21 @@
 const comment = require('../models/comment');
 
 module.exports.getAllComments = async (req, res) => {
-    var { userid } = req.body
+    var postid = req.params.id;
     try {
-        comment.getComments(userid, (results,err) =>{
+        comment.getComments(postid, (results,err) =>{
             if (err) {
                 console.log(err)
                 return res.status(500).json({ err });
             } else {
+
                 return res.status(200).json({ results })
         
             }
         })
     }catch (error) {
         console.log(error)
-        res.status(500).json({ message: "comments cannot be retrieved" })
+        res.status(500).json({ message: "Comments cannot be retrieved" })
     }
 }
 

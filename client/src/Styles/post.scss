@@ -1,0 +1,8 @@
+.commentformbutton {
+    @media screen and (max-width: 800px) {
+        width: 100% !important;
+    }
+    @media screen and (min-width: 800px) {
+        width: 90% !important;
+    }
+}

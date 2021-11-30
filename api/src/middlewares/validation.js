@@ -86,6 +86,26 @@ validateImage: (req,res,next) => {
     }
 },
 
+validateVideo: (req,res,next) => {
+    var file = req.body.file;
+    var userid = req.body.userid;
+    
+    if (userid == null || userid == "") {
+        res.status(401).json({message: "Please login first"})
+    } else {
+        if(file == null || file==[]) {
+            res.status(400).json({message: "Please upload a file"})
+        } else {
+            console.log(file.path)
+            if (file.path.endsWith(".mp4") || file.path.endsWith(".mov")) {
+                next()
+            } else {
+                res.status(400).json({message: "Only mp4 and mov files are allowed"})
+            }
+        }
+    }
+}
+
 
 }
 
