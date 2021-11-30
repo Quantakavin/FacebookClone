@@ -111,15 +111,65 @@ const EditPost = ({match}) => {
             setImageFormLoading(false)
             setBorderColor('red')
             setErrorMsg(error.response.data.message);
-        })
+        }) 
     }
+
+    const [VideoFormLoading,setVideoFormLoading] = useState(false);
+
+        const [VideoInput, setVideoInput] = useState({
+            caption: post.caption,
+            file: ''
+          });
+        const handleVideoChange = (event) => {
+            setVideoInput({
+                ...VideoInput,
+                [event.target.name]: event.target.value
+            })
+        }
+    
+        const handleVideoUploadChange = (event) => {
+            let files = event.target.files
+            setVideoInput({
+                ...VideoInput,
+                file: files[0]
+            })
+        }
+        const createVideoPost = (event) => { 
+            event.preventDefault();
+            setVideoFormLoading(true);
+    
+            let webFormData = new FormData();
+            webFormData.append('caption', VideoInput.caption);
+            webFormData.append("file", VideoInput.file);
+    
+            axios
+            //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
+            .put(`${config.baseURL}/video/${match.params.id}`, webFormData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                }
+              })
+            .then(response => {
+                setVideoFormLoading(false)
+                console.log(response);
+                setBorderColor('transparent')
+                setErrorMsg('');
+                history.push('/userhome')
+            })
+            .catch(error => {
+                setVideoFormLoading(false)
+                setBorderColor('red')
+                setErrorMsg(error.response.data.message);
+            })
+          }
     return (
       <>
       <header>
           <TopBar />
       </header>
     <div  style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto'}}>
-      {localStorage.getItem("user_id")==post.user_id?
+      {localStorage.getItem("user_id")==post.id?
     <Container className="formcontainer shadow" style={{marginTop: 100}}>
           {post.type == "text" ? 
           <>
@@ -167,12 +217,37 @@ const EditPost = ({match}) => {
             </Form>
             </>
              :<></>}
+                  {post.type == "video" ? 
+                <>
+                <h2 style={{marginLeft: '8%',paddingBottom: 20, fontWeight: 600}}>Edit Post</h2>
+                <Form onSubmit={createVideoPost}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                    <Form.Control style={{borderColor: borderColor,width: "85%"}} name="caption" className="text-secondary" as="textarea" rows={1} placeholder="Video caption (optional)" value={VideoInput.caption} onChange={handleVideoChange}/>
+                </div>
+                </Form.Group>
+                <Form.Group controlId="formFileSm" className="mb-3">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                    <Form.Control style={{width: "85%"}} name="file" type="file" size="sm" onChange={handleVideoUploadChange} />
+                </div>
+                </Form.Group>
+                {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{errorMsg}!</p>: <></>}
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
+                {!VideoFormLoading?
+                <Button className="submitbutton"  variant="primary" type="submit" >Submit</Button>:
+                <Button className="submitbutton" variant="primary" disabled>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+            </Button>}
+            </div>
+            </Form>
+            </>
+             :<></>}
     </Container>: 
     <Container style={{marginTop: 50,display: 'flex',  justifyContent:'center', alignItems:'center'}}>
        <Alert style={{width: "80%"}} variant="danger">
         <Alert.Heading>Forbidden!</Alert.Heading>
         <p>
-          You do not have access to edit this post.
+          You do not have access to edit this post. 
         </p>
       </Alert>
     </Container>

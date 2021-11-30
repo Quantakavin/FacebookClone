@@ -1,5 +1,6 @@
 const connection = require('../config/database');
 
+
 module.exports.getComments = async (userid, callback) => {    
     let followids = [userid]
     const followQuery = "SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1";
@@ -28,7 +29,8 @@ module.exports.getComments = async (userid, callback) => {
             console.log(err)
             callback(null, err)
         })
-}
+
+
 
 module.exports.update = async (userid, commentID, newComment, callback) => {
     var updateCommentQuery = `update comment set content = $1, editdate = now() where user_id = $2 AND id = $3`

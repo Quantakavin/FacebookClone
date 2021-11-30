@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import { Dropdown, DropdownButton, Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
+import Post from '../Components/Post'
+import { Image, Spinner, Form, Button, Container, Modal } from 'react-bootstrap';
 import '../Styles/home.scss';
 import photo from '../Images/photo.png'; 
 import video from '../Images/video.png'; 
-import profilephoto from '../Images/profilephoto.png'; 
-import dots from '../Images/dots.png'; 
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
 
@@ -16,10 +15,11 @@ const UserHome = () => {
     const [posts, setPosts] = useState([]);
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
+    const [rerender, setRerender]= useState(false);
 
     useEffect(() => {
         getFeed()
-    }, [])
+    }, [rerender])
 
     const getFeed = () => {
         axios
@@ -146,21 +146,71 @@ const UserHome = () => {
             setErrorMsg(error.response.data.message);
         })
     }
-    const handleDelete = (id) => {
+
+
+    const [showVideoForm, setShowVideoForm] = useState(false);
+    const handleCloseVideoForm = () => {
+        setBorderColor('transparent')
+        setErrorMsg('');
+        setShowVideoForm(false);
+        setVideoInput({
+            ...VideoInput,
+            caption: '',
+            file: []
+
+        })
+    }
+    const handleShowVideoForm = () => setShowVideoForm(true);
+
+    const [VideoFormLoading,setVideoFormLoading] = useState(false);
+
+    const [VideoInput, setVideoInput] = useState({
+        caption: '',
+        file: ''
+      });
+    const handleVideoChange = (event) => {
+        setVideoInput({
+            ...VideoInput,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleVideoUploadChange = (event) => {
+        let files = event.target.files
+        setVideoInput({
+            ...VideoInput,
+            file: files[0]
+        })
+    }
+    const createVideoPost = (event) => { 
+        event.preventDefault();
+        setVideoFormLoading(true);
+
+        let webFormData = new FormData();
+        webFormData.append('caption', VideoInput.caption);
+        webFormData.append("file", VideoInput.file);
+
         axios
-        .delete(`${config.baseURL}/post/${id}`, {
+        .post(`${config.baseURL}/video`, webFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
-        })
+          })
         .then(response => {
+            setVideoFormLoading(false)
+            console.log(response);
+            handleCloseVideoForm()
             getFeed()
         })
         .catch(error => {
-            console.log(error);
+            setVideoFormLoading(false)
+            setBorderColor('red')
+            setErrorMsg(error.response.data.message);
         })
-      }
+    }
+
+
 
 
     return( 
@@ -209,6 +259,28 @@ const UserHome = () => {
         </Modal.Body>
         </Modal>
 
+        <Modal show={showVideoForm} onHide={handleCloseVideoForm} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center" style={{fontWeight: 600,fontSize: "1.25em"}}>Upload Video</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Form onSubmit={createVideoPost}>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <Form.Control style={{borderColor: borderColor}} name="caption" className="text-secondary" as="textarea" rows={1} placeholder="Video caption (optional)" value={ImageInput.caption} onChange={handleVideoChange}/>
+            </Form.Group>
+            <Form.Group controlId="formFileSm" className="mb-3">
+                <Form.Control name="file" type="file" size="sm" onChange={handleVideoUploadChange} />
+            </Form.Group>
+            {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: 15}}>{errorMsg}!</p>: <></>}
+            {!VideoFormLoading?
+            <Button style={{backgroundColor: "#4267B2", width: "100%"}} variant="primary" type="submit" >Submit</Button>:
+            <Button variant="primary" disabled style={{backgroundColor: "#4267B2", width: "100%"}}>
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+        </Button>}
+        </Form>
+        </Modal.Body>
+        </Modal>
+
         <div style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
             <Container className="formcontainer shadow" style={{height: "auto", marginBottom: 0, display: "flex", flexDirection: "row"}}>
             <div style={{flexGrow: 12,marginBottom: "-3%"}}>
@@ -218,7 +290,7 @@ const UserHome = () => {
             <Button onClick={handleShowImageForm} style={{border:"none", backgroundColor: "transparent"}}><Image src={photo} alt="Upload photo" height="30px" /></Button>
             </div>
             <div style={{flexShrink: 0.5,marginBottom: "-3%"}}>
-            <Button style={{border:"none", backgroundColor: "transparent"}}><Image src={video} alt="Upload video" height="30px"  /></Button>
+            <Button onClick={handleShowVideoForm} style={{border:"none", backgroundColor: "transparent"}}><Image src={video} alt="Upload video" height="30px"  /></Button>
             </div>
             </Container>
             <Container className="postscontainer">
@@ -228,45 +300,7 @@ const UserHome = () => {
                 
                 :<></>}    
                 {posts.map(post => 
-                <Container className="shadow post">
-                    <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
-                        history.push(`./profile/${post.id}`)
-                    }}>
-                    {post.picurl == null? <Image style={{marginBottom: 10,flexShrink: 0.2}} src={profilephoto} width="50px" height="50px" roundedCircle  />: <Image style={{marginBottom: 10,flexShrink: 0.2}} src={post.picurl} width="50px" height="50px" roundedCircle />}
-                    <div style={{flexGrow: 1}}>
-                        <p style={{marginLeft: 10, fontWeight: 600, textTransform: "capitalize"}}>{post.name}</p>
-                        {post.editdate == null ?
-                        <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")}</p>
-                        : <p style={{marginLeft: 10, marginTop: -15, fontSize: "0.8em", color: "#838383"}}>{post.date.substring(0, 16).replace("T", " ")} (Edited {post.editdate.substring(0, 16).replace("T", " ")})</p>
-                        }
-                    </div>
-                    </div>
-                    <hr style={{marginTop: -5, marginRight:"-2%",marginLeft:"-2%",color: "d3d3d3"}}/>
-                    {post.cloudinaryurl == null ?
-                    <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.content}</p>:
-                    <>
-                    {post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{post.caption}</p>}
-                    <Image style={{marginBottom: 15}}src={post.cloudinaryurl} fluid />
-                    </>
-                }
-                {post.id == localStorage.getItem("user_id")? 
-                    <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
-                    <DropdownButton
-                      id={`dropdown-button-drop-up`}
-                      drop={"up"}
-                      title={
-                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
-
-                          </Image>
-                      }
-                    >
-                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${post.postid}`)} }>Edit</Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(post.postid)}>Delete</Dropdown.Item>
-                    </DropdownButton>
-                    </div>
-                : <></>}
-                </Container>
+                <Post key={post.postid} post={post} setRerender={setRerender}></Post>
                )}
             </Container>
         </div>

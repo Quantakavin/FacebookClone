@@ -43,6 +43,18 @@ module.exports.uploadFile = async (file, callback) => {
 
 }
 
+module.exports.uploadVideo = async (file, callback) => {
+    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' })
+        .then((result) => {
+            //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
+            callback(result, null);
+        }).catch((error) => {
+            console.log(error)
+            callback(null, error);
+        });
+
+}
+
 module.exports.insertImage = async (userid, caption, cloudinaryurl, cloudinaryid, callback) => {
     const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, NOW() at time zone 'SGT') RETURNING id;`;
     connection.query(insertPostQuery, ["image", userid, caption, cloudinaryurl, cloudinaryid])
@@ -56,6 +68,30 @@ module.exports.insertImage = async (userid, caption, cloudinaryurl, cloudinaryid
 }
 
 module.exports.updateImage = async (postid, caption, cloudinaryurl, cloudinaryid, callback) => {
+    const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`;
+    connection.query(updatePostQuery, [caption, cloudinaryurl, cloudinaryid, postid])
+        .then(returnid => {
+            callback(returnid, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
+}
+
+module.exports.insertVideo = async (userid, caption, cloudinaryurl, cloudinaryid, callback) => {
+    const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, NOW() at time zone 'SGT') RETURNING id;`;
+    connection.query(insertPostQuery, ["video", userid, caption, cloudinaryurl, cloudinaryid])
+        .then(returnid => {
+            callback(returnid, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
+}
+
+module.exports.updateVideo = async (postid, caption, cloudinaryurl, cloudinaryid, callback) => {
     const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`;
     connection.query(updatePostQuery, [caption, cloudinaryurl, cloudinaryid, postid])
         .then(returnid => {
@@ -98,9 +134,24 @@ module.exports.feed = async (userid, callback) => {
 }
 
 module.exports.getById = async (id, callback) => {
-    const getPostByIdQuery = `select post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post, users where users.id = $1 AND post.user_id = users.id order by  post.date DESC`;
+    const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`;
     connection.query(getPostByIdQuery, [id])
     .then(results => {
+        console.log("called")
+        console.log(results.rows)
+        callback(results.rows, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}
+
+module.exports.getByUserId = async (userid, callback) => {
+    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`;
+    connection.query(getPostByUserIdQuery, [userid])
+    .then(results => {
+        console.log("called")
         console.log(results.rows)
         callback(results.rows, null)
     })
