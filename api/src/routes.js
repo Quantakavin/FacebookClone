@@ -27,10 +27,11 @@ module.exports = router => {
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
-    router.get('/api/comments/:id', commentController.getAllComments)
-    router.put('/api/updateComment', authorization.verifyUser,commentController.updateComment)
-    router.post('/api/createComment', authorization.verifyUser,commentController.createComment)
-    router.delete('/api/deleteComment', authorization.verifyUser, commentController.deleteComment)
+    router.get('/api/getComments', commentController.getAllComments)
+    router.put('/api/updateComment', commentController.updateComment)
+    router.post('/api/createComment', commentController.createComment)
+    router.delete('/api/deleteComment', commentController.deleteComment)
+    
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 

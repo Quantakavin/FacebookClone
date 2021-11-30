@@ -29,3 +29,10 @@ module.exports.unlike = async (userid, postid, callback) => {
         })
 }
 
+module.exports.getCurrentUserLikes = async (userid, postid, callback) => {
+    const getPostsLikedByCurrentUser = `SELECT post_id, count(post_id) likes FROM "public"."likes" where user_id = ($1) group by post_id`
+}
+
+module.exports.getAllPostLikes = async (callback) =>{
+    const getPostLikes = `SELECT post_id, count(post_id) likes FROM "public"."likes" group by post_id`
+}
