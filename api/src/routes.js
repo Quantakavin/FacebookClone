@@ -2,6 +2,7 @@ const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
 const friendController = require('./controllers/friendController');
 const commentController = require('./controllers/commentController');
+const likeController = require('./controllers/likeController');
 const validation = require('./middlewares/validation');
 const authorization = require('./middlewares/authorization');
 module.exports = router => {
@@ -23,9 +24,11 @@ module.exports = router => {
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
+    router.get('/api/getComments', commentController.getAllComments)
     router.put('/api/updateComment', commentController.updateComment)
     router.post('/api/createComment', commentController.createComment)
     router.delete('/api/deleteComment', commentController.deleteComment)
+    
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 

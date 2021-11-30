@@ -9,6 +9,7 @@ module.exports.getAllComments = async (req, res) => {
                 return res.status(500).json({ err });
             } else {
                 return res.status(200).json({ results })
+        
             }
         })
     }catch (error) {
