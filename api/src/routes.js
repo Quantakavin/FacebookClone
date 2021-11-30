@@ -28,11 +28,12 @@ module.exports = router => {
     router.put('/api/updateComment', commentController.updateComment)
     router.post('/api/createComment', commentController.createComment)
     router.delete('/api/deleteComment', commentController.deleteComment)
-    
+
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 
 
     router.post('/api/like', authorization.verifyUser,likeController.like )
     router.delete('/api/like', authorization.verifyUser,likeController.unlike )
+    router.get('/api/getFeedLikes', likeController.getLikesInfo)
 }
