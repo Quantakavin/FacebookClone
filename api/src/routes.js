@@ -23,7 +23,7 @@ module.exports = router => {
     router.put('/api/video/:id', authorization.verifyUser, validation.validateVideo, postController.updateVideo);
     router.post('/api/video', authorization.verifyUser, postController.createVideo);
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
-    router.get('/api/posts', authorization.verifyUser, postController.getPosts)
+    router.get('/api/posts/:userid', authorization.verifyUser, postController.getPosts)
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
@@ -31,10 +31,13 @@ module.exports = router => {
     router.put('/api/updateComment', authorization.verifyUser,commentController.updateComment)
     router.post('/api/createComment', authorization.verifyUser,commentController.createComment)
     router.delete('/api/deleteComment', authorization.verifyUser, commentController.deleteComment)
+    
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 
 
-    router.post('/api/like', authorization.verifyUser,likeController.like )
-    router.delete('/api/like', authorization.verifyUser,likeController.unlike )
+    router.post('/api/postLike', authorization.verifyUser,likeController.like )
+    router.delete('/api/deleteLike', authorization.verifyUser,likeController.unlike )
+    router.get('/api/getPostLikes', likeController.getPostLikeInfo)
+
 }

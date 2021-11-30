@@ -6,6 +6,7 @@ import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
 import Post from '../Components/Post'
+import config from '../config/config';
 //picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
 
 const Profile = ({ match }) => {
@@ -21,7 +22,7 @@ const Profile = ({ match }) => {
 
     useEffect(() => {
         getFeed()
-        //getUsersProfile()
+        getUsersProfile()
         getPageProfile()
     }, [rerender])
     const [Input, setInput] = useState({
@@ -30,8 +31,7 @@ const Profile = ({ match }) => {
     });
 
     const getFeed = () => {
-        axios
-            .get(`http://localhost:5000/api/posts`, {
+        axios.get(`${config.baseURL}/posts/${match.params.id}`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -45,9 +45,8 @@ const Profile = ({ match }) => {
             })
     }
 
-    /*
     const getUsersProfile = () => {
-        axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
+        axios.get(`${config.baseURL}/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
                 console.log("you are user " + localStorage.getItem('user_id'))
                 console.log(response.data)
@@ -61,10 +60,10 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    */
+    
 
     const getPageProfile = () => {
-        axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
+        axios.get(`${config.baseURL}/getDataOfUser/${match.params.id}`)
             .then(response => {
                 console.log("you are viewing profile of user " + match.params.id)
                 console.log(response)
@@ -104,6 +103,7 @@ const Profile = ({ match }) => {
             .then((response) => {
                 console.log(response.data)
                 history.push(`/profile/${localStorage.getItem("user_id")}`)
+                alert("profile update done. Hello "+event.target.name.value)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -130,7 +130,7 @@ const Profile = ({ match }) => {
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
         axios
-            .put('http://localhost:5000/api/updatePFP', webFormData, {
+            .put(`${config.baseURL}/updatePFP`, webFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
