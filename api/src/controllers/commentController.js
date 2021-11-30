@@ -17,10 +17,29 @@ module.exports.getAllComments = async (req, res) => {
     }
 }
 
-module.exports.updateComment = async (req, res) => {
-    var { userid, commentID, newComment } = req.body
+module.exports.getComment = async (req,res) => {
+    let id = req.params.id;
     try {
-        comment.update(userid, commentID, newComment, (results, err) => {
+        await comment.getById(id, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find comment"});
+            } else {
+                return res.status(200).json(results[0]);
+            }
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({error: "Cannot find comment"});
+    }
+}
+
+module.exports.updateComment = async (req, res) => {
+    var id = req.params.id;
+    var { userid, content} = req.body
+    try {
+        comment.update(userid, id, content, (results, err) => {
             if (err) {
                 console.log(err)
                 return res.status(500).json({ err });
@@ -35,9 +54,9 @@ module.exports.updateComment = async (req, res) => {
 }
 
 module.exports.createComment = async (req, res) => {
-    var { userid, postid, commentText } = req.body
+    var { userid, postid, content } = req.body
     try {
-        comment.createComment(userid, postid, commentText, (results, err) => {
+        comment.createComment(userid, postid, content, (results, err) => {
             if (err) {
                 console.log(err)
                 return res.status(500).json({ message: "Create comment failed in backend" });
@@ -52,7 +71,7 @@ module.exports.createComment = async (req, res) => {
 }
 
 module.exports.deleteComment = async (req, res) => {
-    var { commentid } = req.body
+    var commentid = req.params.id
     try {
         comment.deleteComment(commentid, (results, err) => {
             if (err) {

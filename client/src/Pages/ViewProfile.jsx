@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import {  Image, Spinner, Form, Button, Container, Modal, Row, Col, Alert } from 'react-bootstrap';
+import {  Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
-import Post from '../Components/Post'
+import Post from '../Components/Post';
 //picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
     const history = useHistory();
     const [posts, setPosts] = useState([]);
-    const [userProfile, setUserProfile] = useState({})
-    const [PageProfile, setPageProfile] = useState({})
+    const [userProfile, setUserProfile] = useState([])
+    const [PageProfile, setPageProfile] = useState([])
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
@@ -21,7 +21,7 @@ const Profile = ({ match }) => {
 
     useEffect(() => {
         getFeed()
-        //getUsersProfile()
+        getUsersProfile()
         getPageProfile()
     }, [rerender])
     const [Input, setInput] = useState({
@@ -31,11 +31,7 @@ const Profile = ({ match }) => {
 
     const getFeed = () => {
         axios
-            .get(`http://localhost:5000/api/posts`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
+            .get(`http://localhost:5000/api/posts/${match.params.id}`)
             .then(response => {
                 console.log(response.data)
                 setPosts(response.data)
@@ -45,7 +41,7 @@ const Profile = ({ match }) => {
             })
     }
 
-    /*
+    
     const getUsersProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
@@ -61,7 +57,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    */
+    
 
     const getPageProfile = () => {
         axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
@@ -161,7 +157,7 @@ const Profile = ({ match }) => {
                         { backgroundColor: "#fff" }
                     }>
                     <Row>
-                        <Col class="d-flex justify-content-center">
+                        <Col>
 
                             {PageProfile.picurl == null ?
                                 <Image className="shadow post" src={profilephoto} style={{

@@ -178,7 +178,7 @@ module.exports.getFeed = async (req,res) => {
 }
 
 module.exports.getPosts = async (req,res) => {
-    var userid = req.body.userid;
+    var userid = req.params.userid;
     try {
         await post.getByUserId(userid, (results, error) => {
             if(error) {

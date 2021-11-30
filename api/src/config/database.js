@@ -63,14 +63,14 @@ DROP TABLE IF EXISTS comment;
 CREATE TABLE comment (
 id SERIAL PRIMARY KEY,
 user_id INT NOT NULL REFERENCES users(id),
-post_id INT NOT NULL REFERENCES post(id),
-content VARCHAR NOT NULL,
+post_id INT NOT NULL REFERENCES post(id) ON DELETE CASCADE,
+content VARCHAR NOT NULL
 )
 
 DROP TABLE IF EXISTS likes;
 CREATE TABLE likes (
 user_id INT NOT NULL REFERENCES users(id),
-post_id INT NOT NULL REFERENCES post(id),
+post_id INT NOT NULL REFERENCES post(id) ON DELETE CASCADE,
 PRIMARY KEY(user_id, post_id)
 )
 

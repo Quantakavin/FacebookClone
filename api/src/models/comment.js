@@ -5,7 +5,6 @@ module.exports.getComments = async (postid, callback) => {
     //var getCommentsQuery = `SELECT * FROM comments WHERE comment.post_id = $1`
     connection.query(getCommentsQuery, [postid])
     .then(results => {
-        console.log(results.rows)
         callback(results.rows, null)
     })
     .catch(err => {
@@ -16,9 +15,23 @@ module.exports.getComments = async (postid, callback) => {
 
 }
 
-module.exports.update = async (userid, commentID, newComment, callback) => {
+module.exports.getById = async (id, callback) => {
+    const getCommentByIdQuery = `SELECT comment.id AS commentid, users.id, users.name, users.picurl, comment.date, comment.editdate, comment.content FROM comment INNER JOIN users ON comment.user_id = users.id WHERE comment.id =  $1`;
+    connection.query(getCommentByIdQuery, [id])
+    .then(results => {
+        console.log("called")
+        console.log(results.rows)
+        callback(results.rows, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}
+
+module.exports.update = async (userid, commentid, newComment, callback) => {
     var updateCommentQuery = `update comment set content = $1, editdate = now() where user_id = $2 AND id = $3`
-    connection.query(updateCommentQuery, [newComment, userid, commentID])
+    connection.query(updateCommentQuery, [newComment, userid, commentid])
         .then(result => {
             console.log(result)
             if (result.rowCount == 0) {

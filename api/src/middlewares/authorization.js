@@ -19,6 +19,7 @@ verifyUser: (req, res, next) => {
             })
   
       }else{
+        console.log("Header: " + req.body)
         res.status(401).send({ message: 'Please login first' });
       } 
     } 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Dropdown, DropdownButton, Image, Container, Row} from 'react-bootstrap';
+import { Form, Button, Modal, Spinner, Dropdown, DropdownButton, Image, Container, Row} from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png'; 
 import dots from '../Images/dots.png'; 
@@ -12,7 +12,9 @@ import ReactPlayer from 'react-player'
 const Post = (props) => { 
     const history = useHistory();
     const [comments, setComments] = useState([]);
-    const [showComments, setShowComments] = useState(false);
+    const [borderColor, setBorderColor]= useState('transparent');
+    const [errorMsg, setErrorMsg]= useState('');
+    const [commentsRerender, setCommentsRerender]= useState(false);
     
 
     useEffect(() => {
@@ -39,21 +41,87 @@ const Post = (props) => {
       isCancelled = true;
     });
     
-  }, [])
+  }, [commentsRerender])
 
-    
+
+
+  const [showTextForm, setShowTextForm] = useState(false);
+  const handleCloseTextForm = () => {
+      setBorderColor('transparent')
+      setErrorMsg('');
+      setShowTextForm(false);
+      setTextInput({
+          ...TextInput,
+          content: ''
+
+      })
+  } 
+  const handleShowTextForm = () => setShowTextForm(true);
+
+  const [textFormLoading,setTextFormLoading] = useState(false);
+
+  const [TextInput, setTextInput] = useState({
+      content: ''
+    });
+  const handleTextChange = (event) => {
+      setTextInput({
+          ...TextInput,
+          [event.target.name]: event.target.value
+
+      })
+  }
+  const createTextPost = (event) => { 
+      event.preventDefault();
+      setTextFormLoading(true);
+      axios
+      .post(`${config.baseURL}/createComment`, {"content": TextInput.content, "postid": props.post.postid}, { 
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+      .then(response => {
+          setTextFormLoading(false)
+          console.log(response);
+          handleCloseTextForm()
+          setCommentsRerender(prevState => !prevState)        
+      })
+      .catch(error => {
+          setTextFormLoading(false)
+          setBorderColor('red')
+          setErrorMsg(error.response.data.message);
+      })
+  }
+
+
+
+
+
     const handleDelete = (id) => {
         axios
         .delete(`${config.baseURL}/post/${id}`, {
             headers: {
-              'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
         })
         .then(response => {
-            props.setRerender(prevState => ({
-                render: !prevState.render
-              }))
+              props.setRerender(prevState => !prevState) 
+        })
+        .catch(error => {
+            console.log(error);
+        })
+      }
+
+
+
+      const handleDeleteComment = (id) => { 
+        axios
+        .delete(`${config.baseURL}/deleteComment/${id}`, { 
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+        .then(response => {
+          setCommentsRerender(prevState => !prevState)   
         })
         .catch(error => {
             console.log(error);
@@ -62,6 +130,28 @@ const Post = (props) => {
 
     return (
       <>
+        <Modal show={showTextForm} onHide={handleCloseTextForm} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center" style={{fontWeight: 600,fontSize: "1.25em"}}>Create Comment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Form onSubmit={createTextPost}>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <Form.Control style={{borderColor: borderColor}} name="content" className="text-secondary" as="textarea" rows={5} placeholder={`Whats on your mind, ${localStorage.getItem("username")}?`} value={TextInput.content} onChange={handleTextChange}/>
+            </Form.Group>
+            {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: 15}}>{errorMsg}!</p>: <></>}
+            {!textFormLoading?
+            <Button style={{backgroundColor: "#4267B2", width: "100%"}} variant="primary" type="submit" >Submit</Button>:
+            <Button variant="primary" disabled style={{backgroundColor: "#4267B2", width: "100%"}}>
+            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+        </Button>}
+        </Form>
+        </Modal.Body>
+        </Modal>
+
+
+
+        
                 <Container className="shadow post">
                     <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
                         history.push(`./profile/${props.post.id}`)
@@ -82,7 +172,7 @@ const Post = (props) => {
                     {props.post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{props.post.caption}</p>}
                     {props.post.type=="image" ?
                     <Image width="100%" style={{marginBottom: 15}}src={props.post.cloudinaryurl} fluid />:
-                    <ReactPlayer width="100%" controls="true" style={{marginBottom: 15}} url={props.post.cloudinaryurl}/>
+                    <ReactPlayer width="100%" controls={true} style={{marginBottom: 15}} url={props.post.cloudinaryurl}/>
                     }
                     </>
                 }
@@ -106,14 +196,12 @@ const Post = (props) => {
                 <Row style={{ backgroundColor: "#e3e8ee"}}>
                 {localStorage.getItem("user_id")==null ? <></> :
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                <button  style={{width: "100%", backgroundColor: "white", borderRadius: "20px", textAlign: "left", marginBottom: 15,marginTop: 15}} type="button" className="btn text-secondary">Type a comment...</button>
+                <button onClick={handleShowTextForm} style={{width: "100%", backgroundColor: "white", borderRadius: "20px", textAlign: "left", marginBottom: 15,marginTop: 15}} type="button" className="btn text-secondary">Type a comment...</button>
                 </div>
                 }
-                {showComments ? 
-                <button onClick={() => setShowComments(showComments => !showComments)}>Hide all comments</button> :
-                <button onClick={() => setShowComments(showComments => !showComments)}>Show all comments</button>
-                }
+
                 {comments.map(comment =>  
+                <>
                   <Container key={comment.commentid} style={{paddingLeft: 25, paddingRight: 25, paddingTop: 10, paddingBottom: 10}}>
                     <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
                       history.push(`./profile/${comment.id}`)
@@ -128,7 +216,15 @@ const Post = (props) => {
                   </div>
                   </div>
                 <p>{comment.content}</p>
+                {localStorage.getItem("user_id")==comment.id ? 
+                <div>
+                  <button className="commentedit" onClick={() => {history.push(`/editcomment/${comment.commentid}`)} }>Edit</button>
+                  <button className="commentdelete" onClick={() => handleDeleteComment(comment.commentid)}>Delete</button>
+                </div>
+                
+                :<></>}
                 </Container> 
+                </>
 
                )}
 
