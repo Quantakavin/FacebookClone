@@ -70,7 +70,7 @@ module.exports.unlike = async (req, res) => {
 
 module.exports.getPostLikeInfo = async (req, res) => {
     try {
-        let { userid, postid } = req.body;
+        let { userid, postid } = req.params;
         await like.getPostLikesInfo(userid, postid, (results, error) => {
             if (error) {
                 res.status(500).json({ message: "Internal Server Error!" });

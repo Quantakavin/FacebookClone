@@ -91,12 +91,11 @@ module.exports.unlike = async (userid, postid, callback) => {
 //         })
 // }
 
-module.exports.getInfo = async (userid, callback) => {
-    let followids = [userid]
-    let feedIDs = []
-    let totalResult = {
-        likedPosts:[],
-        feedLikes:[]
+module.exports.getPostLikesInfo = async (userid, postid, callback) => {
+    var finalResult= {
+        postid,
+        likes: 0,
+        likedByCurrentUser: false
     }
     var getLikeCount = `SELECT post_id, count(post_id) likes FROM "public"."likes" where post_id = $1 group by post_id`
     connection.query(getLikeCount, [postid])
