@@ -8,7 +8,9 @@ module.exports.getAllComments = async (req, res) => {
                 console.log(err)
                 return res.status(500).json({ err });
             } else {
-                return res.status(200).json(results) 
+
+                return res.status(200).json(results)
+        
             }
         })
     }catch (error) {
@@ -17,7 +19,7 @@ module.exports.getAllComments = async (req, res) => {
     }
 }
 
-module.exports.getComment = async (req,res) => {
+module.exports.getComment = async (req,res) => { 
     let id = req.params.id;
     try {
         await comment.getById(id, (results, error) => {
@@ -44,7 +46,7 @@ module.exports.updateComment = async (req, res) => {
                 console.log(err)
                 return res.status(500).json({ err });
             } else {
-                return res.status(200).json({ results })
+                return res.status(200).json(results)
             }
         })
     } catch (error) {
@@ -61,7 +63,7 @@ module.exports.createComment = async (req, res) => {
                 console.log(err)
                 return res.status(500).json({ message: "Create comment failed in backend" });
             } else {
-                return res.status(200).json({ results })
+                return res.status(200).json(results)
             }
         })
     } catch (error) {
@@ -78,7 +80,7 @@ module.exports.deleteComment = async (req, res) => {
                 console.log(err)
                 return res.status(500).json({ message:"delete comment failed in backend" });
             } else {
-                return res.status(204).json({ results })
+                return res.status(204).json(results)
             }
         })
 

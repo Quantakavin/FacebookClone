@@ -6,7 +6,7 @@ import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
 import Post from '../Components/Post';
-//picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
+import config from '../config/config';
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
@@ -31,7 +31,7 @@ const Profile = ({ match }) => {
 
     const getFeed = () => {
         axios
-            .get(`http://localhost:5000/api/posts/${match.params.id}`)
+            .get(`${config.baseURL}/posts/${match.params.id}`)
             .then(response => {
                 console.log(response.data)
                 setPosts(response.data)
@@ -43,7 +43,7 @@ const Profile = ({ match }) => {
 
     
     const getUsersProfile = () => {
-        axios.get(`http://localhost:5000/api/getDataOfUser/${localStorage.getItem('user_id')}`)
+        axios.get(`${config.baseURL}/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
                 console.log("you are user " + localStorage.getItem('user_id'))
                 console.log(response.data)
@@ -60,7 +60,7 @@ const Profile = ({ match }) => {
     
 
     const getPageProfile = () => {
-        axios.get(`http://localhost:5000/api/getDataOfUser/${match.params.id}`)
+        axios.get(`${config.baseURL}/getDataOfUser/${match.params.id}`)
             .then(response => {
                 console.log("you are viewing profile of user " + match.params.id)
                 console.log(response)
@@ -87,7 +87,7 @@ const Profile = ({ match }) => {
 
         event.preventDefault();
         axios
-            .put(`http://localhost:5000/api/updateUser`,
+            .put(`${config.baseURL}/updateUser`,
                 {
                     "newName": event.target.name.value,
                     "newBio": event.target.bio.value,
@@ -126,7 +126,7 @@ const Profile = ({ match }) => {
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
         axios
-            .put('http://localhost:5000/api/updatePFP', webFormData, {
+            .put(`${config.baseURL}/updatePFP`, webFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

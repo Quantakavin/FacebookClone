@@ -3,5 +3,5 @@ dotenv.config();
 
 module.exports = {
     database: process.env.DBNAME,
-    JWTKey: process.env.JWTKEY
+    JWTKey: "k4wqvRueEtzmH7cJ4YXstj8LnLHcoVBc"
 };

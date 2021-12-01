@@ -12,8 +12,9 @@ module.exports.getComments = async (postid, callback) => {
         console.log(err)
         callback(null, err)
     })
-
 }
+
+
 
 module.exports.getById = async (id, callback) => {
     const getCommentByIdQuery = `SELECT comment.id AS commentid, users.id, users.name, users.picurl, comment.date, comment.editdate, comment.content FROM comment INNER JOIN users ON comment.user_id = users.id WHERE comment.id =  $1`;

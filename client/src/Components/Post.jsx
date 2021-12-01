@@ -201,7 +201,6 @@ const Post = (props) => {
                 }
 
                 {comments.map(comment =>  
-                <>
                   <Container key={comment.commentid} style={{paddingLeft: 25, paddingRight: 25, paddingTop: 10, paddingBottom: 10}}>
                     <div style={{display: "flex", flexDirection: "row", padding: 5}} onClick = {()=>{
                       history.push(`./profile/${comment.id}`)
@@ -224,7 +223,6 @@ const Post = (props) => {
                 
                 :<></>}
                 </Container> 
-                </>
 
                )}
 
