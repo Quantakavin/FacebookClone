@@ -213,7 +213,7 @@ const Post = (props) => {
         }
       }
 
-
+ 
       const handleDeleteComment = (id) => { 
         axios
         .delete(`${config.baseURL}/deleteComment/${id}`, { 
