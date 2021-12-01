@@ -8,7 +8,6 @@ const authorization = require('./middlewares/authorization');
 module.exports = router => {
     router.post('/api/login', validation.validateLogin, userController.loginUser);
     router.post('/api/register', validation.validateRegister, userController.registerUser);
-    // router.get('/api/getUser/:gottenID ', userController.retrieveUserById) //this one dont work and idk why, it is replaced with next line
     router.get('/api/getDataOfUser/:gottenID',userController.retrieveUserById)
     router.put('/api/updateUser/', authorization.verifyUser, userController.updateUser)
     router.put('/api/updatePassword', authorization.verifyUser,userController.updateUserPassword)
@@ -23,17 +22,15 @@ module.exports = router => {
     router.put('/api/video/:id', authorization.verifyUser, validation.validateVideo, postController.updateVideo);
     router.post('/api/video', authorization.verifyUser, postController.createVideo);
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
-    router.get('/api/posts/:userid', authorization.verifyUser, postController.getPosts)
+    router.get('/api/posts/:userid', postController.getPosts)
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
-
     router.get('/api/comments/:id', commentController.getAllComments)
-    router.put('/api/updateComment', authorization.verifyUser,commentController.updateComment)
+    router.get('/api/comment/:id', authorization.verifyUser,commentController.getComment)
+    router.put('/api/updateComment/:id', authorization.verifyUser,commentController.updateComment)
     router.post('/api/createComment', authorization.verifyUser,commentController.createComment)
-    router.delete('/api/deleteComment', authorization.verifyUser, commentController.deleteComment)
-    
-
+    router.delete('/api/deleteComment/:id', authorization.verifyUser, commentController.deleteComment)
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 

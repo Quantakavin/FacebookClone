@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import {  Image, Spinner, Form, Button, Container, Modal, Row, Col, Alert } from 'react-bootstrap';
+import {  Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
-import Post from '../Components/Post'
+import Post from '../Components/Post';
 import config from '../config/config';
-//picture upload does not work yet and I need the form to have default value of userprofile.name and userprofile.bio
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
     const history = useHistory();
     const [posts, setPosts] = useState([]);
-    const [userProfile, setUserProfile] = useState({})
-    const [PageProfile, setPageProfile] = useState({})
+    const [userProfile, setUserProfile] = useState([])
+    const [PageProfile, setPageProfile] = useState([])
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
@@ -45,6 +44,7 @@ const Profile = ({ match }) => {
             })
     }
 
+    
     const getUsersProfile = () => {
         axios.get(`${config.baseURL}/getDataOfUser/${localStorage.getItem('user_id')}`)
             .then(response => {
@@ -84,13 +84,9 @@ const Profile = ({ match }) => {
     }
 
     const handleSubmit = (event) => {
-        // console.log(event.target.name.value)
-        // console.log(event.target.bio.value)
-        // console.log(localStorage.getItem("user_id"))
-
         event.preventDefault();
         axios
-            .put(`http://localhost:5000/api/updateUser`,
+            .put(`${config.baseURL}/updateUser`,
                 {
                     "newName": event.target.name.value,
                     "newBio": event.target.bio.value,
@@ -102,8 +98,8 @@ const Profile = ({ match }) => {
             })
             .then((response) => {
                 console.log(response.data)
-                history.push(`/profile/${localStorage.getItem("user_id")}`)
-                alert("profile update done. Hello "+event.target.name.value)
+                setRerender(rerender => !rerender)
+                //history.push(`/profile/${localStorage.getItem("user_id")}`)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -139,7 +135,7 @@ const Profile = ({ match }) => {
             .then(response => {
                 setImageFormLoading(false)
                 console.log(response);
-                getFeed()
+                setRerender(rerender => !rerender)
             })
             .catch(error => {
                 setImageFormLoading(false)
@@ -161,7 +157,7 @@ const Profile = ({ match }) => {
                         { backgroundColor: "#fff" }
                     }>
                     <Row>
-                        <Col class="d-flex justify-content-center">
+                        <Col>
 
                             {PageProfile.picurl == null ?
                                 <Image className="shadow post" src={profilephoto} style={{

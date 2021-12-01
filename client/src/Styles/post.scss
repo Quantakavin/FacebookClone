@@ -6,3 +6,27 @@
         width: 90% !important;
     }
 }
+
+.commentedit {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    color: #4267B2;
+    font-weight: 600;
+    margin-top: -10px;
+}
+
+.commentdelete {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    color: #dc3545;
+    font-weight: 600;
+    margin-top: -10px;
+}

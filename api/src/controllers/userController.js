@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var validator = require('validator');
 var post = require('../models/post')
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
 module.exports.loginUser = async (req, res) => {
     let { email, password } = req.body;
     try {
@@ -56,6 +59,25 @@ module.exports.registerUser = async (req, res) => {
                             res.status(500).json({ message: "Internal Server Error!" });
                         }
                     } else {
+                        const msg = {
+                            from: 'spfacebookclone@gmail.com',
+                            template_id: process.env.SENDGRID_CONFIRMATION ,
+                             personalizations: [{
+                                to: email,
+                                dynamic_template_data: {
+                                    "firstName": name
+                                },
+                            }],
+                            
+                          };
+                        sgMail
+                        .send(msg)
+                        .then(() => {
+                            console.log('Confirmation Email Sent')
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        })
                         let data = {
                             id: results.rows[0].id,
                             name: name,

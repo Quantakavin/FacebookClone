@@ -18,6 +18,7 @@ import EditNote from './Pages/EditNote';
 import UserHome from './Pages/UserHome';
 import Users from './Pages/Users';
 import EditPost from './Pages/EditPost';
+import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile'
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
@@ -48,6 +49,7 @@ ReactDOM.render(
                 <Route path="/users" render={(props) => <Users {...props} />} />
                 <Route path="/userhome" render={(props) => <UserHome {...props} />} />
                 <Route path="/editpost/:id" render={(props) => <EditPost {...props} />} />
+                <Route path="/editcomment/:id" render={(props) => <EditComment {...props} />} />
                 <Route path="/">
                     <Home></Home>
                 </Route>

@@ -1,40 +1,38 @@
 const connection = require('../config/database');
 
+module.exports.getComments = async (postid, callback) => {
+    var getCommentsQuery = `SELECT comment.id AS commentid, users.id, users.name, users.picurl, comment.date, comment.editdate, comment.content FROM comment INNER JOIN users ON comment.user_id = users.id WHERE comment.post_id = $1 ORDER BY comment.date DESC`;
+    //var getCommentsQuery = `SELECT * FROM comments WHERE comment.post_id = $1`
+    connection.query(getCommentsQuery, [postid])
+    .then(results => {
+        callback(results.rows, null)
+    })
+    .catch(err => {
+        console.log("eror valled here")
+        console.log(err)
+        callback(null, err)
+    })
+}
 
-module.exports.getComments = async (userid, callback) => {    
-    let followids = [userid]
-    const followQuery = "SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1";
-    connection.query(followQuery, [userid])
-        .then(result => {
-            for (let i = 0; i < result.rows.length; i++) {
-                if (result.rows[i].user_id != userid) {
-                    followids.push(result.rows[i].user_id)
-                }
-                if (result.rows[i].friend_id != userid) {
-                    followids.push(result.rows[i].friend_id)
-                }
-            }
-            console.log(followids)
-            const feedQuery = `SELECT c.*, u.name FROM comment c, users u where c.user_id = u.id and user_id = any($1)`;
-            connection.query(feedQuery, [followids])
-                .then(results2 => {
-                    callback(results2.rows, null)
-                })
-                .catch(error => {
-                    console.log(error)
-                    callback(null, error)
-                })
-        })
-        .catch(err => {
-            console.log(err)
-            callback(null, err)
-        })
 
-    }
 
-module.exports.update = async (userid, commentID, newComment, callback) => {
+module.exports.getById = async (id, callback) => {
+    const getCommentByIdQuery = `SELECT comment.id AS commentid, users.id, users.name, users.picurl, comment.date, comment.editdate, comment.content FROM comment INNER JOIN users ON comment.user_id = users.id WHERE comment.id =  $1`;
+    connection.query(getCommentByIdQuery, [id])
+    .then(results => {
+        console.log("called")
+        console.log(results.rows)
+        callback(results.rows, null)
+    })
+    .catch(err => {
+        console.log(err)
+        callback(null, err)
+    })
+}
+
+module.exports.update = async (userid, commentid, newComment, callback) => {
     var updateCommentQuery = `update comment set content = $1, editdate = now() where user_id = $2 AND id = $3`
-    connection.query(updateCommentQuery, [newComment, userid, commentID])
+    connection.query(updateCommentQuery, [newComment, userid, commentid])
         .then(result => {
             console.log(result)
             if (result.rowCount == 0) {
