@@ -30,7 +30,7 @@ module.exports.getComments = async (userid, callback) => {
             callback(null, err)
         })
 
-
+    }
 
 module.exports.update = async (userid, commentID, newComment, callback) => {
     var updateCommentQuery = `update comment set content = $1, editdate = now() where user_id = $2 AND id = $3`

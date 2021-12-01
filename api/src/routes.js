@@ -38,8 +38,7 @@ module.exports = router => {
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 
 
-    router.post('/api/postLike', authorization.verifyUser,likeController.like )
-    router.delete('/api/deleteLike', authorization.verifyUser,likeController.unlike )
-    router.get('/api/getPostLikes', likeController.getPostLikeInfo)
-
+    router.post('/api/like', authorization.verifyUser,likeController.like )
+    router.delete('/api/like', authorization.verifyUser,likeController.unlike )
+    router.get('/api/getFeedLikes', likeController.getPostLikeInfo)
 }

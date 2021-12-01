@@ -40,6 +40,7 @@ import config from '../config/config';
             history.push("/userhome");
         })
         .catch(error => {
+          console.log(error)
             setLoading(false)
             setAlertContent(error.response.data.message);  
             setAlert(true);
