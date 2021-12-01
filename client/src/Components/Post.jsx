@@ -93,6 +93,12 @@ const Post = (props) => {
     
   }, [commentsRerender])
 
+  const [showError, setShowError] = useState(false);
+
+  const handleCloseError = () => {
+    setShowError(false);
+  }
+
 
 
   const [showTextForm, setShowTextForm] = useState(false);
@@ -162,42 +168,49 @@ const Post = (props) => {
       }
 
       const likepost = () => {
-        axios
-        .post(`${config.baseURL}/like`, {"postid": props.post.postid}, { 
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}` 
-            }
+        if (localStorage.getItem('token') != null) {
+          axios
+          .post(`${config.baseURL}/like`, {"postid": props.post.postid}, { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+            })
+          .then(response => {
+              console.log(response);
+              setLiked(true);
+              setCommentsRerender(rerender => !rerender);    
           })
-        .then(response => {
-            console.log(response);
-            setLiked(true);
-            setCommentsRerender(rerender => !rerender);    
-        })
-        .catch(error => {
-            console.log(error);
-            setErrorMsg(error.response.data.message);
-        })
+          .catch(error => {
+              console.log(error);
+              setErrorMsg(error.response.data.message);
+          })
+        } else {
+          setShowError(true);
+        }
+
 
       }
 
       const unlikepost = () => {
-        axios
-        .delete(`${config.baseURL}/like/${props.post.postid}`, { 
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}` 
-            }
+        if (localStorage.getItem('token') != null) {
+          axios
+          .delete(`${config.baseURL}/like/${props.post.postid}`, { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+            })
+          .then(response => {
+              console.log(response);
+              setLiked(false);
+              setCommentsRerender(rerender => !rerender);    
           })
-        .then(response => {
-            console.log(response);
-            setLiked(false);
-            setCommentsRerender(rerender => !rerender);    
-        })
-        .catch(error => {
-            console.log(error);
-            setErrorMsg(error.response.data.message);
-        })
-
-
+          .catch(error => {
+              console.log(error);
+              setErrorMsg(error.response.data.message);
+          })
+        } else {
+          setShowError(true);
+        }
       }
 
 
@@ -236,6 +249,17 @@ const Post = (props) => {
         </Form>
         </Modal.Body>
         </Modal>
+
+
+        <Modal show={showError} onHide={handleCloseError} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center" style={{fontWeight: 600,fontSize: "1.25em"}}>No Access!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Please login first!</p>
+        </Modal.Body>
+        </Modal>
+
 
 
 
@@ -300,7 +324,6 @@ const Post = (props) => {
                       drop={"up"}
                       title={
                           <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
-
                           </Image>
                       }
                     >
