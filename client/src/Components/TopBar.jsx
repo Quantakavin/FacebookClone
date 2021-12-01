@@ -14,7 +14,7 @@ const TopBar = () => {
   if (localStorage.getItem("token") == null) {
     return (
       <>
-        <Navbar variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
+        <Navbar fixed="top" variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
           <Container fluid>
             <Navbar.Brand className="brand" href="/home"><img
               alt=""
@@ -45,7 +45,7 @@ const TopBar = () => {
     return (
       <>
 
-        <Navbar variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
+        <Navbar fixed="top" variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
           <Container fluid>
             <Navbar.Brand className="brand" href="/userhome"><img
               alt=""
