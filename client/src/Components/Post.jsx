@@ -83,7 +83,7 @@ const Post = (props) => {
           setTextFormLoading(false)
           console.log(response);
           handleCloseTextForm()
-          setCommentsRerender(prevState => !prevState)        
+          setCommentsRerender(rerender => !rerender)        
       })
       .catch(error => {
           setTextFormLoading(false)
@@ -104,7 +104,7 @@ const Post = (props) => {
             }
         })
         .then(response => {
-              props.setRerender(prevState => !prevState) 
+              props.setRerender(rerender => !rerender) 
         })
         .catch(error => {
             console.log(error);
@@ -121,7 +121,7 @@ const Post = (props) => {
           }
         })
         .then(response => {
-          setCommentsRerender(prevState => !prevState)   
+          setCommentsRerender(rerender => !rerender)   
         })
         .catch(error => {
             console.log(error);

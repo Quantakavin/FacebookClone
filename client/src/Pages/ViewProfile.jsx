@@ -81,10 +81,6 @@ const Profile = ({ match }) => {
     }
 
     const handleSubmit = (event) => {
-        // console.log(event.target.name.value)
-        // console.log(event.target.bio.value)
-        // console.log(localStorage.getItem("user_id"))
-
         event.preventDefault();
         axios
             .put(`${config.baseURL}/updateUser`,
@@ -99,7 +95,8 @@ const Profile = ({ match }) => {
             })
             .then((response) => {
                 console.log(response.data)
-                history.push(`/profile/${localStorage.getItem("user_id")}`)
+                setRerender(rerender => !rerender)
+                //history.push(`/profile/${localStorage.getItem("user_id")}`)
             })
             .catch(error => {
                 setAlertContent(error.response.data.message);
@@ -135,7 +132,7 @@ const Profile = ({ match }) => {
             .then(response => {
                 setImageFormLoading(false)
                 console.log(response);
-                getFeed()
+                setRerender(rerender => !rerender)
             })
             .catch(error => {
                 setImageFormLoading(false)
