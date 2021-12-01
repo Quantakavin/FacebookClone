@@ -36,6 +36,7 @@ module.exports = router => {
 
 
     router.post('/api/like', authorization.verifyUser,likeController.like )
-    router.delete('/api/like', authorization.verifyUser,likeController.unlike )
-    router.get('/api/getFeedLikes', likeController.getLikesInfo)
+    router.delete('/api/like/:id', authorization.verifyUser,likeController.unlike )
+    router.get('/api/userlike/:id', authorization.verifyUser,likeController.checklike )
+    router.get('/api/getFeedLikes/:id', likeController.getLikesInfo)
 }

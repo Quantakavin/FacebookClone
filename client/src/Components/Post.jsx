@@ -3,11 +3,12 @@ import axios from 'axios';
 import { Form, Button, Modal, Spinner, Dropdown, DropdownButton, Image, Container, Row} from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png'; 
+import likephoto from '../Images/like.png'; 
 import dots from '../Images/dots.png'; 
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
 import '../Styles/post.scss';
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player';
 
 const Post = (props) => { 
     const history = useHistory();
@@ -15,10 +16,57 @@ const Post = (props) => {
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
     const [commentsRerender, setCommentsRerender]= useState(false);
-    
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+
+    const getLikeCount = () => {
+      axios
+      .get(`${config.baseURL}/getFeedLikes/${props.post.postid}`)
+      .then(response => {
+          setLikeCount(response.data.rowCount)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+    }
+
+    const getLiked = () => {
+      if (localStorage.getItem('token') != null) {
+      axios
+      .get(`${config.baseURL}/userlike/${props.post.postid}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+      })
+      .then(response => {
+          setLiked(response.data.exists)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      }
+    }
+
+    const getComments = () => {
+      axios
+      .get(`${config.baseURL}/comments/${props.post.postid}`)
+      .then(response => {
+          setComments(response.data)
+      })
+      .catch(error => {
+        console.log(error);
+    })
+  }
 
     useEffect(() => {
       let isCancelled = false; 
+      if (!isCancelled) {
+        getComments()
+        getLikeCount()
+        getLiked()
+      }
+      /*
       axios
       .get(`${config.baseURL}/comments/${props.post.postid}`, {
           headers: {
@@ -35,7 +83,9 @@ const Post = (props) => {
         if (!isCancelled) {
         console.log(error);
         }
+        
     })
+    */
     
     return (() => {
       isCancelled = true;
@@ -111,6 +161,44 @@ const Post = (props) => {
         })
       }
 
+      const likepost = () => {
+        axios
+        .post(`${config.baseURL}/like`, {"postid": props.post.postid}, { 
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+          })
+        .then(response => {
+            console.log(response);
+            setLiked(true);
+            setCommentsRerender(rerender => !rerender);    
+        })
+        .catch(error => {
+            console.log(error);
+            setErrorMsg(error.response.data.message);
+        })
+
+      }
+
+      const unlikepost = () => {
+        axios
+        .delete(`${config.baseURL}/like/${props.post.postid}`, { 
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+          })
+        .then(response => {
+            console.log(response);
+            setLiked(false);
+            setCommentsRerender(rerender => !rerender);    
+        })
+        .catch(error => {
+            console.log(error);
+            setErrorMsg(error.response.data.message);
+        })
+
+
+      }
 
 
       const handleDeleteComment = (id) => { 
@@ -176,8 +264,37 @@ const Post = (props) => {
                     }
                     </>
                 }
+                
                 {props.post.id == localStorage.getItem("user_id")? 
-                    <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
+                <div style={{display: "flex",flexDirection: "row", justifyItems: "center"}}>
+                  {liked == true ? <Button onClick={() => unlikepost()} style={{justifySelf:"start",marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
+                <Button onClick={() => likepost()} style={{justifySelf:"start",marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>}
+                    <DropdownButton
+                      id={`dropdown-button-drop-up`}
+                      drop={"up"}
+                      style={{justifySelf:"end", marginLeft: "auto"}}
+                      title={
+                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
+
+                          </Image>
+                      }
+                    >
+                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${props.post.postid}`)} }>Edit</Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(props.post.postid)}>Delete</Dropdown.Item>
+                    </DropdownButton>
+                    </div>
+                    
+                : <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-start"}}>{liked == true ? <Button onClick={() => unlikepost()} style={{marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
+                <Button onClick={() => likepost()} style={{marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>}</div>}
+
+                {/*localStorage.getItem("user_id")==null?<></>:
+                [
+                  (liked == true ? <Button onClick={() => unlikepost()} style={{backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
+                <Button onClick={() => likepost()} style={{justifyContent: "flex-start", backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>),
+                
+                (props.post.id == localStorage.getItem("user_id")? 
+                <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
                     <DropdownButton
                       id={`dropdown-button-drop-up`}
                       drop={"up"}
@@ -192,7 +309,11 @@ const Post = (props) => {
                       <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(props.post.postid)}>Delete</Dropdown.Item>
                     </DropdownButton>
                     </div>
-                : <></>}
+                    
+                : <></>)]
+                    */}
+                
+
                 <Row style={{ backgroundColor: "#e3e8ee"}}>
                 {localStorage.getItem("user_id")==null ? <></> :
                 <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
