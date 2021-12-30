@@ -43,7 +43,7 @@ const Profile = ({ match }) => {
 
     
     const getUsersProfile = () => {
-        axios.get(`${config.baseURL}/getDataOfUser/${localStorage.getItem('user_id')}`)
+        axios.get(`${config.baseURL}/UserData/${localStorage.getItem('user_id')}`)
             .then(response => {
                 console.log("you are user " + localStorage.getItem('user_id'))
                 console.log(response.data)
@@ -60,7 +60,7 @@ const Profile = ({ match }) => {
     
 
     const getPageProfile = () => {
-        axios.get(`${config.baseURL}/getDataOfUser/${match.params.id}`)
+        axios.get(`${config.baseURL}/UserData/${match.params.id}`)
             .then(response => {
                 console.log("you are viewing profile of user " + match.params.id)
                 console.log(response)
@@ -83,7 +83,7 @@ const Profile = ({ match }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .put(`${config.baseURL}/updateUser`,
+            .put(`${config.baseURL}/User`,
                 {
                     "newName": event.target.name.value,
                     "newBio": event.target.bio.value,
@@ -123,7 +123,7 @@ const Profile = ({ match }) => {
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
         axios
-            .put(`${config.baseURL}/updatePFP`, webFormData, {
+            .put(`${config.baseURL}/PFP`, webFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

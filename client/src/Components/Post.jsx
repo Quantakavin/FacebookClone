@@ -21,7 +21,7 @@ const Post = (props) => {
 
     const getLikeCount = () => {
       axios
-      .get(`${config.baseURL}/getFeedLikes/${props.post.postid}`)
+      .get(`${config.baseURL}/FeedLikes/${props.post.postid}`)
       .then(response => {
           setLikeCount(response.data.rowCount)
       })
@@ -130,7 +130,7 @@ const Post = (props) => {
       event.preventDefault();
       setTextFormLoading(true);
       axios
-      .post(`${config.baseURL}/createComment`, {"content": TextInput.content, "postid": props.post.postid}, { 
+      .post(`${config.baseURL}/comment`, {"content": TextInput.content, "postid": props.post.postid}, { 
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
@@ -216,7 +216,7 @@ const Post = (props) => {
  
       const handleDeleteComment = (id) => { 
         axios
-        .delete(`${config.baseURL}/deleteComment/${id}`, { 
+        .delete(`${config.baseURL}/comment/${id}`, { 
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
