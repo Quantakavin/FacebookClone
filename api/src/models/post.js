@@ -1,9 +1,10 @@
 const connection = require('../config/database');
+const config = require('../config/config');
 var cloudinary = require('cloudinary').v2;
 cloudinary.config({
-    cloud_name: 'db9b4ixhd',
-    api_key: '217122897999788',
-    api_secret: 'YMrgc-rB2Rhbeqk8_3kip_9rkhc'
+    cloud_name: config.cloudinaryname,
+    api_key: config.cloudinarykey,
+    api_secret: config.cloudinarysecret
 });
 
 module.exports.insertText = async (userid, content, callback) => {

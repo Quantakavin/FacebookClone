@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import config from '../config/config';
 import '../Styles/post.scss';
 import ReactPlayer from 'react-player';
+import DOMPurify from 'dompurify';
 
 const Post = (props) => { 
     const history = useHistory();
@@ -18,6 +19,12 @@ const Post = (props) => {
     const [commentsRerender, setCommentsRerender]= useState(false);
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+
+    const createMarkup = (html) => {
+      return  {
+        __html: DOMPurify.sanitize(html)
+      }
+    }
 
     const getLikeCount = () => {
       axios
@@ -279,7 +286,7 @@ const Post = (props) => {
                     </div>
                     <hr style={{marginTop: -5, marginRight:"-2%",marginLeft:"-2%",color: "d3d3d3"}}/>
                     {props.post.cloudinaryurl == null ?
-                    <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{props.post.content}</p>:
+                    <p style={{marginLeft: "1%", fontSize: "1.15em"}} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p>:
                     <>
                     {props.post.caption == null? <></>: <p style={{marginLeft: "1%", fontSize: "1.15em"}}>{props.post.caption}</p>}
                     {props.post.type=="image" ?
