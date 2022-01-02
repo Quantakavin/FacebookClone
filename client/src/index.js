@@ -7,9 +7,8 @@ import {
     Switch,
     Route
 } from "react-router-dom";
-
+import {  QueryClient, QueryClientProvider } from 'react-query';
 import Login from './Pages/Login';
-import UserHome2 from './Pages/UserHome2';
 import Home from './Pages/Home';
 import Register from './Pages/Register';
 import UserHome from './Pages/UserHome';
@@ -19,16 +18,14 @@ import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { QueryClient, QueryClientProvider } from 'react-query';
 const dotenv = require('dotenv');
 dotenv.config();
 
 
-
 const queryClient = new QueryClient()
 
-
 ReactDOM.render(
+    <QueryClientProvider client={queryClient}>
         <Router>
             <Switch>
                 <Route path="/login">
@@ -45,7 +42,6 @@ ReactDOM.render(
 
                 <Route path="/users" render={(props) => <Users {...props} />} />
                 <Route path="/userhome" render={(props) => <UserHome {...props} />} />
-                <Route path="/userhome2" render={(props) => <UserHome2 {...props} />} />
                 <Route path="/editpost/:id" render={(props) => <EditPost {...props} />} />
                 <Route path="/editcomment/:id" render={(props) => <EditComment {...props} />} />
                 <Route path="/conversations" render={(props) => <Conversations {...props} />} />
@@ -54,6 +50,7 @@ ReactDOM.render(
                 </Route>
             </Switch>
         </Router>
+    </QueryClientProvider>
     ,
     document.getElementById('root')
 );
