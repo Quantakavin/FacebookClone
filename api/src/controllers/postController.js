@@ -20,13 +20,26 @@ module.exports.updateText = async (req, res) => {
     try {
         let postid = req.params.id;
         let {userid, content} = req.body;
-        await post.updateText(postid, content, (results, error) => {
-            if (error) {
-                res.status(500).json({message: "Internal Server Error!"});
+
+        await post.getById(postid, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find post"});
             } else {
-                return res.status(204).json({message: "Post Updated!"});
+                if (results[0].id == userid) {
+                    post.updateText(postid, content, (results2, error) => {
+                        if (error) {
+                            res.status(500).json({message: "Internal Server Error!"});
+                        } else {
+                            return res.status(204).json({message: "Post Updated!"});
+                        }
+                    })  
+                } else {
+                    return res.status(402).json({"message":"You do not have access"});
+                }
+ 
             }
-        })  
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "Internal Server Error!"});
@@ -68,29 +81,41 @@ module.exports.updatePhoto = async (req,res) => {
     let postid = req.params.id;
     let {userid, caption, file} = req.body;
     try {
-        await post.uploadFile(file, async function(result, posterror) {
-            if(posterror) {
-                console.log(posterror)
-                res.status(500).json({ message: "Error with file submission" });
+
+        await post.getById(postid, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find post"});
             } else {
-                let cloudinaryurl = result.url;
-                let cloudinaryid = result.public_id
-                try {
-                    await post.updateImage(postid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
-                        if (issue) {
-                            console.log(issue)
+                if (results[0].id == userid) {
+                    post.uploadFile(file, async function(result, posterror) {
+                        if(posterror) {
+                            console.log(posterror)
                             res.status(500).json({ message: "Error with file submission" });
                         } else {
-                            return res.status(204).json({message: "Post Updated!"});
+                            let cloudinaryurl = result.url;
+                            let cloudinaryid = result.public_id
+                            try {
+                                await post.updateImage(postid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
+                                    if (issue) {
+                                        console.log(issue)
+                                        res.status(500).json({ message: "Error with file submission" });
+                                    } else {
+                                        return res.status(204).json({message: "Post Updated!"});
+                                    }
+                                })
+                            } catch (err) {
+                                console.log(err)
+                                res.status(500).json({ message: "Error with file submission" });
+                            }
                         }
-                    })
-                } catch (err) {
-                    console.log(err)
-                    res.status(500).json({ message: "Error with file submission" });
+                    }) 
+                } else {
+                    return res.status(402).json({"message":"You do not have access"});
                 }
+ 
             }
-        }) 
-
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "Internal Server Error!"});
@@ -132,29 +157,41 @@ module.exports.updateVideo = async (req,res) => {
     let postid = req.params.id;
     let {userid, caption, file} = req.body;
     try {
-        await post.uploadVideo(file, async function(result, posterror) {
-            if(posterror) {
-                console.log(posterror)
-                res.status(500).json({ message: "Error with file submission" });
+
+        await post.getById(postid, (results, error) => {
+            if(error) {
+                console.log(error)
+                return res.status(500).json({error: "Cannot find post"});
             } else {
-                let cloudinaryurl = result.url;
-                let cloudinaryid = result.public_id
-                try {
-                    await post.updateVideo(postid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
-                        if (issue) {
-                            console.log(issue)
+                if (results[0].id == userid) {
+                    post.uploadVideo(file, async function(result, posterror) {
+                        if(posterror) {
+                            console.log(posterror)
                             res.status(500).json({ message: "Error with file submission" });
                         } else {
-                            return res.status(204).json({message: "Post Updated!"});
+                            let cloudinaryurl = result.url;
+                            let cloudinaryid = result.public_id
+                            try {
+                                await post.updateVideo(postid, caption, cloudinaryurl, cloudinaryid, (returnresults, issue) => {
+                                    if (issue) {
+                                        console.log(issue)
+                                        res.status(500).json({ message: "Error with file submission" });
+                                    } else {
+                                        return res.status(204).json({message: "Post Updated!"});
+                                    }
+                                })
+                            } catch (err) {
+                                console.log(err)
+                                res.status(500).json({ message: "Error with file submission" });
+                            }
                         }
-                    })
-                } catch (err) {
-                    console.log(err)
-                    res.status(500).json({ message: "Error with file submission" });
+                    }) 
+                } else {
+                    return res.status(402).json({"message":"You do not have access"});
                 }
+ 
             }
-        }) 
-
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: "Internal Server Error!"});
@@ -214,16 +251,29 @@ module.exports.getPost = async (req,res) => {
 }
 module.exports.deletePost = async (req,res) => {
     let id = req.params.id;
+    let userid = req.body.userid;
     try {
-        await post.delete(id, (results, error) => {
+
+        await post.getById(id, (results, error) => {
             if(error) {
                 console.log(error)
                 return res.status(500).json({error: "Cannot find post"});
             } else {
-                return res.status(204).json({message:"Post deleted successfully"});
+                if (results[0].id == userid) {
+                    post.delete(id, (results, error) => {
+                        if(error) {
+                            console.log(error)
+                            return res.status(500).json({error: "Cannot find post"});
+                        } else {
+                            return res.status(204).json({message:"Post deleted successfully"});
+                        }
+                    })
+                } else {
+                    return res.status(402).json({"message":"You do not have access"});
+                }
+ 
             }
         })
-
     } catch (error) {
         console.log(error)
         return res.status(500).json({error: "Cannot find post"});

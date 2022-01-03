@@ -4,8 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var validator = require('validator');
 var post = require('../models/post')
-const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const sgMail = require('@sendgrid/mail');
+const { sendgridkey } = require('../config/config');
+sgMail.setApiKey(config.sendgridkey)
 
 module.exports.loginUser = async (req, res) => {
     let { email, password } = req.body;
@@ -61,7 +62,7 @@ module.exports.registerUser = async (req, res) => {
                     } else {
                         const msg = {
                             from: 'spfacebookclone@gmail.com',
-                            template_id: process.env.SENDGRID_CONFIRMATION ,
+                            template_id: config.sendgridwelcome ,
                              personalizations: [{
                                 to: email,
                                 dynamic_template_data: {

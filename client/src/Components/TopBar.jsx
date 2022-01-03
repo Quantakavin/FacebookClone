@@ -72,6 +72,7 @@ const TopBar = () => {
                 navbarScroll
               >
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
+                <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">
                   <NavDropdown.Item 
                   onClick={() => {
