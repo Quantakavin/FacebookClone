@@ -2,6 +2,7 @@ const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
 const friendController = require('./controllers/friendController');
 const commentController = require('./controllers/commentController');
+const searchController = require('./controllers/searchController');
 const likeController = require('./controllers/likeController');
 const validation = require('./middlewares/validation');
 const authorization = require('./middlewares/authorization');
@@ -40,4 +41,6 @@ module.exports = router => {
     router.delete('/api/like/:id', authorization.verifyUser,likeController.unlike )
     router.get('/api/userlike/:id', authorization.verifyUser,likeController.checklike )
     router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
+
+    router.get('/api/searchUser',searchController.searchUser )
 }
