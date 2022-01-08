@@ -11,6 +11,7 @@ import config from '../config/config';
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
     const history = useHistory();
+    const [privacy, setPrivacy] = useState('Private')
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState([])
     const [PageProfile, setPageProfile] = useState([])
@@ -156,12 +157,12 @@ const Profile = ({ match }) => {
                     <Row>
                         <Col>
 
-                            {PageProfile.picurl == null ?
+                            {PageProfile.picurl == null ? // If no profile pic 
                                 <Image className="shadow post" src={profilephoto} style={{
                                     width: '120px',
                                     height: '120px'
                                 }} roundedCircle></Image>
-                                :
+                                : // else use the user's profile pic 
                                 <Image className="shadow post" src={PageProfile.picurl} style={{
                                     width: '120px',
                                     height: '120px'
@@ -183,7 +184,6 @@ const Profile = ({ match }) => {
                                         </Form>
                                     </div> : ""
                             }
-
 
                         </Col>
                         <Col>
@@ -225,7 +225,7 @@ const Profile = ({ match }) => {
 
 
                 </Container>
-
+                {getUsersProfile.privacy === false ? 
                 <Container className="postscontainer">
                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
                     {posts.length == 0 ?
@@ -234,7 +234,10 @@ const Profile = ({ match }) => {
                     {posts.map(post =>
                     <Post key={post.postid} post={post} setRerender={setRerender}></Post>
                     )}
-                </Container>
+                </Container> : 
+                <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                }
+                
             </div>
         </>
     )
