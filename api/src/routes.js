@@ -13,6 +13,7 @@ module.exports = router => {
     router.put('/api/Password', authorization.verifyUser,userController.updateUserPassword)
     router.put('/api/PFP', authorization.verifyUser,validation.validateImage, userController.updatePFP)
     router.get('/api/users', authorization.verifyUser, userController.allUsers)
+    router.get('/api/privacy', userController.privacyStatus)
 
     router.post('/api/text', authorization.verifyUser, validation.validateText, postController.createText);
     router.post('/api/photo', authorization.verifyUser, validation.validateImage, postController.createPhoto);
