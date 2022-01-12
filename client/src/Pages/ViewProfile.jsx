@@ -11,7 +11,7 @@ import config from '../config/config';
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
     const history = useHistory();
-    const [privacy, setPrivacy] = useState('Private')
+    const [friendship, setFriendship] = useState([])
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState([])
     const [PageProfile, setPageProfile] = useState([])
@@ -19,11 +19,13 @@ const Profile = ({ match }) => {
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
     const [rerender, setRerender]= useState(false);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         getFeed()
         getUsersProfile()
         getPageProfile()
+        getFriendship()
     }, [rerender])
     const [Input, setInput] = useState({
         name: '',
@@ -42,6 +44,20 @@ const Profile = ({ match }) => {
             })
     }
 
+    const getFriendship = () => {
+        axios
+            .get(`${config.baseURL}/friendship`, {
+                    userid: localStorage.getItem('user_id'),
+                    friendid: match.params.id
+            })
+            .then(response => {
+                console.log(response.data)
+                setFriendship(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
     
     const getUsersProfile = () => {
         axios.get(`${config.baseURL}/UserData/${localStorage.getItem('user_id')}`)
@@ -143,6 +159,23 @@ const Profile = ({ match }) => {
     }
 
 
+    const getUsers = () => {
+        axios
+        .get(`${config.baseURL}/users`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+        .then(response => {
+          console.log('promise fulfilled')
+          setUsers(response.data)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        
+      }
+
 
     return (
         <>
@@ -225,7 +258,26 @@ const Profile = ({ match }) => {
 
 
                 </Container>
-                {PageProfile.privacy === true ? 
+
+                {/* {users.map(user => 
+                     {user.friended? 
+                        <Container className="postscontainer">
+                            <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
+                            {posts.length == 0 ?
+                                <p style={{ color: "#838383" }}>No content to display</p>
+                                : <></>}
+                            {posts.map(post =>
+                            <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
+                            )}
+                        </Container> 
+                        :
+                        <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                       
+                    }
+
+               )} */}
+
+                {PageProfile.privacy === true && friendship.length == 0? 
                 <div><h1>This account is private. Follow this account to view their post.</h1></div>
                 :
                 <Container className="postscontainer">
