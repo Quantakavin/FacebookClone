@@ -191,7 +191,7 @@ const Profile = ({ match }) => {
                                 <Container>
                                     <Form onSubmit={handleSubmit}>
                                         <Form.Group className="mb-3" controlId="formBasicEmail" onChange={handleChange}>
-                                            <Form.Label>Name</Form.Label>
+                                            <Form.Label>Name </Form.Label>
                                             <Form.Control type="text" name="name" onChange={handleChange} value={Input.name} />
                                         </Form.Group>
 
@@ -225,17 +225,19 @@ const Profile = ({ match }) => {
 
 
                 </Container>
-                {getUsersProfile.privacy === false ? 
+                {PageProfile.privacy === true ? 
+                <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                :
                 <Container className="postscontainer">
                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
                     {posts.length == 0 ?
                         <p style={{ color: "#838383" }}>No content to display</p>
                         : <></>}
                     {posts.map(post =>
-                    <Post key={post.postid} post={post} setRerender={setRerender}></Post>
+                    <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
                     )}
-                </Container> : 
-                <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                </Container> 
+                
                 }
                 
             </div>
