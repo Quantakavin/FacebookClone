@@ -25,3 +25,16 @@ module.exports.delete = async (userid, friendid, callback) => {
             callback(null, err)
         })
 }
+
+module.exports.get = async (userid, friendid, callback) => {
+    const sql = "SELECT * FROM friendship WHERE (user_id = $1 AND friend_id=$2) OR (user_id = $2 AND friend_id=$1)"
+    connection.query(sql , [userid, friendid])
+        .then(result => {
+            console.log(result)
+            callback(result, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
+}

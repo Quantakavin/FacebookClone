@@ -205,3 +205,21 @@ module.exports.updatePFP = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error!" });
     }
 }
+
+
+module.exports.privacyStatus = async (req,res) => {
+    try {
+        var userid = req.body.userid;
+        await user.getPrivacy(userid, (results, err) => {
+            if (err) {
+                return res.status(500).json({ message: "Cannot retrieve user privacy" });
+            } else {
+                return res.status(200).json(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Internal Server Error!" });
+    }
+}
+

@@ -2,10 +2,19 @@ import { Navbar, Nav, Container, Form, FormControl, Button, NavDropdown } from '
 import facebookicon from '../Images/facebookicon.png';
 import '../Styles/nav.scss';
 import { useHistory } from "react-router-dom";
+import Search from "./SearchBar.jsx"
 //import profilephoto from '../Images/profilephoto.png';
 
 const TopBar = () => {
   const history = useHistory();
+
+  const data = [
+    { name: "Hello" },
+    { name: "adsf" },
+    { name: "Heasdfllo" },
+    { name: "asdffsadf" },
+    { name: "Hk;kello" },
+  ]
 
   const logout = () => {
     localStorage.clear();
@@ -64,6 +73,7 @@ const TopBar = () => {
               />
               <Button style={{ backgroundColor: "white", border: "solid 1px #28a745", color: "#28a745" }}>Search</Button>
             </Form>
+            <Search placeholder={"Search"} data={data} />
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
               <Nav
@@ -74,18 +84,18 @@ const TopBar = () => {
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">
-                  <NavDropdown.Item 
-                  onClick={() => {
-                    if (localStorage.getItem("user_id") != null) {
-                      history.push(`/profile/${localStorage.getItem("user_id")}`)
-                    } 
-                  }}
-                  
+                  <NavDropdown.Item
+                    onClick={() => {
+                      if (localStorage.getItem("user_id") != null) {
+                        history.push(`/profile/${localStorage.getItem("user_id")}`)
+                      }
+                    }}
+
                   >Profile</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={() => logout()}>
                     Logout
-          </NavDropdown.Item>
+                  </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>
