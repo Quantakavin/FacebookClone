@@ -46,11 +46,12 @@ const Profile = ({ match }) => {
 
     const getFriendship = () => {
         axios
-            .get(`${config.baseURL}/friendship`, {
+            .post(`${config.baseURL}/friendship`, {
                     userid: localStorage.getItem('user_id'),
                     friendid: match.params.id
             })
             .then(response => {
+                console.log("friend")
                 console.log(response.data)
                 setFriendship(response.data)
             })
@@ -278,7 +279,8 @@ const Profile = ({ match }) => {
                )} */}
 
                 {PageProfile.privacy === true && friendship.length == 0? 
-                <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                
+                <div><h1>This account is private. Follow this account to view their post. {alert(friendship)}</h1></div>
                 :
                 <Container className="postscontainer">
                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
