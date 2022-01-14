@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Form, FormControl, Button } from 'react-bootstrap';
+import { Form, FormControl, Button, Row} from 'react-bootstrap';
 import '../Styles/search.css';
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 import config from '../config/config';
+
 
 
 
@@ -43,8 +44,9 @@ const Search = () => {
           <div className="dataResult">
             {filteredData.map((searchedWord => {
               return (
-                <div>{searchedWord.name}</div>
-
+                <a href={"/profile/" + searchedWord.id}>
+                <div className="dataItem">{searchedWord.name}</div>
+                </a>
               );
             }))}
           </div>
@@ -52,6 +54,7 @@ const Search = () => {
         )}
       </div>
     </>
+    
   )
 }
 
