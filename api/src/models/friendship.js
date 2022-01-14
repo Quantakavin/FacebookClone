@@ -38,3 +38,17 @@ module.exports.get = async (userid, friendid, callback) => {
             callback(null, err)
         })
 }
+
+
+module.exports.put = async (userid, friendid, callback) => {
+    const sql = "UPDATE friendship SET status = $1 where (user_id = $2 AND friend_id=$1)"
+    connection.query(sql , [userid, friendid])
+        .then(result => {
+            console.log(result)
+            callback(result, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
+}
