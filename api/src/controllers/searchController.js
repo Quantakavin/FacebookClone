@@ -2,7 +2,8 @@ const search = require('../models/search');
 
 module.exports.searchUser = async (req, res) => {
     try {
-        let {username} = req.body;
+        let {username} = req.params;
+        console.log("username is " + username)
         await search.search(username, (results, error) => {
             if (error) {
                 console.log(error);
