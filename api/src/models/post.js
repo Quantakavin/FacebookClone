@@ -33,7 +33,7 @@ module.exports.updateText = async (postid, content, callback) => {
 
 
 module.exports.uploadFile = async (file, callback) => {
-    cloudinary.uploader.upload(file.path, { upload_preset: 'image_upload' , quality : "auto"})
+    cloudinary.uploader.upload(file.path, { upload_preset: 'image_upload' , quality : "60"})
         .then((result) => {
             //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
             callback(result, null);
@@ -45,7 +45,7 @@ module.exports.uploadFile = async (file, callback) => {
 }
 
 module.exports.uploadVideo = async (file, callback) => {
-    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' })
+    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' , quality : "60"})
         .then((result) => {
             //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
             callback(result, null);

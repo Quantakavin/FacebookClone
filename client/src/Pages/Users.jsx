@@ -85,8 +85,8 @@ const Users = () => {
                      <Card.Title style={{textTransform: "capitalize"}}>{user.name}</Card.Title>
                      </Card.Body>
 
-                     {user.friended? <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }>Unfriend</Button>:
-                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => friend(user.id)}>Add Friend</Button>
+                     {user.requested? <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }>Unfriend</Button>:
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => friend(user.id)}>Request Friend</Button>
                     }
 
                  </Card>
