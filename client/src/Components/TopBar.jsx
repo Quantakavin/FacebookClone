@@ -2,19 +2,12 @@ import { Navbar, Nav, Container, Form, FormControl, Button, NavDropdown } from '
 import facebookicon from '../Images/facebookicon.png';
 import '../Styles/nav.scss';
 import { useHistory } from "react-router-dom";
-import Search from "./SearchBar.jsx"
+//import Search from "./SearchBar.jsx"
+import Search from "./Search.jsx"
 //import profilephoto from '../Images/profilephoto.png';
 
 const TopBar = () => {
   const history = useHistory();
-
-  const data = [
-    { name: "Hello" },
-    { name: "adsf" },
-    { name: "Heasdfllo" },
-    { name: "asdffsadf" },
-    { name: "Hk;kello" },
-  ]
 
   const logout = () => {
     localStorage.clear();
@@ -64,16 +57,7 @@ const TopBar = () => {
               className="d-inline-block align-top"
               style={{ marginRight: 10 }}
             />{' '}Facebook</Navbar.Brand>
-            <Form className="d-flex searchform">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button style={{ backgroundColor: "white", border: "solid 1px #28a745", color: "#28a745" }}>Search</Button>
-            </Form>
-            <Search placeholder={"Search"} data={data} />
+            <Search/>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
               <Nav
