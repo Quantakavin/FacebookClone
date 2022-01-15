@@ -43,5 +43,5 @@ module.exports = router => {
     router.get('/api/userlike/:id', authorization.verifyUser,likeController.checklike )
     router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
 
-    router.get('/api/searchUser/:username',searchController.searchUser )
+    router.get('/api/searchUser',searchController.searchUser )
 }
