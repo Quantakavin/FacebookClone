@@ -90,10 +90,11 @@ module.exports.uploadMediaToCloudinary = async (files, callback) => {
 }
 
 module.exports.insertMedia = async (userid, caption, files, callback) => {
-    const insertPostQuery = `INSERT INTO postv2 (user_id, caption, media,  date) VALUES ($1, $2, true, NOW() at time zone 'SGT') RETURNING id;`;
+    const insertPostQuery = `INSERT INTO post (id, user_id, caption, media,  date) VALUES (300, $1, $2, true, NOW() at time zone 'SGT') RETURNING id;`;
     var mediaID = []
     try {
         var returnid = await connection.query(insertPostQuery, [userid, caption])
+        console.log("returnid is the following")
         console.log(returnid)
             const insertMediaQuery = 'insert into media (post_id, cloudinaryurl, cloudinaryid, type) values ($1,$2,$3,$4) returning id'
             for (var i = 0; i < files.length; i++) {
