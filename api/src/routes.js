@@ -9,14 +9,14 @@ const authorization = require('./middlewares/authorization');
 module.exports = router => {
     router.post('/api/login', validation.validateLogin, userController.loginUser);
     router.post('/api/register', validation.validateRegister, userController.registerUser);
-    router.get('/api/UserData/:gottenID',userController.retrieveUserById)
+    router.get('/api/UserData/:gottenID', userController.retrieveUserById)
     router.put('/api/User/', authorization.verifyUser, userController.updateUser)
-    router.put('/api/Password', authorization.verifyUser,userController.updateUserPassword)
-    router.put('/api/PFP', authorization.verifyUser,validation.validateImage, userController.updatePFP)
+    router.put('/api/Password', authorization.verifyUser, userController.updateUserPassword)
+    router.put('/api/PFP', authorization.verifyUser, validation.validateImage, userController.updatePFP)
     router.get('/api/users', authorization.verifyUser, userController.allUsers)
     router.get('/api/privacy', userController.privacyStatus)
 
-    router.post('/api/text', authorization.verifyUser, validation.validateText, postController.createText);
+    router.post('/api/text', /*authorization.verifyUser, validation.validateText,*/ postController.createText);
     router.post('/api/photo', authorization.verifyUser, validation.validateImage, postController.createPhoto);
     router.post('/api/video', authorization.verifyUser, validation.validateVideo, postController.createVideo);
     router.put('/api/text/:id', authorization.verifyUser, validation.validateText, postController.updateText);
@@ -26,22 +26,24 @@ module.exports = router => {
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
     router.get('/api/posts/:userid', postController.getPosts)
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
+    router.get('/api/getMedia/:id',/* authorization.verifyUser, */postController.getPostMedia)
+    /*post media route*/router.post('/api/postMedia', /*authorization.verifyUser,*/ validation.validateAllMedia,postController.uploadPostWithMedia)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
     router.get('/api/comments/:id', commentController.getAllComments)
-    router.get('/api/comment/:id', authorization.verifyUser,commentController.getComment)
-    router.put('/api/comment/:id', authorization.verifyUser,commentController.updateComment)
-    router.post('/api/comment', authorization.verifyUser,commentController.createComment)
+    router.get('/api/comment/:id', authorization.verifyUser, commentController.getComment)
+    router.put('/api/comment/:id', authorization.verifyUser, commentController.updateComment)
+    router.post('/api/comment', authorization.verifyUser, commentController.createComment)
     router.delete('/api/comment/:id', authorization.verifyUser, commentController.deleteComment)
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
     router.post('/api/friendship', friendController.checkFriendship);
 
 
-    router.post('/api/like', authorization.verifyUser,likeController.like )
-    router.delete('/api/like/:id', authorization.verifyUser,likeController.unlike )
-    router.get('/api/userlike/:id', authorization.verifyUser,likeController.checklike )
+    router.post('/api/like', authorization.verifyUser, likeController.like)
+    router.delete('/api/like/:id', authorization.verifyUser, likeController.unlike)
+    router.get('/api/userlike/:id', authorization.verifyUser, likeController.checklike)
     router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
 
-    router.get('/api/searchUser',searchController.searchUser )
+    router.get('/api/searchUser', searchController.searchUser)
 }

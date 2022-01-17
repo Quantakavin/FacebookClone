@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import {  Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
@@ -18,7 +18,7 @@ const Profile = ({ match }) => {
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
-    const [rerender, setRerender]= useState(false);
+    const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -33,11 +33,11 @@ const Profile = ({ match }) => {
     });
 
     const getFeed = () => {
-        axios.get(`${config.baseURL}/posts/${match.params.id}`,{
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
+        axios.get(`${config.baseURL}/posts/${match.params.id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then(response => {
                 console.log(response.data)
                 setPosts(response.data)
@@ -50,8 +50,8 @@ const Profile = ({ match }) => {
     const getFriendship = () => {
         axios
             .post(`${config.baseURL}/friendship`, {
-                    userid: localStorage.getItem('user_id'),
-                    friendid: match.params.id
+                userid: localStorage.getItem('user_id'),
+                friendid: match.params.id
             })
             .then(response => {
                 console.log("friend")
@@ -62,7 +62,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    
+
     const getUsersProfile = () => {
         axios.get(`${config.baseURL}/UserData/${localStorage.getItem('user_id')}`)
             .then(response => {
@@ -78,7 +78,7 @@ const Profile = ({ match }) => {
                 console.log(error);
             })
     }
-    
+
 
     const getPageProfile = () => {
         axios.get(`${config.baseURL}/UserData/${match.params.id}`)
@@ -116,6 +116,7 @@ const Profile = ({ match }) => {
             })
             .then((response) => {
                 console.log(response.data)
+                localStorage.setItem('username', event.target.name.value);
                 setRerender(rerender => !rerender)
                 //history.push(`/profile/${localStorage.getItem("user_id")}`)
             })
@@ -165,20 +166,20 @@ const Profile = ({ match }) => {
 
     const getUsers = () => {
         axios
-        .get(`${config.baseURL}/users`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
-          }
-        })
-        .then(response => {
-          console.log('promise fulfilled')
-          setUsers(response.data)
-        })
-        .catch(error => {
-          console.log(error);
-        })
-        
-      }
+            .get(`${config.baseURL}/users`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                console.log('promise fulfilled')
+                setUsers(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+    }
 
 
     return (
@@ -259,44 +260,7 @@ const Profile = ({ match }) => {
                             }
                         </Col>
                     </Row>
-
-
-                </Container>
-
-                {/* {users.map(user => 
-                     {user.friended? 
-                        <Container className="postscontainer">
-                            <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
-                            {posts.length == 0 ?
-                                <p style={{ color: "#838383" }}>No content to display</p>
-                                : <></>}
-                            {posts.map(post =>
-                            <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
-                            )}
-                        </Container> 
-                        :
-                        <div><h1>This account is private. Follow this account to view their post.</h1></div>
-                       
-                    }
-
-               )} */}
-
-                {PageProfile.privacy === true && friendship.length == 0? 
-                
-                <div><h1>This account is private. Follow this account to view their post. {alert(friendship)}</h1></div>
-                :
-                <Container className="postscontainer">
-                    <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
-                    {posts.length == 0 ?
-                        <p style={{ color: "#838383" }}>No content to display</p>
-                        : <></>}
-                    {posts.map(post =>
-                    <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
-                    )}
-                </Container> 
-                
-                }
-                
+                </Container>                
             </div>
         </>
     )

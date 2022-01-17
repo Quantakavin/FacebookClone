@@ -11,6 +11,7 @@ module.exports.insertText = async (userid, content, callback) => {
     const insertPostQuery = `INSERT INTO post (type, user_id, content, date) VALUES ($1, $2, $3, NOW() at time zone 'SGT') RETURNING id;`;
     connection.query(insertPostQuery, ["text", userid, content])
         .then(returnid => {
+            console.log(returnid)
             callback(returnid, null)
         })
         .catch(err => {
@@ -45,7 +46,7 @@ module.exports.uploadFile = async (file, callback) => {
 }
 
 module.exports.uploadVideo = async (file, callback) => {
-    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' })
+    cloudinary.uploader.upload(file.path, { resource_type: "video", chunk_size: 5000000, upload_preset: 'image_upload' })
         .then((result) => {
             //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
             callback(result, null);
@@ -54,6 +55,64 @@ module.exports.uploadVideo = async (file, callback) => {
             callback(null, error);
         });
 
+}
+
+module.exports.uploadMediaToCloudinary = async (files, callback) => {
+    var cloudinaryResults = []
+    for (var i = 0; i < files.length; i++) {
+        if (files[i].path.endsWith(".png") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".gif") || files[i].path.endsWith(".PNG") || files[i].path.endsWith(".JPG") || files[i].path.endsWith(".JPEG") || files[i].path.endsWith(".GIF")) {
+            try {
+                var result = await cloudinary.uploader.upload(files[i].path, { upload_preset: 'image_upload' })
+                console.log("url: ", result.url, " id : ", result.public_id)
+                console.log(`post.js line 67 image upload. the list of files (version: ${i+1}) uploaded is --> `)
+                //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
+                cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "image" })
+                console.log(cloudinaryResults)
+            } catch (error) {
+                console.log(error)
+                return callback(null, error);
+            }
+        } else {
+            try {
+                var result = await cloudinary.uploader.upload(files[i].path, { resource_type: "video", chunk_size: 5000000, upload_preset: 'image_upload' })
+                console.log("url: ", result.url, " id : ", result.public_id)
+                console.log(`post.js line 78 video upload. the list of files (version: ${i}) uploaded is --> `)
+                //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
+                cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "image" })
+                console.log(cloudinaryResults)
+            } catch (error) {
+                console.log(error)
+                return callback(null, error);
+            }
+        }
+    }
+    return callback(cloudinaryResults, null)
+}
+
+module.exports.insertMedia = async (userid, caption, files, callback) => {
+    const insertPostQuery = `INSERT INTO postv2 (user_id, caption, media,  date) VALUES ($1, $2, true, NOW() at time zone 'SGT') RETURNING id;`;
+    var mediaID = []
+    try {
+        var returnid = await connection.query(insertPostQuery, [userid, caption])
+        console.log(returnid)
+            const insertMediaQuery = 'insert into media (post_id, cloudinaryurl, cloudinaryid, type) values ($1,$2,$3,$4) returning id'
+            for (var i = 0; i < files.length; i++) {
+                try {
+                    var InsertMediaResult = await connection.query(insertMediaQuery, [returnid.rows[0].id, files[i].cloudinaryurl, files[i].cloudinaryid, files[0].type])
+                    mediaID.push(InsertMediaResult.rows[0].id)
+                    console.log(InsertMediaResult.rows[0].id)
+                } catch (err) {
+                    console.log('media insert fail')
+                    console.log(err)
+                    return callback(null, err)
+                }
+            }
+            callback({ mediaID, "message": "media insert into DB worked" }, null)
+    } catch (err) {
+        console.log("error w sql insert into post table")
+        console.log(err)
+        callback(null, err)
+    }      
 }
 
 module.exports.insertImage = async (userid, caption, cloudinaryurl, cloudinaryid, callback) => {
@@ -118,7 +177,7 @@ module.exports.feed = async (userid, callback) => {
                 }
             }
             console.log(followids)
-            const feedQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE users.id = ANY ($1) ORDER BY post.date DESC`;
+            const feedQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl, post.media FROM post INNER JOIN users ON post.user_id = users.id WHERE users.id = ANY ($1) ORDER BY post.date DESC`;
             connection.query(feedQuery, [followids])
                 .then(results2 => {
                     callback(results2.rows, null)
@@ -137,38 +196,58 @@ module.exports.feed = async (userid, callback) => {
 module.exports.getById = async (id, callback) => {
     const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`;
     connection.query(getPostByIdQuery, [id])
-    .then(results => {
-        console.log("called")
-        console.log(results.rows)
-        callback(results.rows, null)
-    })
-    .catch(err => {
-        console.log(err)
-        callback(null, err)
-    })
+        .then(results => {
+            console.log("called")
+            console.log(results.rows)
+            callback(results.rows, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
+}
+
+module.exports.getMediaById = async (id, callback) => {
+    // const getPostByIdQuery = `SELECT * FROM  media where post_id > 4`;
+    // connection.query(getPostByIdQuery)
+    const getPostByIdQuery = `SELECT cloudinaryurl, cloudinaryid, type, post_id as postid FROM  media where post_id = $1`;
+    connection.query(getPostByIdQuery, [id])
+        .then(results => {
+            console.log("media could be gotten from db for post " + id)
+            if (id == 185) {
+                console.log(results)
+            }
+            console.log(results.rows)
+            callback(results.rows, null)
+        })
+        .catch(err => {
+            console.log(err)
+            console.log("media could not be gotten from db")
+            callback(null, err)
+        })
 }
 
 module.exports.getByUserId = async (userid, callback) => {
     const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`;
     connection.query(getPostByUserIdQuery, [userid])
-    .then(results => {
-        console.log("called")
-        console.log(results.rows)
-        callback(results.rows, null)
-    })
-    .catch(err => {
-        console.log(err)
-        callback(null, err)
-    })
+        .then(results => {
+            console.log("called")
+            console.log(results.rows)
+            callback(results.rows, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
 }
-module.exports.delete =  async (id,callback) => {
+module.exports.delete = async (id, callback) => {
     const deletePostQuery = `DELETE FROM post Where id = $1`;
     connection.query(deletePostQuery, [id])
-    .then(returnid => {
-        callback(returnid, null)
-    })
-    .catch(err => {
-        console.log(err)
-        callback(null, err)
-    })
+        .then(returnid => {
+            callback(returnid, null)
+        })
+        .catch(err => {
+            console.log(err)
+            callback(null, err)
+        })
 } 
