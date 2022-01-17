@@ -1,8 +1,8 @@
 const connection = require('../config/database'); 
 
-module.exports.insert = async ( userid, friendid, callback) => {
-    const sql = "INSERT INTO friendship (user_id, friend_id) VALUES ($1, $2) "
-    connection.query(sql , [userid, friendid])
+module.exports.insert = async ( userid, friendid, status, callback) => {
+    const sql = "INSERT INTO friendship (user_id, friend_id, status) VALUES ($1, $2, $3) "
+    connection.query(sql , [userid, friendid, status])
         .then(results => {
             callback(results, null)
         })
@@ -39,9 +39,8 @@ module.exports.get = async (userid, friendid, callback) => {
         })
 }
 
-
-module.exports.put = async (userid, friendid, callback) => {
-    const sql = "UPDATE friendship SET status = $1 where (user_id = $2 AND friend_id=$1)"
+module.exports.get = async (userid, friendid, callback) => {
+    const sql = "SELECT * FROM friendship WHERE (user_id = $1 AND status = requested )"
     connection.query(sql , [userid, friendid])
         .then(result => {
             console.log(result)
@@ -52,3 +51,5 @@ module.exports.put = async (userid, friendid, callback) => {
             callback(null, err)
         })
 }
+
+

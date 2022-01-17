@@ -2,8 +2,9 @@ const friendship = require("../models/friendship");
 
 module.exports.friend = async (req, res) => {
   try {
+    let status = "requested";
     let { userid, friendid } = req.body;
-    await friendship.insert(userid, friendid, (results, error) => {
+    await friendship.insert(userid, friendid, status, (results, error) => {
       if (error) {
         res.status(500).json({ message: "Internal Server Error!" });
       } else {
@@ -48,3 +49,7 @@ module.exports.checkFriendship = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error!" });
   }
 };
+
+
+
+

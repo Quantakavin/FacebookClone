@@ -7,7 +7,7 @@ import profilephoto from '../Images/profilephoto.png';
 import config from '../config/config';
 
 
-const Users = () => {
+const Requests = () => {
     const [users, setUsers] = useState([]);
     const history = useHistory();
     useEffect(() => {
@@ -98,9 +98,9 @@ const Users = () => {
                </Container>
           </div>
           </>
-      )
+      ) 
 
     
 }
 
-export default Users;
+export default Requests;

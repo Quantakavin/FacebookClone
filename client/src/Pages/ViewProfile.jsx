@@ -260,27 +260,10 @@ const Profile = ({ match }) => {
 
                 </Container>
 
-                {/* {users.map(user => 
-                     {user.friended? 
-                        <Container className="postscontainer">
-                            <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
-                            {posts.length == 0 ?
-                                <p style={{ color: "#838383" }}>No content to display</p>
-                                : <></>}
-                            {posts.map(post =>
-                            <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
-                            )}
-                        </Container> 
-                        :
-                        <div><h1>This account is private. Follow this account to view their post.</h1></div>
-                       
-                    }
-
-               )} */}
 
                 {PageProfile.privacy === true && friendship.length == 0? 
                 
-                <div><h1>This account is private. Follow this account to view their post. {alert(friendship)}</h1></div>
+                <div><h1>This account is private. Follow this account to view their post.</h1></div>
                 :
                 <Container className="postscontainer">
                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
