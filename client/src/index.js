@@ -18,6 +18,7 @@ import EditPost from './Pages/EditPost';
 import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
+import PageNotFound from './Pages/404';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
 dotenv.config();
@@ -29,6 +30,7 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
         <Router>
             <Switch>
+                {/*
                 <Route path="/login">
                     <Login></Login>
                 </Route>
@@ -50,6 +52,19 @@ ReactDOM.render(
                 <Route path="/">
                     <Home></Home>
                 </Route>
+                <Route path="*" render={(props) => <PageNotFound {...props} />} />
+                */}
+
+                <Route path="/login" component ={Login} />
+                <Route path="/register" component = {Register} />
+                <Route path="/profile/:id" component = {ViewProfile} />
+                <Route path="/users" component = {Users} />
+                <Route path="/userhome" component = {UserHome} />
+                <Route path="/editpost/:id" component = {EditPost} />
+                <Route path="/editcomment/:id" component = {EditComment} />
+                <Route path="/conversations" component = {Conversations} />
+                <Route exact path="/" component={Home} />
+                <Route path = "*" component = {PageNotFound} />
             </Switch>
         </Router>
     </QueryClientProvider>

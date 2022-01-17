@@ -1,62 +1,73 @@
-import React, { useState } from "react";
-import { Form, FormControl, Button, Row} from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Form, FormControl, Button, Row } from 'react-bootstrap';
 import '../Styles/search.css';
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 import config from '../config/config';
-
-
-
+import Fuse from 'fuse.js'
 
 
 const Search = () => {
   const [filteredData, setFilteredData] = useState([]);
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = (data) => {
-    axios.get(`${config.baseURL}/searchUser/${data.username}`)
-      .then(response => {
-        setFilteredData(response.data)
-      }
-      ).catch(error => {
-        console.log("error in frontend")
-        console.log(error);
-      })
+  const [users, setusers] = useState();
+  const [results, setresults] = useState([]);
+  useEffect (async() =>{
+    axios.get(`${config.baseURL}/searchUser/`)
+    .then(response => {
+      setusers(response.data)
+      console.log(response.data)
+    }).catch(error => {
+      console.log(error)
+    })
+ 
+  }, [])
 
+  const fuse = new Fuse(users, {
+    keys: [
+    'name'
+    ],
+    includeScore: true
+  })
 
+ 
+  
+  // searchResults = filteredData ? results.map(result => result.item) : filteredData;
+
+  function handleOnSearch({ currentTarget = {} }) {
+    const { value } = currentTarget;
+    setFilteredData(value);
+    setresults(fuse.search(filteredData))
+    console.log(results)
   }
 
   return (
     <>
-      <Form className="d-flex searchform" onSubmit={handleSubmit(onSubmit)}>
-        <FormControl
-          type="search"
-          placeholder="Search"
-          className="me-2"
-          aria-label="Search"
-          {...register("username", { required: true })}
-        />
-        <Button type = "submit" style={{ backgroundColor: "white", border: "solid 1px #28a745", color: "#28a745" }}>Search</Button>
-      </Form>
-
-      <div className="dropdown">
-        {filteredData.length != 0 && (
+      <div>
+        <label> Search: </label>
+        <input type='text' onChange={handleOnSearch} />
+      </div>
+      <div>
+            <div className="dropdown">
+         {results.length != 0 && (
           <div className="dataResult">
-            {filteredData.map((searchedWord => {
-              return (
-                <a href={"/profile/" + searchedWord.id}>
-                <div className="dataItem">{searchedWord.name}</div>
+            {results.map((user => {
+              return(
+                <a href={"/profile/" + user.item.id}>
+                <div className="dataItem">{user.item.name}</div>
                 </a>
-              );
+              )
             }))}
           </div>
+      
+         )}
+         </div>
+         </div>
 
-        )}
-      </div>
+      
     </>
-    
+
   )
 }
-
 
 export default Search;
