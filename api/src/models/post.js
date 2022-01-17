@@ -45,7 +45,7 @@ module.exports.uploadFile = async (file, callback) => {
 }
 
 module.exports.uploadVideo = async (file, callback) => {
-    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' , quality : "60"})
+    cloudinary.uploader.upload(file.path, {resource_type: "video",  chunk_size: 5000000, upload_preset: 'image_upload' })
         .then((result) => {
             //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
             callback(result, null);
