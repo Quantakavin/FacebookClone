@@ -2,6 +2,7 @@ const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
 const friendController = require('./controllers/friendController');
 const commentController = require('./controllers/commentController');
+const searchController = require('./controllers/searchController');
 const likeController = require('./controllers/likeController');
 const messageController = require('./controllers/messageController');
 const conversationController = require('./controllers/conversationController');
@@ -15,6 +16,7 @@ module.exports = router => {
     router.put('/api/Password', authorization.verifyUser,userController.updateUserPassword)
     router.put('/api/PFP', authorization.verifyUser,validation.validateImage, userController.updatePFP)
     router.get('/api/users', authorization.verifyUser, userController.allUsers)
+    router.get('/api/privacy', userController.privacyStatus)
 
     router.post('/api/text', authorization.verifyUser, validation.validateText, postController.createText);
     router.post('/api/photo', authorization.verifyUser, validation.validateImage, postController.createPhoto);
@@ -35,6 +37,7 @@ module.exports = router => {
     router.delete('/api/comment/:id', authorization.verifyUser, commentController.deleteComment)
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
+    router.post('/api/friendship', friendController.checkFriendship);
 
 
     router.post('/api/like', authorization.verifyUser,likeController.like)
@@ -47,4 +50,6 @@ module.exports = router => {
 
     router.post('/api/message', authorization.verifyUser,messageController.newMessage)
     router.get('/api/messages', authorization.verifyUser,messageController.getMessages)
+
+    router.get('/api/searchUser',searchController.searchUser)
 }

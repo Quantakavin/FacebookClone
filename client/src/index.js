@@ -13,10 +13,12 @@ import Home from './Pages/Home';
 import Register from './Pages/Register';
 import UserHome from './Pages/UserHome';
 import Users from './Pages/Users';
+import Requests from './Pages/Requests'
 import EditPost from './Pages/EditPost';
 import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
+import PageNotFound from './Pages/404';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
 dotenv.config();
@@ -28,6 +30,7 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
         <Router>
             <Switch>
+                {/*
                 <Route path="/login">
                     <Login></Login>
                 </Route>
@@ -41,6 +44,7 @@ ReactDOM.render(
 
 
                 <Route path="/users" render={(props) => <Users {...props} />} />
+                <Route path="/requests" render={(props) => <Requests {...props} />} />
                 <Route path="/userhome" render={(props) => <UserHome {...props} />} />
                 <Route path="/editpost/:id" render={(props) => <EditPost {...props} />} />
                 <Route path="/editcomment/:id" render={(props) => <EditComment {...props} />} />
@@ -48,6 +52,20 @@ ReactDOM.render(
                 <Route path="/">
                     <Home></Home>
                 </Route>
+                <Route path="*" render={(props) => <PageNotFound {...props} />} />
+                */}
+
+                <Route path="/login" component ={Login} />
+                <Route path="/register" component = {Register} />
+                <Route path="/profile/:id" component = {ViewProfile} />
+                <Route path="/requests" component = {Requests} />
+                <Route path="/users" component = {Users} />
+                <Route path="/userhome" component = {UserHome} />
+                <Route path="/editpost/:id" component = {EditPost} />
+                <Route path="/editcomment/:id" component = {EditComment} />
+                <Route path="/conversations" component = {Conversations} />
+                <Route exact path="/" component={Home} />
+                <Route path = "*" component = {PageNotFound} />
             </Switch>
         </Router>
     </QueryClientProvider>
