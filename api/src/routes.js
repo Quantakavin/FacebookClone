@@ -3,6 +3,8 @@ const postController = require('./controllers/postController');
 const friendController = require('./controllers/friendController');
 const commentController = require('./controllers/commentController');
 const likeController = require('./controllers/likeController');
+const messageController = require('./controllers/messageController');
+const conversationController = require('./controllers/conversationController');
 const validation = require('./middlewares/validation');
 const authorization = require('./middlewares/authorization');
 module.exports = router => {
@@ -35,8 +37,14 @@ module.exports = router => {
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
 
 
-    router.post('/api/like', authorization.verifyUser,likeController.like )
+    router.post('/api/like', authorization.verifyUser,likeController.like)
     router.delete('/api/like/:id', authorization.verifyUser,likeController.unlike )
     router.get('/api/userlike/:id', authorization.verifyUser,likeController.checklike )
     router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
+
+    router.post('/api/conversation', authorization.verifyUser,conversationController.newConversation)
+    router.get('/api/conversations/:userid', authorization.verifyUser,conversationController.getConversations)
+
+    router.post('/api/message', authorization.verifyUser,messageController.newMessage)
+    router.get('/api/messages', authorization.verifyUser,messageController.getMessages)
 }
