@@ -52,4 +52,3 @@ module.exports.getRequests = async (userid, friendid, callback) => {
         })
 }
 
-

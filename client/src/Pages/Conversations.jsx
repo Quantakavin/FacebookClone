@@ -14,9 +14,6 @@ const Conversations = () => {
             <Row>
                 <h2 style={{marginTop: 10, marginBottom: 20}}>Conversations</h2>
             </Row>
-            <Row>
-                <h2 style={{marginTop: 10, marginBottom: 20}}>Other Friends</h2>
-            </Row>
         </Container>
         </div>
         </>

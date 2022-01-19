@@ -1,4 +1,4 @@
-const connection = require('../config/database');
+const connection = require('../config/database'); 
 
 module.exports.insert = (sender_id, receiver_id) => { 
     const createConversationQuery = `INSERT INTO conversation (sender_id, receiver_id) VALUES ($1, $2)`;
@@ -15,7 +15,7 @@ module.exports.insert = (sender_id, receiver_id) => {
 }
 
 module.exports.getAll = (user_id) => {
-    const getConversationsQuery = `SELECT * FROM conversation WHERE sender_id = $1 OR receiver_id = $1`;
+    const getConversationsQuery = `SELECT sender_id, receiver_id FROM conversation WHERE sender_id = $1 OR receiver_id = $1 `;
     return new Promise((resolve,reject) => {
         connection.query(getConversationsQuery, [user_id])
         .then(results => {
