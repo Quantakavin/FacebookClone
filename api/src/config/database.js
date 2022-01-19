@@ -91,8 +91,9 @@ DROP TABLE IF EXISTS message;
 CREATE TABLE message (
 id SERIAL PRIMARY KEY,
 sender_id INT NOT NULL,
-reciever_id INT NOT NULL,
-Foreign Key (sender_id, reciever_id ) REFERENCES conversation(sender_id, receiver_id),
+receiver_id INT NOT NULL,
+content VARCHAR NOT NULL,
+Foreign Key (sender_id, receiver_id ) REFERENCES conversation(sender_id, receiver_id),
 date TIMESTAMP,
 read BOOLEAN DEFAULT false
 )
