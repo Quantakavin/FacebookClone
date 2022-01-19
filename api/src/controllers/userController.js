@@ -68,7 +68,7 @@ module.exports.registerUser = async (req, res) => {
                                 dynamic_template_data: {
                                     "firstName": name
                                 },
-                            }],
+                            }]  ,
                             
                           };
                         sgMail

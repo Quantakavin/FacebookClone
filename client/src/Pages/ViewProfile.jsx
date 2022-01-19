@@ -249,6 +249,7 @@ const Profile = ({ match }) => {
                                 </Container>
 
                                 :
+                                
                                 <Container>
                                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>{PageProfile.name}</h2>
                                     <p style={{ marginTop: 10, marginBottom: 20 }}>{PageProfile.bio == null ? "no bio yet" : PageProfile.bio}</p>
