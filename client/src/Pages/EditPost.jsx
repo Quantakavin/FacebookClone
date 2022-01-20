@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import '../Styles/form.scss';
 import config from '../config/config';
 import { useForm } from "react-hook-form";
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -14,6 +14,7 @@ import { convertToHTML } from 'draft-convert';
 import DOMPurify from 'dompurify';
 
 const TextForm = (props) => {
+    const queryClient = useQueryClient()
 
     const history = useHistory();
 
@@ -62,7 +63,11 @@ const TextForm = (props) => {
 
     const handleSubmit = () => {
 
-        mutation.mutate(convertedContent, {onSuccess: () => history.push('/userhome')})
+        mutation.mutate(convertedContent, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
+            history.push('/userhome')
+        }})
     }
 
     return(
@@ -85,6 +90,7 @@ const TextForm = (props) => {
 }
 
 const ImageForm = (props) => {
+    const queryClient = useQueryClient()
 
     const history = useHistory();
 
@@ -105,7 +111,11 @@ const ImageForm = (props) => {
         let webFormData = new FormData();
         webFormData.append('caption', data.caption);
         webFormData.append("file", data.file[0]);
-        mutation.mutate(webFormData, {onSuccess: () => history.push('/userhome')})
+        mutation.mutate(webFormData, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
+            history.push('/userhome')}
+        })
     }
 
     return(
@@ -136,6 +146,7 @@ const ImageForm = (props) => {
 }
 
 const VideoForm = (props) => {
+    const queryClient = useQueryClient()
 
     const history = useHistory();
 
@@ -156,7 +167,11 @@ const VideoForm = (props) => {
         let webFormData = new FormData();
         webFormData.append('caption', data.caption);
         webFormData.append("file", data.file[0]);
-        mutation.mutate(webFormData, {onSuccess: () => history.push('/userhome')})
+        mutation.mutate(webFormData, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
+            history.push('/userhome')}
+        })
     }
 
     return(
@@ -188,7 +203,6 @@ const VideoForm = (props) => {
 
 
 const EditPost = ({match}) => { 
-    const history = useHistory();
 
     let form;
 
