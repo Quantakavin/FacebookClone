@@ -1,16 +1,16 @@
 const { Pool } = require('pg')
-const config = require('./config');
+const config = require('./config')
 
-const connectionString = config.database;
+const connectionString = config.database
 
 const pool = new Pool({
-  connectionString,
-  max: 5
+    connectionString,
+    max: 5
 })
 
-  module.exports = pool;
+module.exports = pool
 
-  /*
+/*
 
   DROP TABLE IF EXISTS users; 
   CREATE TABLE users (
