@@ -4,12 +4,16 @@ const connection = require('../config/database');
 
 var validator = require('validator');
 
-module.exports.search =  async (callback) => {
+module.exports.search =  async () => {
     const searchquery = 'SELECT * FROM users'
-    connection.query(searchquery)
-    .then(result => {
-        callback(result.rows, null)
+    return new Promise((resolve, reject) => {
+        connection.query(searchquery)
+        .then(result => {
+            resolve(result.rows)
+        })
+        .catch(err => {
+            console.log(err)
+            reject(err)
+        })
     })
-    .catch(err => callback(null, err))
-
 }

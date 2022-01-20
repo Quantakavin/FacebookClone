@@ -22,31 +22,6 @@ const pool = new Pool({
   active BOOLEAN NOT NULL DEFAULT false
   )
 
-DROP TABLE IF EXISTS profile; 
-CREATE TABLE profile (
-id SERIAL PRIMARY KEY,
-user_id INT NOT NULL,
-bio VARCHAR,
-profilepic bytea,
-coverpic bytea,
-CONSTRAINT fk_user
-      FOREIGN KEY(user_id) 
-    REFERENCES users(id)
-)
-
-DROP TABLE IF EXISTS page; 
-CREATE TABLE page (
-id SERIAL PRIMARY KEY,
-user_id INT NOT NULL,
-description VARCHAR,
-url VARCHAR,
-pagepic bytea,
-coverpic bytea,
-CONSTRAINT fk_user
-      FOREIGN KEY(user_id) 
-    REFERENCES users(id)
-)
-
 DROP TABLE IF EXISTS post; 
 CREATE TABLE post (
 id SERIAL PRIMARY KEY,
