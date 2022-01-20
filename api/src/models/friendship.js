@@ -39,7 +39,7 @@ module.exports.get = async (userid, friendid, callback) => {
         })
 }
 
-module.exports.get = async (userid, friendid, callback) => {
+module.exports.getRequests = async (userid, friendid, callback) => {
     const sql = "SELECT * FROM friendship WHERE (user_id = $1 AND status = requested )"
     connection.query(sql , [userid, friendid])
         .then(result => {
@@ -51,5 +51,4 @@ module.exports.get = async (userid, friendid, callback) => {
             callback(null, err)
         })
 }
-
 

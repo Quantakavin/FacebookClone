@@ -82,17 +82,20 @@ PRIMARY KEY(user_id, friend_id)
 
 DROP TABLE IF EXISTS conversation;
 CREATE TABLE conversation (
+id SERIAL PRIMARY KEY,
 sender_id INT NOT NULL REFERENCES users(id),
 receiver_id INT NOT NULL REFERENCES users(id),
-PRIMARY KEY(sender_id, receiver_id)
+UNIQUE (sender_id, receiver_id)
 )
 
 DROP TABLE IF EXISTS message;
 CREATE TABLE message (
 id SERIAL PRIMARY KEY,
-sender_id INT NOT NULL,
-reciever_id INT NOT NULL,
-Foreign Key (sender_id, reciever_id ) REFERENCES conversation(sender_id, receiver_id),
+user_id INT NOT NULL,
+conversation_id INT NOT NULL,
+content VARCHAR NOT NULL,
+Foreign Key (conversation_id) REFERENCES conversation(id),
+Foreign Key (user_id) REFERENCES users(id),
 date TIMESTAMP,
 read BOOLEAN DEFAULT false
 )
@@ -143,6 +146,20 @@ ADD COLUMN editdate TIMESTAMP;
 ALTER TABLE comment
 ADD COLUMN editdate TIMESTAMP;
 
+CREATE INDEX post_userid ON post(user_id)
+
+CREATE INDEX comment_userid ON comment(user_id)
+CREATE INDEX comment_postid ON comment(post_id)
+
+CREATE INDEX like_userid ON likes(user_id)
+CREATE INDEX like_postid ON likes(post_id)
+
+CREATE INDEX message_userid ON message(user_id)
+CREATE INDEX message_conversationid ON message(conversation_id)
+
+CREATE INDEX post_time ON post(date)
+CREATE INDEX comment_time ON comment(date)
+CREATE INDEX message_time ON message(date)
 
 
   */

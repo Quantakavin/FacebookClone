@@ -249,6 +249,7 @@ const Profile = ({ match }) => {
                                 </Container>
 
                                 :
+                                
                                 <Container>
                                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>{PageProfile.name}</h2>
                                     <p style={{ marginTop: 10, marginBottom: 20 }}>{PageProfile.bio == null ? "no bio yet" : PageProfile.bio}</p>
@@ -261,10 +262,10 @@ const Profile = ({ match }) => {
                 </Container>
 
 
-                {PageProfile.privacy === true && friendship.length == 0? 
+                {PageProfile.privacy === true && friendship.length == 0 && PageProfile.id != userProfile.id? // If true and not friends 
                 
                 <div><h1>This account is private. Follow this account to view their post.</h1></div>
-                :
+                :// else display post
                 <Container className="postscontainer">
                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
                     {posts.length == 0 ?
