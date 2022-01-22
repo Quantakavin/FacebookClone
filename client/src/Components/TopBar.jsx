@@ -18,7 +18,7 @@ const TopBar = () => {
       <>
         <Navbar variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
           <Container fluid>
-            <Navbar.Brand className="brand" href="/home"><img
+            <Navbar.Brand className="brand" href="/"><img
               alt=""
               src={facebookicon}
               width="30"
