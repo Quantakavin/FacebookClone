@@ -50,6 +50,20 @@ module.exports.checkFriendship = async (req, res) => {
   }
 };
 
-
+module.exports.getRequests = async (req, res) => {
+  try {
+    let { userid } = req.body;
+    await friendship.get(userid, (results, error) => {
+      if (error) {
+        res.status(500).json({ message: "Internal Server Error!" });
+      } else {
+        return res.status(201).send(results.rows);
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
 
 

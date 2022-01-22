@@ -36,6 +36,7 @@ module.exports = router => {
     router.post('/api/friend', authorization.verifyUser, friendController.friend);
     router.delete('/api/friend', authorization.verifyUser, friendController.unfriend);
     router.post('/api/friendship', friendController.checkFriendship);
+    router.post('/api/friendship', friendController.getRequests);
 
 
     router.post('/api/like', authorization.verifyUser,likeController.like )
