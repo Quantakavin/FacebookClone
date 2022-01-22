@@ -181,7 +181,6 @@ const Profile = ({ match }) => {
 
     }
 
-
     return (
         <>
             <header>
@@ -222,7 +221,6 @@ const Profile = ({ match }) => {
                                         </Form>
                                     </div> : ""
                             }
-
                         </Col>
                         <Col>
                             {PageProfile.id == userProfile.id ?
@@ -249,9 +247,7 @@ const Profile = ({ match }) => {
                                             </p>
                                         </Alert> : ""
                                     }
-
                                 </Container>
-
                                 :
                                 <Container>
                                     <h2 style={{ marginTop: 10, marginBottom: 20 }}>{PageProfile.name}</h2>
@@ -260,7 +256,21 @@ const Profile = ({ match }) => {
                             }
                         </Col>
                     </Row>
-                </Container>                
+                </Container>
+                {PageProfile.privacy === true && friendship.length == 0 ?
+
+                    <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                    :
+                    <Container className="postscontainer">
+                        <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
+                        {posts.length == 0 ?
+                            <p style={{ color: "#838383" }}>No content to display</p>
+                            : <></>}
+                        {posts.map(post =>
+                            <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
+                        )}
+                    </Container>
+                }
             </div>
         </>
     )
