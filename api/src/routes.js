@@ -16,7 +16,7 @@ module.exports = router => {
     router.get('/api/users', authorization.verifyUser, userController.allUsers)
     router.get('/api/privacy', userController.privacyStatus)
 
-    router.post('/api/text', /*authorization.verifyUser, validation.validateText,*/ postController.createText);
+    router.post('/api/text', authorization.verifyUser, validation.validateText,postController.createText);
     router.post('/api/photo', authorization.verifyUser, validation.validateImage, postController.createPhoto);
     router.post('/api/video', authorization.verifyUser, validation.validateVideo, postController.createVideo);
     router.put('/api/text/:id', authorization.verifyUser, validation.validateText, postController.updateText);
@@ -24,10 +24,11 @@ module.exports = router => {
     router.put('/api/video/:id', authorization.verifyUser, validation.validateVideo, postController.updateVideo);
     router.post('/api/video', authorization.verifyUser, postController.createVideo);
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
+    router.get('/api/trendingFeed', authorization.verifyUser, postController.getTrendingFeed)
     router.get('/api/posts/:userid', postController.getPosts)
     router.get('/api/post/:id', authorization.verifyUser, postController.getPost)
-    router.get('/api/getMedia/:id',/* authorization.verifyUser, */postController.getPostMedia)
-    /*post media route*/router.post('/api/postMedia', /*authorization.verifyUser,*/ validation.validateAllMedia,postController.uploadPostWithMedia)
+    router.get('/api/getMedia/:id',authorization.verifyUser, postController.getPostMedia)
+    router.post('/api/postMedia', authorization.verifyUser, validation.validateAllMedia,postController.uploadPostWithMedia)
     router.delete('/api/post/:id', authorization.verifyUser, postController.deletePost)
 
     router.get('/api/comments/:id', commentController.getAllComments)

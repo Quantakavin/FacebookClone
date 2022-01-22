@@ -85,9 +85,9 @@ const Post = (props) => {
   useEffect(() => {
     let isCancelled = false;
     if (!isCancelled) {
-      //getComments()
-      // getLikeCount()
-      // getLiked()
+      getComments()
+      getLikeCount()
+      getLiked()
       getMedia()
     }
 

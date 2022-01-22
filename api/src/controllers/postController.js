@@ -249,6 +249,23 @@ module.exports.getFeed = async (req, res) => {
     }
 }
 
+module.exports.getTrendingFeed = async (req, res) => {
+    try {
+        var userid = req.body.userid;
+        await post.trendingFeed(userid, (results, err) => {
+            if (err) {
+                return res.status(500).json({ message: "Cannot retrieve posts" });
+            } else {
+                console.log(results)
+                return res.status(200).json(results);
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Internal Server Error!" });
+    }
+}
+
 module.exports.getPosts = async (req, res) => {
     var userid = req.params.userid;
     try {
