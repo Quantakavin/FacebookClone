@@ -162,7 +162,13 @@ module.exports = (router) => {
         messageController.getMessages
     )
 
-    router.get('/api/searchUser', searchController.searchUser)
+    router.get('/api/searchUser', 
+        authorization.verifyUser, 
+        searchController.searchUser
+    )
 
-    router.post('/api/notification', notificationController.sendNotification)
+    router.post('/api/notification',
+        authorization.verifyUser,
+        notificationController.sendNotification
+    )
 }

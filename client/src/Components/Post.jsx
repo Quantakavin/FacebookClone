@@ -191,6 +191,19 @@ const Post = (props) => {
               console.log(error);
               setErrorMsg(error.response.data.message);
           })
+
+          axios
+          .post(`${config.baseURL}/notification`, {"receiver_id": props.post.id, "notification_id": 4}, { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+            })
+          .then(response => {
+              console.log(response); 
+          })
+          .catch(error => {
+              console.log(error);
+          })
         } else {
           setShowError(true);
         }
