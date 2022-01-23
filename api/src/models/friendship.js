@@ -48,12 +48,28 @@ module.exports.get = async (userid, friendid) => {
     })
 }
 
-module.exports.getRequests = async (userid, friendid) => {
+module.exports.getRequests = async (friend_id) => {
     const sql =
-        'SELECT * FROM friendship WHERE (user_id = $1 AND status = requested)'
+        `SELECT users.*, users.picurl, users.name, users.id FROM users INNER JOIN friendship ON users.id = friendship.user_id WHERE (friend_id = $1 AND status = 'requested')`
     return new Promise((resolve, reject) => {
         connection
-            .query(sql, [userid, friendid])
+            .query(sql, [friend_id])
+            .then((result) => {
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
+module.exports.acceptRequests = async (friend_id) => {
+    const sql =
+        `SELECT users.*, users.picurl, users.name, users.id FROM users INNER JOIN friendship ON users.id = friendship.user_id WHERE (friend_id = $1 AND status = 'requested')`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [friend_id])
             .then((result) => {
                 resolve(result)
             })

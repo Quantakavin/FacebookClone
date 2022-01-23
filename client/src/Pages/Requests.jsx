@@ -11,12 +11,12 @@ const Requests = () => {
     const [users, setUsers] = useState([]);
     const history = useHistory();
     useEffect(() => {
-        getUsers()
+      getRequests()
       }, [])
 
-      const getUsers = () => {
+      const getRequests = () => {
         axios
-        .get(`${config.baseURL}/users`, {
+        .get(`${config.baseURL}/friendship`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
@@ -40,7 +40,7 @@ const Requests = () => {
         })
         .then(response => {
           console.log('promise fulfilled')
-          getUsers();
+          getRequests();
         })
         .catch(error => {
           console.log(error);
@@ -58,7 +58,7 @@ const Requests = () => {
         })
         .then(response => {
           console.log('promise fulfilled')
-          getUsers();
+          getRequests();
         })
         .catch(error => {
           console.log(error);
@@ -66,22 +66,22 @@ const Requests = () => {
         
       }
 
-      const getRequests = (id) => { 
-        axios
-        .delete(`${config.baseURL}/friend/?id=${id}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
-          }
-        })
-        .then(response => {
-          console.log('promise fulfilled')
-          getUsers();
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      // const getRequests = (id) => { 
+      //   axios
+      //   .get(`${config.baseURL}/friendship/`, {
+      //     headers: {
+      //       'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      //     }
+      //   })
+      //   .then(response => {
+      //     console.log('promise fulfilled')
+      //     getUsers();
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   })
         
-      }
+      // }
 
       return(
         <>
@@ -91,7 +91,7 @@ const Requests = () => {
           <div style={{position: "relative",backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: 50, paddingBottom: 50}}>
               <Container>
                 <Row>
-                <h2 style={{marginTop: 50, marginBottom: 30}}>Find Friends</h2>
+                <h2 style={{marginTop: 50, marginBottom: 30}}>Accept Friend Requests</h2>
                 </Row>
               <Row className="flex-row flex-nowrap overflow-auto" style={{overflow: "hidden"}}>
               {users.map(user => 
@@ -101,8 +101,9 @@ const Requests = () => {
                      <Card.Title style={{textTransform: "capitalize"}}>{user.name}</Card.Title>
                      </Card.Body>
 
-                     {user.friended? <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }>Unfriend</Button>:
-                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => friend(user.id)}>Add Friend</Button>
+                     {user.friended? 
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }></Button>:
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => friend(user.id)}>Accept</Button>
                     }
 
                  </Card>
