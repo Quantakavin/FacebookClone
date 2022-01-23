@@ -1,5 +1,6 @@
-const dotenv = require('dotenv'); 
-dotenv.config();
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 module.exports = {
     database: process.env.DBNAME,
@@ -9,4 +10,4 @@ module.exports = {
     cloudinarysecret: process.env.CLOUDINARY_API_SECRET,
     sendgridkey: process.env.SENDGRID_API_KEY,
     sendgridwelcome: process.env.SENDGRID_WELCOME
-};
+}
