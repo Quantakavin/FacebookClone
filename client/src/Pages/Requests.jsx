@@ -66,6 +66,22 @@ const Requests = () => {
         
       }
 
+      const getRequests = (id) => { 
+        axios
+        .delete(`${config.baseURL}/friend/?id=${id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+        .then(response => {
+          console.log('promise fulfilled')
+          getUsers();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        
+      }
 
       return(
         <>
