@@ -153,11 +153,23 @@ const Post = (props) => {
           setBorderColor('red')
           setErrorMsg(error.response.data.message);
       })
+
+      //Notification for commenting
+      axios
+          .post(`${config.baseURL}/notification`, {"receiver_id": props.post.id, "notification_id": 3}, { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+            })
+          .then(response => {
+              console.log(response); 
+          })
+          .catch(error => {
+              console.log(error);
+          })
   }
 
-
-
-
+  
 
     const handleDelete = (id) => {
         axios
@@ -190,6 +202,20 @@ const Post = (props) => {
           .catch(error => {
               console.log(error);
               setErrorMsg(error.response.data.message);
+          })
+          
+          // Notification for liking post
+          axios
+          .post(`${config.baseURL}/notification`, {"receiver_id": props.post.id, "notification_id": 4}, { 
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+            })
+          .then(response => {
+              console.log(response); 
+          })
+          .catch(error => {
+              console.log(error);
           })
         } else {
           setShowError(true);

@@ -6,32 +6,34 @@ import { useForm } from "react-hook-form";
 import axios from 'axios';
 import config from '../config/config';
 import Fuse from 'fuse.js'
+import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close";
 
 
 const Search = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [users, setusers] = useState();
   const [results, setresults] = useState([]);
-  useEffect (async() =>{
+  useEffect(async () => {
     axios.get(`${config.baseURL}/searchUser/`)
-    .then(response => {
-      setusers(response.data)
-      console.log(response.data)
-    }).catch(error => {
-      console.log(error)
-    })
- 
+      .then(response => {
+        setusers(response.data)
+        console.log(response.data)
+      }).catch(error => {
+        console.log(error)
+      })
+
   }, [])
 
   const fuse = new Fuse(users, {
     keys: [
-    'name'
+      'name'
     ],
     includeScore: true
   })
 
- 
-  
+
+
   // searchResults = filteredData ? results.map(result => result.item) : filteredData;
 
   function handleOnSearch({ currentTarget = {} }) {
@@ -41,30 +43,49 @@ const Search = () => {
     console.log(results)
   }
 
+  const clearInput = () => {
+    setFilteredData("");
+    setresults([]);
+  };
+
   return (
     <>
-      <div>
-        <label> Search: </label>
-        <input type='text' onChange={handleOnSearch} />
-      </div>
-      <div>
-            <div className="dropdown">
-         {results.length != 0 && (
-          <div className="dataResult">
-            {results.map((user => {
-              return(
-                <a href={"/profile/" + user.item.id}>
-                <div className="dataItem">{user.item.name}</div>
-                </a>
-              )
-            }))}
+      <div className="search">
+        <div className="searchInputs">
+        <input
+          type="text"
+          // placeholder={placeholder}
+          value={filteredData}
+          onChange={handleOnSearch}
+        />
+          {/* <label> Search: </label>
+          <input type='text' onChange={handleOnSearch} /> */}
+          <div className="searchIcon">
+            {filteredData.length === 0 ? (
+              <SearchIcon />
+            ) : (
+              <CloseIcon id="clearBtn" onClick={clearInput} />
+            )}
           </div>
-      
-         )}
-         </div>
-         </div>
+        </div>
+        {/* <div className="dropdown"> */}
+          {results.length != 0 && (
+            <div className="dataResult">
+              {results.map((user => {
+                return (
+                  <a className="dataItem" href={"/profile/" + user.item.id}>
+                    <div >{user.item.name}</div>
+                  </a>
+                );
+              }))}
+            </div>
 
-      
+          )}
+      </div>
+      {/* </div> */}
+
+
+
     </>
 
   )

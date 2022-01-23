@@ -16,7 +16,7 @@
 }
 
 .searchIcon {
-  height: 60px;
+  height: 29.8px;
   width: 50px;
   background-color: white;
   display: grid;
@@ -32,7 +32,7 @@ input:focus {
 
 .dataResult {
   margin-top: 5px;
-  width: 300px;
+  width: auto;
   height: 200px;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;

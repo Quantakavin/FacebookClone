@@ -8,7 +8,7 @@ const messageController = require('./controllers/messageController')
 const conversationController = require('./controllers/conversationController')
 const validation = require('./middlewares/validation')
 const authorization = require('./middlewares/authorization')
-
+const notificationController = require('./controllers/notificationController')
 module.exports = (router) => {
     router.post(
         '/api/login',
@@ -163,5 +163,13 @@ module.exports = (router) => {
         messageController.getMessages
     )
 
-    router.get('/api/searchUser', searchController.searchUser)
+    router.get('/api/searchUser', 
+        authorization.verifyUser, 
+        searchController.searchUser
+    )
+
+    router.post('/api/notification',
+        authorization.verifyUser,
+        notificationController.sendNotification
+    )
 }
