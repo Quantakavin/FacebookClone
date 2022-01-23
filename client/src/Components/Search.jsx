@@ -73,7 +73,7 @@ const Search = () => {
             <div className="dataResult">
               {results.map((user => {
                 return (
-                  <a className="dataItem" href={"/profile/" + user.item.id} target="_blank">
+                  <a className="dataItem" href={"/profile/" + user.item.id}>
                     <div >{user.item.name}</div>
                   </a>
                 );
