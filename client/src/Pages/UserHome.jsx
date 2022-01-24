@@ -17,7 +17,7 @@ import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
-
+import Navbar from '../Components/Navbar'
 
 //const queryClient = new QueryClient()
 
@@ -313,6 +313,7 @@ const UserHome = () => {
         <ImageForm showForm={showImageForm} setShowForm={setShowImageForm}/>
         <VideoForm showForm={showVideoForm} setShowForm={setShowVideoForm}/>
         <div style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
+            <Navbar />
         <Container className="formcontainer shadow" style={{height: 'auto', marginBottom: 0, display: "flex", flexDirection: "row", alignItems: 'center', justifyContent: 'center'}}>
  
             <button onClick={() => setShowTextForm(true)}  style={{flexGrow: 12, backgroundColor: "#e3e8ee", borderRadius: "20px", width: "100%",textAlign: "left"}} type="button" className="btn text-secondary">Whats on your mind, {localStorage.getItem("username")}?</button>
