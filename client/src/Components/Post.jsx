@@ -156,7 +156,7 @@ const Post = (props) => {
 
       //Notification for commenting
       axios
-          .post(`${config.baseURL}/notification`, {"receiver_id": props.post.id, "notification_id": 3}, { 
+          .post(`${config.baseURL}/commentNotification`, { "receiver_id":props.post.id, "notification_id": 3,"postid":props.post.postid, "userid" : localStorage.getItem("user_id") }, { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}` 
               }
