@@ -14,6 +14,7 @@ const Search = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [users, setusers] = useState();
   const [results, setresults] = useState([]);
+
   useEffect(async () => {
     axios.get(`${config.baseURL}/searchUser/`)
       .then(response => {
@@ -23,7 +24,7 @@ const Search = () => {
         console.log(error)
       })
 
-  }, [])
+  }, [filteredData])
 
   const fuse = new Fuse(users, {
     keys: [
@@ -39,7 +40,7 @@ const Search = () => {
   function handleOnSearch({ currentTarget = {} }) {
     const { value } = currentTarget;
     setFilteredData(value);
-    setresults(fuse.search(filteredData))
+    setresults(fuse.search(value))
     console.log(results)
   }
 
@@ -54,12 +55,9 @@ const Search = () => {
         <div className="searchInputs">
         <input
           type="text"
-          // placeholder={placeholder}
-          value={filteredData}
+          // value={filteredData}
           onChange={handleOnSearch}
         />
-          {/* <label> Search: </label>
-          <input type='text' onChange={handleOnSearch} /> */}
           <div className="searchIcon">
             {filteredData.length === 0 ? (
               <SearchIcon />
@@ -71,7 +69,7 @@ const Search = () => {
         {/* <div className="dropdown"> */}
           {results.length != 0 && (
             <div className="dataResult">
-              {results.map((user => {
+              {results.filter((user)=>user.score < 0.5).map((user => {
                 return (
                   <a className="dataItem" href={"/profile/" + user.item.id}>
                     <div >{user.item.name}</div>
