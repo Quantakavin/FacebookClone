@@ -64,12 +64,12 @@ module.exports.getRequests = async (friend_id) => {
     })
 }
 
-module.exports.acceptRequests = async (friend_id) => {
+module.exports.acceptRequests = async (status, friend_id, confirmed) => {
     const sql =
-        `SELECT users.*, users.picurl, users.name, users.id FROM users INNER JOIN friendship ON users.id = friendship.user_id WHERE (friend_id = $1 AND status = 'requested')`
+        `UPDATE friendship SET status = $1, confirmed = true WHERE (friend_id = $2 AND status = 'requested')`
     return new Promise((resolve, reject) => {
         connection
-            .query(sql, [friend_id])
+            .query(sql, [status, friend_id, confirmed])
             .then((result) => {
                 resolve(result)
             })

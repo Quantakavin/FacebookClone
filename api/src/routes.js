@@ -127,6 +127,7 @@ module.exports = (router) => {
     )
     router.post('/api/friendship', friendController.checkFriendship)
     router.get('/api/friendship', authorization.verifyUser, friendController.getRequests)
+    router.put('/api/friendship', authorization.verifyUser, friendController.acceptRequests)
 
     router.post('/api/like', authorization.verifyUser, likeController.like)
     router.delete(
@@ -162,11 +163,7 @@ module.exports = (router) => {
         authorization.verifyUser,
         messageController.getMessages
     )
-
-    router.get('/api/searchUser', 
-        authorization.verifyUser, 
-        searchController.searchUser
-    )
+    router.get('/api/searchUser', searchController.searchUser)
 
     router.post('/api/notification',
         authorization.verifyUser,

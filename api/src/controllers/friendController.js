@@ -1,7 +1,7 @@
 const friendship = require('../models/friendship')
 
 module.exports.friend = async (req, res) => {
-    const status = 'requested'
+    const status = "requested"
     const { userid, friendid } = req.body
     try {
         const results = await friendship.insert(userid, friendid, status)
@@ -51,4 +51,15 @@ module.exports.getRequests = async (req, res) => {
   }
 };
 
-
+module.exports.acceptRequests = async (req, res) => {
+  const status = "accepted";
+  const confirmed = true;
+  const friend_id = req.body;
+  try {
+    const results = await friendship.acceptRequests(status, friend_id, confirmed)
+    return res.status(201).send(results.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
