@@ -266,16 +266,16 @@ module.exports.feed = async (userid) => {
 
                 connection.query(feedQuery, [followids])
                     .then(results2 => {
-                        callback(results2.rows, null)
+                        resolve(results2.rows, null)
                     })
                     .catch(error => {
                         console.log(error)
-                        callback(null, error)
+                        reject(null, error)
                     })
             })
             .catch(err => {
                 console.log(err)
-                callback(null, err)
+                reject(null, err)
             })
     }
     )

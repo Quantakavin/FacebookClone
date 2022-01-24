@@ -310,7 +310,6 @@ module.exports.deletePost = async (req, res) => {
                 } else {
                     return res.status(402).json({ "message": "You do not have access" });
                 }
-
             }
         })
     } catch (error) {

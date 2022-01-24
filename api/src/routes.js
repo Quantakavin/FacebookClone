@@ -33,7 +33,7 @@ module.exports = (router) => {
     )
     router.put(
         '/api/PFP',
-        authorization.verifyUser,
+        //authorization.verifyUser,
         validation.validateImage,
         userController.updatePFP
     )
@@ -82,6 +82,10 @@ module.exports = (router) => {
         postController.createVideo
     )
     router.get('/api/feed', authorization.verifyUser, postController.getFeed)
+    router.get('/api/getMedia/:id', authorization.verifyUser, postController.getPostMedia)
+    //below got problem
+    // router.post('/api/postMedia', authorization.verifyUser,validation.validateAllMedia,postController.uploadPostWithMedia)
+
     router.get('/api/trendingFeed', authorization.verifyUser, postController.getTrendingFeed)
     router.get('/api/posts/:userid', postController.getPosts)
     router.get(

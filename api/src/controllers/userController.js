@@ -145,7 +145,7 @@ module.exports.allUsers = async (req, res) => {
 }
 
 module.exports.updatePFP = async (req, res) => {
-    const { userid } = req.body
+    const userid = req.body.userid
     const pfp = req.body.file
     try {
         const result = await post.uploadFile(pfp)
