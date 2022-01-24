@@ -45,7 +45,7 @@ const Search = () => {
   }
 
   const clearInput = () => {
-    setFilteredData("");
+    setFilteredData([]);
     setresults([]);
   };
 
@@ -61,8 +61,9 @@ const Search = () => {
           <div className="searchIcon">
             {filteredData.length === 0 ? (
               <SearchIcon />
-            ) : (
+            ) : (              
               <CloseIcon id="clearBtn" onClick={clearInput} />
+
             )}
           </div>
         </div>
