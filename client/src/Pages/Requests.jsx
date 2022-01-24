@@ -33,7 +33,7 @@ const Requests = () => {
 
       const acceptRequests = () => {
         axios
-        .put(`${config.baseURL}/friendship`, {
+        .put(`${config.baseURL}/friendship`, null, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
@@ -102,8 +102,9 @@ const Requests = () => {
                      </Card.Body>
 
                      {user.friended? 
-                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }></Button>:
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }></Button>:<>
                      <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => acceptRequests(user.id)}>Accept</Button>
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500}} onClick={() => acceptRequests(user.id)}>Decline</Button></>
                     }
 
                  </Card>
