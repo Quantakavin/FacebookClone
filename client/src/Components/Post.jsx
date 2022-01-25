@@ -154,7 +154,7 @@ const Post = (props) => {
           setErrorMsg(error.response.data.message);
       })
 
-      //Notification for commenting
+      //Notification for commenting 
       axios
           .post(`${config.baseURL}/commentNotification`, { "receiver_id":props.post.id, "notification_id": 3,"postid":props.post.postid, "userid" : localStorage.getItem("user_id") }, { 
               headers: {
@@ -206,7 +206,7 @@ const Post = (props) => {
           
           // Notification for liking post
           axios
-          .post(`${config.baseURL}/notification`, {"receiver_id": props.post.id, "notification_id": 4}, { 
+          .post(`${config.baseURL}/commentNotification`, { "receiver_id":props.post.id, "notification_id": 4,"postid":props.post.postid, "userid" : localStorage.getItem("user_id") }, { 
               headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}` 
               }
@@ -217,11 +217,8 @@ const Post = (props) => {
           .catch(error => {
               console.log(error);
           })
-        } else {
-          setShowError(true);
+
         }
-
-
       }
 
       const unlikepost = () => {
