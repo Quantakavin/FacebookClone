@@ -14,6 +14,7 @@ const Search = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [users, setusers] = useState();
   const [results, setresults] = useState([]);
+
   useEffect(async () => {
     axios.get(`${config.baseURL}/searchUser/`)
       .then(response => {
@@ -23,7 +24,7 @@ const Search = () => {
         console.log(error)
       })
 
-  }, [])
+  }, [filteredData])
 
   const fuse = new Fuse(users, {
     keys: [
@@ -44,7 +45,7 @@ const Search = () => {
   }
 
   const clearInput = () => {
-    setFilteredData("");
+    setFilteredData([]);
     setresults([]);
   };
 
@@ -54,17 +55,15 @@ const Search = () => {
         <div className="searchInputs">
         <input
           type="text"
-          // placeholder={placeholder}
-          value={filteredData}
+          // value={filteredData}
           onChange={handleOnSearch}
         />
-          {/* <label> Search: </label>
-          <input type='text' onChange={handleOnSearch} /> */}
           <div className="searchIcon">
             {filteredData.length === 0 ? (
               <SearchIcon />
-            ) : (
+            ) : (              
               <CloseIcon id="clearBtn" onClick={clearInput} />
+
             )}
           </div>
         </div>
