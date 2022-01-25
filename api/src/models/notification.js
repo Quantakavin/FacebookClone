@@ -17,3 +17,18 @@ module.exports.commentNotification = async (receiver_id, notification_id, postid
     })
 }
 
+module.exports.getNotifications = async (receiver_id) => {
+    const sql = `SELECT * FROM notification WHERE (receiver_id = $1)`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [receiver_id])
+            .then((result) => {
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
