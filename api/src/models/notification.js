@@ -17,19 +17,3 @@ module.exports.commentNotification = async (receiver_id, notification_id, postid
     })
 }
 
-
-module.exports.getNotification = async (postid) => {
-  const getLikeCount = `SELECT * FROM Notifications where receiver_id = $1`
-  return new Promise((resolve, reject) => {
-      connection
-          .query(getLikeCount, [postid])
-          .then((results) => {
-              resolve(results)
-          })
-          .catch((err) => {
-              console.log(err)
-              reject(err)
-          })
-  })
-}
-
