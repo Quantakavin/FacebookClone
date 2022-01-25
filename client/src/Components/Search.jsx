@@ -39,7 +39,7 @@ const Search = () => {
   function handleOnSearch({ currentTarget = {} }) {
     const { value } = currentTarget;
     setFilteredData(value);
-    setresults(fuse.search(filteredData))
+    setresults(fuse.search(value))
     console.log(results)
   }
 
@@ -71,7 +71,7 @@ const Search = () => {
         {/* <div className="dropdown"> */}
           {results.length != 0 && (
             <div className="dataResult">
-              {results.map((user => {
+              {results.filter((user)=>user.score < 0.5).map((user => {
                 return (
                   <a className="dataItem" href={"/profile/" + user.item.id}>
                     <div >{user.item.name}</div>

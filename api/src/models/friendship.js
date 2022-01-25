@@ -64,12 +64,12 @@ module.exports.getRequests = async (friend_id) => {
     })
 }
 
-module.exports.acceptRequests = async (status, friend_id, confirmed) => {
+module.exports.acceptRequests = async (status, confirmed, friend_id, user_id) => {
     const sql =
-        `UPDATE friendship SET status = $1, confirmed = $2 WHERE (friend_id = $3 AND status = 'requested')`
+        `UPDATE friendship SET status = $1, confirmed = $2 WHERE (friend_id = $3 AND user_id = $4 AND status = 'requested')`
     return new Promise((resolve, reject) => {
         connection
-            .query(sql, [status, friend_id, confirmed])
+            .query(sql, [status, confirmed, friend_id, user_id])
             .then((result) => {
                 resolve(result)
             })

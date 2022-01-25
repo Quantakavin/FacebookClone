@@ -54,9 +54,10 @@ module.exports.getRequests = async (req, res) => {
 module.exports.acceptRequests = async (req, res) => {
   const status = "accepted";
   const confirmed = true;
-  const friend_id = req.body;
+  const friend_id = req.body.userid; //user id is used to show which person sent the request
+  const user_id = req.body.friendid;
   try {
-    const results = await friendship.acceptRequests(status, friend_id, confirmed)
+    const results = await friendship.acceptRequests(status, confirmed, user_id, friend_id)
     return res.status(201).send(results.rows);
   } catch (error) {
     console.log(error);

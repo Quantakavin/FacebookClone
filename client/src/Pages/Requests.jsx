@@ -40,7 +40,7 @@ const Requests = () => {
         })
         .then(response => {
           console.log('promise fulfilled')
-          getRequests();
+          acceptRequests();
         })
         .catch(error => {
           console.log(error);
