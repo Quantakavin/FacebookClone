@@ -18,7 +18,7 @@ module.exports.commentNotification = async (receiver_id, notification_id, postid
 }
 
 module.exports.getNotifications = async (receiver_id) => {
-    const sql = `SELECT * FROM notification WHERE (receiver_id = $1)`
+    const sql = `SELECT * FROM notification n, notificationmessage nm, post p WHERE (n.receiver_id = $1 AND nm.id = n.notification_id AND (CAST((n.data ->> 'postid') AS INTEGER) = p.id))`
     return new Promise((resolve, reject) => {
         connection
             .query(sql, [receiver_id])

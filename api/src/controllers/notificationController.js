@@ -13,7 +13,7 @@ module.exports.commentNotification = async (req, res) => {
 }
 
 module.exports.getNotifications = async (req, res) => {
-  const {receiver_id} = req.body
+  const {receiver_id} = req.query;
   try {
     console.log(receiver_id);
       const results = await notification.getNotifications(receiver_id)
