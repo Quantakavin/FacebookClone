@@ -2,6 +2,7 @@ const notification = require('../models/notification')
 
 module.exports.commentNotification = async (req, res) => {
   const {receiver_id, notification_id, userid, postid} = req.body
+  console.log(req.body);
   try {
     console.log(userid);
       const results = await notification.commentNotification(receiver_id, notification_id, userid, postid)
