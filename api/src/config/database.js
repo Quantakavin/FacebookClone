@@ -5,7 +5,7 @@ const connectionString = config.database
 
 const pool = new Pool({
     connectionString,
-    max: 5
+    max: 3
 })
 
 module.exports = pool

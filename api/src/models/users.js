@@ -108,11 +108,12 @@ module.exports.updatePassword = (userid, newPwd) => {
 }
 
 module.exports.updatePFP = (userid, cloudinaryurl, cloudinaryid) => {
-    const updatePFP = 'update users set picurl = $1, picid = $2 where id = $3'
+    const updatePFP = 'update users set picurl = $1, picid = $2 where id = $3 returning picurl'
     return new Promise((resolve, reject) => {
         connection
             .query(updatePFP, [cloudinaryurl, cloudinaryid, userid])
             .then((result) => {
+                console.log(result)
                 resolve(result)
             })
             .catch((err) => {

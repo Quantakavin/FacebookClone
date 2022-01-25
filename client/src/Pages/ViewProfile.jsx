@@ -140,23 +140,30 @@ const Profile = ({ match }) => {
     }
 
     const createImagePost = (event) => {
-
+        console.log(event.target.files)
+        event.preventDefault()
         setImageFormLoading(true);
         let webFormData = new FormData();
         webFormData.append("file", ImageInput.file);
         axios
-            .put(`${config.baseURL}/PFP`, webFormData, {
+            .put(`${config.baseURL}/PFP/${localStorage.getItem("user_id")}`, webFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
             .then(response => {
+                console.log('IT WORKED')
                 setImageFormLoading(false)
                 console.log(response);
+                setImageInput({
+                    ...ImageInput,
+                    file: ''
+                })
                 setRerender(rerender => !rerender)
             })
             .catch(error => {
+                console.log('IT FAILED')
                 setImageFormLoading(false)
                 setBorderColor('red')
                 setErrorMsg(error.response.data.message);
@@ -213,10 +220,10 @@ const Profile = ({ match }) => {
                                                 <Form.Control name="file" type="file" size="sm" onChange={handleImageUploadChange} />
                                             </Form.Group>
                                             {errorMsg != '' ? <p style={{ color: "red", fontSize: "0.85em", marginLeft: 15 }}>{errorMsg}!</p> : <></>}
-                                            {!null ?
+                                            {ImageFormLoading!==null ?
                                                 <Button style={{ backgroundColor: "#4267B2", width: "100%" }} variant="primary" type="submit" >Upload photo</Button> :
                                                 <Button variant="primary" disabled style={{ backgroundColor: "#4267B2", width: "100%" }}>
-                                                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                                                    <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
                                                 </Button>}
                                         </Form>
                                     </div> : ""
@@ -270,7 +277,7 @@ const Profile = ({ match }) => {
                                         <p style={{ color: "#838383" }}>No content to display</p>
                                         : <></>}
                                     {posts.map(post =>
-                                        <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
+                                        <Post key={post.postid} post={post} setRerender={setRerender} reload = {rerender} ></Post>
                                     )}
                                 </Container>
                         }

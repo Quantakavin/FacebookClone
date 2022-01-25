@@ -59,7 +59,7 @@ module.exports.uploadMediaToCloudinary = async (files, callback) => {
                 console.log("url: ", result.url, " id : ", result.public_id)
                 console.log(`post.js line 78 video upload. the list of files (version: ${i}) uploaded is --> `)
                 //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
-                cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "image" })
+                cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "video" })
                 console.log(cloudinaryResults)
             } catch (error) {
                 console.log(error)
@@ -225,7 +225,7 @@ module.exports.updateVideo = async (
     cloudinaryurl,
     cloudinaryid
 ) => {
-    const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`
+    const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT', cloudinaryurl=$2, cloudinaryid=$3 WHERE id=$4;`
     return new Promise((resolve, reject) => {
         connection
             .query(updatePostQuery, [
@@ -280,99 +280,114 @@ module.exports.feed = async (userid) => {
     }
     )
 }
-module.exports.trendingFeed = async (userid, callback) => {
-    let followids = [userid]
-    const followQuery = "SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1";
-    connection.query(followQuery, [userid])
-        .then(result => {
-            for (let i = 0; i < result.rows.length; i++) {
-                if (result.rows[i].user_id != userid) {
-                    followids.push(result.rows[i].user_id)
-                }
-                if (result.rows[i].friend_id != userid) {
-                    followids.push(result.rows[i].friend_id)
-                }
-            }
-            console.log(followids)
-            const feedQuery = `SELECT distinct p.id AS postid, u.id, u.name, u.picurl, p.date, p.editdate, p.content, p.type, p.caption, p.cloudinaryurl, p.media, DATE_PART('day', now()::timestamp - p.date::timestamp) * 24 + DATE_PART('hour', now()::timestamp - p.date::timestamp) as hoursAlive, (select count(post_id) from likes l where l.post_id = p.id ) as NoOfLikes FROM post p, users u, likes l where u.id = p.user_id AND u.id = ANY ($1)  ORDER BY p.date DESC`
-            connection.query(feedQuery, [followids])
-                .then(results2 => {
-                    for (var i = 0; i < results2.rows.length; i++) {
-                        results2.rows.velocity = 0;
-                        var currentRecord = results2.rows[i]
-                        var velocity = currentRecord.nooflikes / currentRecord.hoursalive;
-                        var velocityDecimal = velocity.toFixed(100)
-                        results2.rows[i].velocity = velocityDecimal
+
+module.exports.trendingFeed = async (userid) => {
+    const followids = [userid]
+    const followQuery =
+        'SELECT * FROM friendship WHERE user_id =$1 OR friend_id = $1'
+    return new Promise((resolve, reject) => {
+        connection
+            .query(followQuery, [userid])
+            .then((result) => {
+                for (let i = 0; i < result.rows.length; i += 1) {
+                    if (result.rows[i].user_id !== userid) {
+                        followids.push(result.rows[i].user_id)
                     }
-                    results2.rows.sort((a, b) => {
-                        return b.velocity - a.velocity
+                    if (result.rows[i].friend_id !== userid) {
+                        followids.push(result.rows[i].friend_id)
+                    }
+                }
+                console.log(followids)
+                const feedQuery = `SELECT distinct p.id AS postid, u.id, u.name, u.picurl, p.date, p.editdate, p.content, p.type, p.caption, p.cloudinaryurl, p.media, DATE_PART('day', now()::timestamp - p.date::timestamp) * 24 + DATE_PART('hour', now()::timestamp - p.date::timestamp) as hoursAlive, (select count(post_id) from likes l where l.post_id = p.id ) as NoOfLikes FROM post p, users u, likes l where u.id = p.user_id AND u.id = ANY ($1)  ORDER BY p.date DESC`
+
+                connection.query(feedQuery, [followids])
+                    .then(results2 => {
+                        for (var i = 0; i < results2.rows.length; i++) {
+                            results2.rows.velocity = 0;
+                            var currentRecord = results2.rows[i]
+                            var velocity = currentRecord.nooflikes / currentRecord.hoursalive;
+                            var velocityDecimal = velocity.toFixed(100)
+                            results2.rows[i].velocity = velocityDecimal
+                        }
+                        results2.rows.sort((a, b) => {
+                            return b.velocity - a.velocity
+                        })
+                        resolve(results2.rows, null)
                     })
-                    callback(results2.rows, null)
-                })
-                .catch(error => {
-                    console.log(error)
-                    callback(null, error)
-                })
-        })
-        .catch(err => {
-            console.log(err)
-            callback(null, err)
-        })
+                    .catch(error => {
+                        console.log(error)
+                        reject(null, error)
+                    })
+            })
+            .catch(err => {
+                console.log(err)
+                reject(null, err)
+            })
+    }
+    )
 }
 
-module.exports.getById = async (id, callback) => {
-    const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`;
-    connection.query(getPostByIdQuery, [id])
-        .then(results => {
-            console.log("called")
-            console.log(results.rows)
-            callback(results.rows, null)
-        })
-        .catch(err => {
-            console.log(err)
-            callback(null, err)
-        })
+module.exports.getById = async (id) => {
+    const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(getPostByIdQuery, [id])
+            .then((results) => {
+                console.log(results.rows)
+                resolve(results.rows)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
 }
 
 module.exports.getMediaById = async (id, callback) => {
     const getPostByIdQuery = `SELECT cloudinaryurl, cloudinaryid, type, post_id as postid FROM  media where post_id = $1`;
-    connection.query(getPostByIdQuery, [id])
+    return new Promise((resolve,reject)=>{
+        connection
+        .query(getPostByIdQuery, [id])
         .then(results => {
             console.log("media could be gotten from db for post " + id)
-            if (id == 185) {
-                console.log(results)
-            }
             console.log(results.rows)
-            callback(results.rows, null)
+            resolve(results.rows, null)
         })
         .catch(err => {
             console.log(err)
             console.log("media could not be gotten from db")
-            callback(null, err)
+            reject(null, err)
         })
+    })
 }
 
-module.exports.getByUserId = async (userid, callback) => {
-    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`;
-    connection.query(getPostByUserIdQuery, [userid])
-        .then(results => {
-            console.log("called")
-            console.log(results.rows)
-            callback(results.rows, null)
-        })
-        .catch(err => {
-            console.log(err)
-            callback(null, err)
-        })
+module.exports.getByUserId = async (userid) => {
+    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(getPostByUserIdQuery, [userid])
+            .then((results) => {
+                console.log(results.rows)
+                resolve(results.rows)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
 }
-module.exports.delete = async (id, callback) => {
-    const deletePostQuery = `DELETE FROM post Where id = $1`;
-    connection.query(deletePostQuery, [id])
-        .then(returnid => {
-            callback(returnid, null)
-        })
-        .catch(err => {
-            console.log(err)
-            callback(null, err)
-        })
+
+module.exports.delete = async (id) => {
+    const deletePostQuery = `DELETE FROM post Where id = $1`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(deletePostQuery, [id])
+            .then((returnid) => {
+                resolve(returnid)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
 }

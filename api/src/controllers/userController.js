@@ -145,7 +145,7 @@ module.exports.allUsers = async (req, res) => {
 }
 
 module.exports.updatePFP = async (req, res) => {
-    const userid = req.body.userid
+    const userid = req.params.id
     const pfp = req.body.file
     try {
         const result = await post.uploadFile(pfp)
@@ -153,7 +153,7 @@ module.exports.updatePFP = async (req, res) => {
         const cloudinaryid = result.public_id
         try {
             await user.updatePFP(userid, cloudinaryurl, cloudinaryid)
-            return res.status(204).json({ message: 'Post Updated!' })
+            return res.status(200).json({ message: 'Post Updated!' })
         } catch (err) {
             console.log(err)
             return res
