@@ -33,10 +33,11 @@ module.exports.getNotification = async (postid) => {
 }
 
 module.exports.commentNotification = async (receiver_id, notification_id, postid, userid) => {
-    const insertNotificationQuery = `INSERT into Notification (Receiver_ID, notification_ID, Time, Data) VALUES ($1, $2, NOW() at time zone 'SGT',('{"postid": $3, "userid": $4}'))`
+    let jsondata = {"postid": postid, "userid": userid};
+    const insertNotificationQuery = `INSERT into Notification (Receiver_ID, notification_ID, Time, Data) VALUES ($1, $2, NOW() at time zone 'SGT', $3)`
     return new Promise((resolve, reject) => {
         connection
-            .query(insertNotificationQuery, [receiver_id, notification_id, postid, userid])
+            .query(insertNotificationQuery, [receiver_id, notification_id, jsondata])
             .then((returnid) => {
                 resolve(returnid)
             })
