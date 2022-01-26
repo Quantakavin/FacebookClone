@@ -2,9 +2,8 @@ import { Navbar, Nav, Container, Form, FormControl, Button, NavDropdown } from '
 import facebookicon from '../Images/facebookicon.png';
 import '../Styles/nav.scss';
 import { useHistory } from "react-router-dom";
-//import Search from "./SearchBar.jsx"
 import Search from "./Search.jsx"
-//import profilephoto from '../Images/profilephoto.png';
+
 
 const TopBar = () => {
   const history = useHistory();
@@ -47,7 +46,7 @@ const TopBar = () => {
     return (
       <>
 
-        <Navbar variant="dark" expand="lg" style={{ backgroundColor: "#4267B2" }}>
+        <Navbar variant="dark" expand="lg" fixed="top" style={{ backgroundColor: "#4267B2" } }>
           <Container fluid>
             <Navbar.Brand className="brand" href="/userhome"><img
               alt=""
