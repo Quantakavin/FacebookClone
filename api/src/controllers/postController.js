@@ -38,7 +38,7 @@ module.exports.createPhoto = async (req, res) => {
     const { userid, caption, file } = req.body
     try {
         const result = await post.uploadFile(file)
-        const cloudinaryurl = result.url
+        const cloudinaryurl = result.secure_url
         const cloudinaryid = result.public_id
 
         try {
@@ -103,7 +103,7 @@ module.exports.createVideo = async (req, res) => {
     const { userid, caption, file } = req.body
     try {
         const result = await post.uploadVideo(file)
-        const cloudinaryurl = result.url
+        const cloudinaryurl = result.secure_url
         const cloudinaryid = result.public_id
 
         try {

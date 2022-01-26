@@ -218,9 +218,12 @@ const Profile = ({ match }) => {
                                     height: '120px'
                                 }} roundedCircle></Image>
                             }
+                            {PageProfile.id != userProfile.id ?
                             <Button onClick={() => friend(match.params.id)}>
                             Add as Friend
                             </Button>
+                            : ""
+                            }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?
                                     <div>
