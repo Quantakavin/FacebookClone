@@ -73,26 +73,6 @@ const Post = (props) => {
       getLikeCount()
       getLiked()
     }
-    /*
-    axios
-    .get(`${config.baseURL}/comments/${props.post.postid}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` 
-        }
-    })
-    .then(response => {
-      if (!isCancelled) {
-        setComments(response.data)
-        console.log(isCancelled)
-      }
-    })
-    .catch(error => {
-      if (!isCancelled) {
-      console.log(error);
-      }
-      
-  })
-  */
 
     return (() => {
       isCancelled = true;
