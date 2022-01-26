@@ -127,7 +127,8 @@ module.exports = (router) => {
     )
     router.post('/api/friendship', friendController.checkFriendship)
     router.get('/api/friendship', authorization.verifyUser, friendController.getRequests)
-    router.put('/api/friendship', authorization.verifyUser, friendController.acceptRequests)
+    router.put('/api/accept', authorization.verifyUser, friendController.acceptRequests)
+    router.put('/api/decline', authorization.verifyUser, friendController.declineRequests)
 
     router.post('/api/like', authorization.verifyUser, likeController.like)
     router.delete(
@@ -167,11 +168,10 @@ module.exports = (router) => {
 
     router.post('/api/notification',
         authorization.verifyUser,
-        notificationController.sendNotification
+        notificationController.commentNotification
     )
 
-    router.post('/api/commentnotification',
-        authorization.verifyUser,
-        notificationController.commentNotification
+    router.get('/api/notification',
+        notificationController.getNotifications
     )
 }

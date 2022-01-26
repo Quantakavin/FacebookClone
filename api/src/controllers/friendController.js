@@ -54,9 +54,24 @@ module.exports.getRequests = async (req, res) => {
 module.exports.acceptRequests = async (req, res) => {
   const status = "accepted";
   const confirmed = true;
-  const friend_id = req.body;
+  const friend_id = req.body.userid; //user id is used to show which person sent the request
+  const user_id = req.body.friendid;
   try {
-    const results = await friendship.acceptRequests(status, friend_id, confirmed)
+    const results = await friendship.acceptRequests(status, confirmed, friend_id, user_id)
+    return res.status(201).send(results.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
+module.exports.declineRequests = async (req, res) => {
+  const status = "declined";
+  const confirmed = false;
+  const friend_id = req.body.userid; //user id is used to show which person sent the request
+  const user_id = req.body.friendid;
+  try {
+    const results = await friendship.declineRequests(status, confirmed, friend_id, user_id)
     return res.status(201).send(results.rows);
   } catch (error) {
     console.log(error);

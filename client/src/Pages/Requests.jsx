@@ -9,6 +9,7 @@ import config from '../config/config';
 
 const Requests = () => {
     const [users, setUsers] = useState([]);
+    const [refresh, setRefresh]= useState(false);
     const history = useHistory();
     useEffect(() => {
       getRequests()
@@ -31,16 +32,34 @@ const Requests = () => {
         
       }
 
-      const acceptRequests = () => {
+      const acceptRequests = (id) => {
         axios
-        .put(`${config.baseURL}/friendship`, null, {
+        .put(`${config.baseURL}/accept`, {"friendid": id}, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}` 
           }
         })
         .then(response => {
           console.log('promise fulfilled')
-          getRequests();
+          setRefresh(r => !r)
+          
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        
+      }
+
+      const declineRequests = (id) => {
+        axios
+        .put(`${config.baseURL}/decline`, {"friendid": id}, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+        .then(response => {
+          console.log('promise fulfilled')
+          
         })
         .catch(error => {
           console.log(error);
@@ -104,7 +123,7 @@ const Requests = () => {
                      {user.friended? 
                      <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500}} onClick={() => unfriend(user.id) }></Button>:<>
                      <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500}} onClick={() => acceptRequests(user.id)}>Accept</Button>
-                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500}} onClick={() => acceptRequests(user.id)}>Decline</Button></>
+                     <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500}} onClick={() => declineRequests(user.id)}>Decline</Button></>
                     }
 
                  </Card>
