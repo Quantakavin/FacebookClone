@@ -11,17 +11,20 @@ const Notifications = (props) => {
     useEffect(() => {
         getNotification()
     })
-    
-      
+
 
     const getNotification = () => {
-        axios
-          .get(`${config.baseURL}/notification`)
+        axios.get(`${config.baseURL}/notification?receiver_id=${localStorage.getItem("user_id")}`,{
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` 
+              }
+          })
           .then(response => {
             setNotification(response.data)
           })
           .catch(error => {
             console.log(error);
+            
           })
     
       }
@@ -35,13 +38,11 @@ const Notifications = (props) => {
         <div id="wrapper">
             <div id="info">
                 <h2 style={{marginTop: 50, marginBottom: 30}}>Notifications</h2>
-                {
-                    notification.map(notifications=>
+                {notification.map(notifications=>
                             <div>
-                               <p>{notifications.name + " " + notifications.notification_message}</p> 
+                               <p>{notifications.name} {notifications.notification_message}</p> 
                             </div>
-                    )
-                }
+                    )}
                  
             </div>
             

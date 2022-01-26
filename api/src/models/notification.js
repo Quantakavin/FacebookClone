@@ -34,7 +34,7 @@ module.exports.getNotifications = async (receiver_id) => {
 }
 
 
-module.exports.getNotificationsWords = async (receiver_id) => {
+module.exports.getNotifications = async (receiver_id) => {
     const sql = `SELECT notification.*, users.name, notificationmessage.notification_message FROM notification INNER JOIN users ON users.id = CAST((notification.data ->> 'postid') AS INTEGER) INNER JOIN notificationmessage ON notification.notification_id = notificationmessage.id WHERE (notification.receiver_id = $1)`
     return new Promise((resolve, reject) => {
         connection
