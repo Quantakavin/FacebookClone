@@ -32,14 +32,14 @@ module.exports.delete = async (userid, friendid) => {
     })
 }
 
-module.exports.get = async (userid, friendid) => {
+module.exports.getFriendship = async (userid, friendid) => {
     const sql =
         'SELECT * FROM friendship WHERE (user_id = $1 AND friend_id=$2) OR (user_id = $2 AND friend_id=$1)'
     return new Promise((resolve, reject) => {
         connection
             .query(sql, [userid, friendid])
             .then((result) => {
-                resolve(result)
+                resolve(result.rows)
             })
             .catch((err) => {
                 console.log(err)

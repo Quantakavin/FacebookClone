@@ -51,9 +51,7 @@ const Profile = ({ match }) => {
 
     const getFriendship = () => {
         axios
-            .post(`${config.baseURL}/friendship`, {
-                userid: localStorage.getItem('user_id'),
-                friendid: match.params.id
+            .get(`${config.baseURL}/friendship?userid=${localStorage.getItem('user_id')}&friendid=${match.params.id}`, {
             })
             .then(response => {
                 console.log("friend")
@@ -255,7 +253,7 @@ const Profile = ({ match }) => {
                                     height: '120px'
                                 }} roundedCircle></Image>
                             }
-                            {PageProfile.id != userProfile.id ?
+                            {PageProfile.id != userProfile.id && friendship.length == 0 ?
                             <Button onClick={() => friend(match.params.id)}>
                             Add as Friend
                             </Button>

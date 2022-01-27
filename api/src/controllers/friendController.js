@@ -25,15 +25,13 @@ module.exports.unfriend = async (req, res) => {
 }
 
 module.exports.checkFriendship = async (req, res) => {
+  console.log("checkFriendship is working") 
   try {
-    let { userid, friendid } = req.body;
-    await friendship.get(userid, friendid, (results, error) => {
-      if (error) {
-        res.status(500).json({ message: "Internal Server Error!" });
-      } else {
-        return res.status(201).send(results.rows);
-      }
-    });
+    let { userid, friendid } = req.query;
+    console.log(req.body)
+    const results = await friendship.getFriendship(userid, friendid )
+    console.log(results);
+    return res.status(201).send(results);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error!" });
