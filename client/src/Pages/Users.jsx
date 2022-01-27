@@ -46,6 +46,20 @@ const Users = () => {
         console.log(error);
       })
 
+      //Notification for sending friend request
+      axios
+      .post(`${config.baseURL}/notification`, { "receiver_id": id, "notification_id": 1}, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
   }
 
 
