@@ -190,10 +190,7 @@ module.exports = (router) => {
         notificationController.friendNotification
     )
 
-    router.get(
-        '/api/notification',
-        notificationController.getNotifications
-    )
+    router.get('/api/notification', notificationController.getNotifications)
 
     router.put(
         '/api/privacytrue',
@@ -203,7 +200,13 @@ module.exports = (router) => {
 
     router.put(
         '/api/privacyfalse',
-        authorization.verifyUser,
+        // authorization.verifyUser,
         userController.privacyFalse
+    )
+
+    router.put(
+        '/api/privacy',
+        authorization.verifyUser,
+        userController.setPrivacy
     )
 }

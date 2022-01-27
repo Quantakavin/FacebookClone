@@ -198,3 +198,15 @@ module.exports.privacyFalse = async (req, res) => {
         return res.status(500).json({ message: 'Internal Server Error!' })
     }
 }
+
+module.exports.setPrivacy = async (req, res) => {
+    const { userid } = req.query
+    const { privacy } = req.body
+    try {
+        const results = await user.updatePrivacy(privacy, userid)
+        return res.status(200).json(results.rows)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal Server Error!' })
+    }
+}
