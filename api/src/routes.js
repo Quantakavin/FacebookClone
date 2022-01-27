@@ -192,7 +192,6 @@ module.exports = (router) => {
 
     router.get(
         '/api/notification',
-        authorization.verifyUser,
         notificationController.getNotifications
     )
 

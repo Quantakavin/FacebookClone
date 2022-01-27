@@ -24,7 +24,7 @@ const Profile = ({ match }) => {
     const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
-    const [checked, setChecked] = React.useState(true);
+    const [checked, setChecked] = React.useState(false);
 
     useEffect(() => {
         getFeed()
@@ -262,7 +262,11 @@ const Profile = ({ match }) => {
                             : 
                             <Switch
                             checked={checked}
-                            onChange={handleChange}
+                            onChange={
+                                checked == true ? 
+                                PrivacyTrue
+                                :PrivacyFalse
+                            }
                             inputProps={{ 'aria-label': 'controlled' }}
                             />
                             }
