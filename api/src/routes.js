@@ -131,6 +131,11 @@ module.exports = (router) => {
         authorization.verifyUser,
         friendController.getRequests
     )
+    router.get(
+        '/api/getMutualFriends',
+        
+        friendController.getMutualFriends
+    )
     router.put(
         '/api/accept',
         authorization.verifyUser,
