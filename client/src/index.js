@@ -20,6 +20,7 @@ import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
 import PageNotFound from './Pages/404';
 import Notifications from './Pages/Notifications'
+import ViewPost from './Pages/ViewPost'
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
 dotenv.config();
@@ -66,6 +67,7 @@ ReactDOM.render(
                 <Route path="/editcomment/:id" component = {EditComment} />
                 <Route path="/conversations" component = {Conversations} />
                 <Route path="/notifications" component ={Notifications} />
+                <Route path="/post/:id" component ={ViewPost} />
                 <Route exact path="/" component={Home} />
                 <Route path = "*" component = {PageNotFound} />
             </Switch>

@@ -208,7 +208,7 @@ const Profile = ({ match }) => {
     return (
         <>
             <header>
-                {/* <TopBar /> */}
+                <TopBar />
             </header>
             <div style={{ backgroundColor: "#e3e8ee", height: "100vh", overflow: 'auto', paddingTop: "50px", paddingBottom: "50px" }}>
                 <Container className="postscontainer"
