@@ -239,3 +239,20 @@ module.exports.updatePrivacyFalse = async (user_id) => {
             })
     })
 }
+
+module.exports.updatePrivacy = async (privacy, user_id) => {
+    const sql =
+        `UPDATE users SET privacy = $1 WHERE id = $2`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [privacy, user_id])
+            .then((result) => {
+                console.log(user_id)
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
