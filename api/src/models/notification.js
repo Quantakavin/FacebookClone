@@ -44,7 +44,7 @@ module.exports.getNotifications = async (receiver_id) => {
             users.name, 
             notificationmessage.notification_message 
         FROM 
-            notification INNER JOIN users ON users.id = CAST((notification.data ->> 'postid') AS INTEGER) 
+            notification INNER JOIN users ON users.id = CAST((notification.data ->> 'userid') AS INTEGER) 
             INNER JOIN notificationmessage ON notification.notification_id = notificationmessage.id 
         WHERE (notification.receiver_id = $1) order by time desc`
     return new Promise((resolve, reject) => {
