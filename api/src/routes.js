@@ -126,9 +126,21 @@ module.exports = (router) => {
         friendController.unfriend
     )
     router.post('/api/friendship', friendController.checkFriendship)
-    router.get('/api/friendship', authorization.verifyUser, friendController.getRequests)
-    router.put('/api/accept', authorization.verifyUser, friendController.acceptRequests)
-    router.put('/api/decline', authorization.verifyUser, friendController.declineRequests)
+    router.get(
+        '/api/friendship',
+        authorization.verifyUser,
+        friendController.getRequests
+    )
+    router.put(
+        '/api/accept',
+        authorization.verifyUser,
+        friendController.acceptRequests
+    )
+    router.put(
+        '/api/decline',
+        authorization.verifyUser,
+        friendController.declineRequests
+    )
 
     router.post('/api/like', authorization.verifyUser, likeController.like)
     router.delete(
@@ -166,18 +178,32 @@ module.exports = (router) => {
     )
     router.get('/api/searchUser', searchController.searchUser)
 
-    router.post('/api/notification',
+    router.post(
+        '/api/notification',
         authorization.verifyUser,
         notificationController.commentNotification
     )
 
-    router.post('/api/notification',
+    router.post(
+        '/api/notification',
         authorization.verifyUser,
         notificationController.friendNotification
     )
 
-    router.get('/api/notification',
-        authorization.verifyUser,
+    router.get(
+        '/api/notification',
         notificationController.getNotifications
+    )
+
+    router.put(
+        '/api/privacytrue',
+        authorization.verifyUser,
+        userController.privacyTrue
+    )
+
+    router.put(
+        '/api/privacyfalse',
+        authorization.verifyUser,
+        userController.privacyFalse
     )
 }
