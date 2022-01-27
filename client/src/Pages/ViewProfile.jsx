@@ -67,7 +67,7 @@ const Profile = ({ match }) => {
 
     const getMutualFriends = () => {
         axios
-            .get(`${config.baseURL}/getMutualFriends?userid=${localStorage.getItem('user_id')}&friendid=${match.params.id}`, {
+            .get(`${config.baseURL}/getMutualFriends?user_id=${localStorage.getItem('user_id')}&friend_id=${match.params.id}`, {
             })
             .then(response => {
                 console.log(response.data)

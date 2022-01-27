@@ -113,6 +113,7 @@ module.exports.getMutualFriends = async (user_id, friend_id) => {
         connection
             .query(sql, [user_id, friend_id])
             .then((result) => {
+                console.log(result)
                 resolve(result)
             })
             .catch((err) => {
