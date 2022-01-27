@@ -136,7 +136,7 @@ const Post = (props) => {
 
     //Notification for commenting
     axios
-      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 3, "postid": props.post.postid }, {
+      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 3,"userid": localStorage.getItem("user_id") ,"postid": props.post.postid }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -186,7 +186,7 @@ const Post = (props) => {
 
       // Notification for liking post
       axios
-      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 4, "postid": props.post.postid }, {
+      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 4,"userid": localStorage.getItem("user_id") ,"postid": props.post.postid }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -294,7 +294,7 @@ const Post = (props) => {
         {props.post.cloudinaryurl == null ?
           <p style={{ marginLeft: "1%", fontSize: "1.15em" }} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p> :
           <>
-            {props.post.caption == null ? <></> : <p style={{ marginLeft: "1%", fontSize: "1.15em" }}>{props.post.caption}</p>}
+            {props.post.caption == null ? <></> : <p  onClick={() => { history.push(`./viewpost/${props.post.postid}`) }} style={{ marginLeft: "1%", fontSize: "1.15em" }}>{props.post.caption}</p>}
             {props.post.type == "image" ?
               <Image width="100%" style={{ marginBottom: 15 }} src={props.post.cloudinaryurl} fluid /> :
               <ReactPlayer width="100%" controls={true} style={{ marginBottom: 15 }} url={props.post.cloudinaryurl} />

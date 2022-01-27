@@ -3,9 +3,11 @@ import TopBar from '../Components/TopBar';
 import axios from 'axios';
 import config from '../config/config';
 import { Container } from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 
 const Notifications = (props) => {
     const [notification, setNotification] = useState([]);
+    const history = useHistory();
 
     useEffect(() => {
         getNotification()
@@ -36,7 +38,7 @@ const Notifications = (props) => {
                 <div id="info">
                     <h2 style={{ marginTop: 50, marginBottom: 30 }}>Notifications</h2>
                     {notification.map(notifications =>
-                        <div>
+                        <div onClick={() => { history.push(`./profile/${notifications.userid}`) }}>
                             <p>{notifications.name} {notifications.notification_message}</p>
                         </div>
                     )}

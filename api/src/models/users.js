@@ -205,16 +205,31 @@ module.exports.getPrivacy = async (userid) => {
     })
 }
 
-module.exports.updatePrivacy = async (status, confirmed, friend_id, user_id) => {
+module.exports.updatePrivacyTrue = async (user_id) => {
     const sql =
-        `UPDATE users SET status = $1, confirmed = $2 WHERE (friend_id = $3 AND user_id = $4 AND status = 'requested')`
+        `UPDATE users SET privacy = true WHERE id = $1`
     return new Promise((resolve, reject) => {
         connection
-            .query(sql, [status, confirmed, friend_id, user_id])
+            .query(sql, [user_id])
             .then((result) => {
-                console.log(status)
-                console.log(confirmed)
-                console.log(friend_id)
+                console.log(user_id)
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
+
+module.exports.updatePrivacyFalse = async (user_id) => {
+    const sql =
+        `UPDATE users SET privacy = false WHERE id = $1`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [user_id])
+            .then((result) => {
                 console.log(user_id)
                 resolve(result)
             })

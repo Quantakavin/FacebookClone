@@ -17,13 +17,14 @@ const Profile = ({ match }) => {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState([])
     const [PageProfile, setPageProfile] = useState([])
+    const [Privacy, setPrivacy] = useState(false);
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
-    const [checked, setChecked] = React.useState(true);
+    const [checked, setChecked] = React.useState(false);
 
     useEffect(() => {
         getFeed()
@@ -80,6 +81,31 @@ const Profile = ({ match }) => {
             })
     }
 
+    const PrivacyFalse = () => {
+        axios.put(`${config.baseURL}/privacyFalse/?${localStorage.getItem('user_id')}`)
+        .then(response => {
+            console.log(response.data)
+            setPrivacy = false;
+            
+        }
+        ).catch(error => {
+            console.log("error in frontend")
+            console.log(error);
+        })
+    }
+
+    const PrivacyTrue = () => {
+        axios.put(`${config.baseURL}/privacyTrue/?${localStorage.getItem('user_id')}`)
+        .then(response => {
+            console.log(response.data)
+            setPrivacy = true;
+            
+        }
+        ).catch(error => {
+            console.log("error in frontend")
+            console.log(error);
+        })
+    }
 
     const getPageProfile = () => {
         axios.get(`${config.baseURL}/UserData/${match.params.id}`)
@@ -235,8 +261,10 @@ const Profile = ({ match }) => {
                             </Button>
                             : 
                             <Switch
-                            checked={checked}
-                            onChange={handleChange}
+                            // checked={checked}
+                            // onChange={
+                                
+                            // }
                             inputProps={{ 'aria-label': 'controlled' }}
                             />
                             }

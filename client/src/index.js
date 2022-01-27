@@ -63,6 +63,7 @@ ReactDOM.render(
                 <Route path="/requests" component = {Requests} />
                 <Route path="/users" component = {Users} />
                 <Route path="/userhome" component = {UserHome} />
+                <Route path="/viewpost" component ={ViewPost} />
                 <Route path="/editpost/:id" component = {EditPost} />
                 <Route path="/editcomment/:id" component = {EditComment} />
                 <Route path="/conversations" component = {Conversations} />
