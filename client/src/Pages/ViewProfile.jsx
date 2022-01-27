@@ -305,13 +305,15 @@ const Profile = ({ match }) => {
                             Add as Friend
                             </Button>
                             : 
+                            PageProfile.id == userProfile.id?
                             (
                                 <Switch
                                   checked={userProfile.privacy}
                                   onChange={handlePrivacyChange}
                                   inputProps={{ "aria-label": "controlled" }}
                                 />
-                              )
+                              ):
+                              ""
                             }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?
