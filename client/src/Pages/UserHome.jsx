@@ -111,7 +111,7 @@ const ImageForm = (props) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const mutation = useMutation(async (data) => {
-        await axios.post(`${config.baseURL}/photo`, data, {
+        await axios.post(`${config.baseURL}/postMedia`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -124,9 +124,13 @@ const ImageForm = (props) => {
     })
 
     const onSubmit = data => {
+        console.log(data.file)
+        console.log(data.caption)
         let webFormData = new FormData();
         webFormData.append('caption', data.caption);
-        webFormData.append("file", data.file[0]);//gives an array
+        for(var i = 0;i<data.file.length;i++){
+            webFormData.append("files[]", data.file[i]);//gives an array
+        }
         mutation.mutate(webFormData, { onSuccess: () => props.setShowForm(false) })
     }
 
@@ -214,8 +218,10 @@ const VideoForm = (props) => {
 
 const Feed = () => {
     const [rerender, setRerender] = useState(false);
-    const { isLoading, error, data } = useQuery(['feedPosts', rerender], async () =>
-        await axios.get(`${config.baseURL}/feed`, {
+    const [trending, setTrending] = useState(false);
+    var trendingOrOriginal = trending ? 'trendingFeed' : 'feed'
+    const { isLoading, error, data } = useQuery(['feedPosts', rerender, trending], async () =>
+        await axios.get(`${config.baseURL}/${trendingOrOriginal}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -224,12 +230,18 @@ const Feed = () => {
 
     if (error) {
         console.log(error)
-        return <p style={{ color: "#838383" }}>No content to display</p>
+        return (
+            <>
+                <p style={{ color: "#838383" }}>No content to display</p>
+                <p style={{ color: "#838383" }}>{error}</p>
+            </>
+        )
     }
-
 
     return (
         <>
+            {trending == true ? <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600 }}> get chronological  </Button> :
+                <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600 }}> get trending  </Button>}
             {isLoading ?
                 <>
                     <Card sx={{ m: 2 }}>
@@ -286,11 +298,12 @@ const Feed = () => {
                 :
                 <>
                     {data.data.length === 0 ?
+                    <>
                         <p style={{ color: "#838383" }}>No content to display</p>
-
+                    </>
                         : <></>}
                     {data.data.map(post =>
-                        <Post key={post.postid} post={post} setRerender={setRerender}></Post>
+                        <Post key={post.postid} post={post} setRerender={setRerender} reload={rerender}></Post>
                     )}
                 </>
             }

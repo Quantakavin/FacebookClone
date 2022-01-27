@@ -131,22 +131,7 @@ module.exports.uploadPostWithMedia = async (req, res) => {
         res.status(500).json({ message: "Error with file submission" });
     }
 }
-module.exports.getTrendingFeed = async (req, res) => {
-    try {
-        var userid = req.body.userid;
-        await post.trendingFeed(userid, (results, err) => {
-            if (err) {
-                return res.status(500).json({ message: "Cannot retrieve posts" });
-            } else {
-                console.log(results)
-                return res.status(200).json(results);
-            }
-        })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({ message: "Internal Server Error!" });
-    }
-}
+
 
 module.exports.createVideo = async (req, res) => {
     const { userid, caption, file } = req.body
@@ -222,6 +207,25 @@ module.exports.getFeed = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal Server Error!' })
+    }
+}
+
+module.exports.getTrendingFeed = async (req, res) => {
+    try {
+        var userid = req.body.userid;
+        // await post.trendingFeed(userid, (results, err) => {
+        //     if (err) {
+        //         return res.status(500).json({ message: "Cannot retrieve posts" });
+        //     } else {
+        //         console.log(results)
+        //         return res.status(200).json(results);
+        //     }
+        // })
+        const results = await post.trendingFeed(userid)
+        return res.status(200).json(results)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Cannot retrieve posts" });
     }
 }
 

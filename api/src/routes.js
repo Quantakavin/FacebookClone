@@ -86,10 +86,13 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.getFeed
     )
-
+    router.get(
+        '/api/trendingFeed',
+        authorization.verifyUser,
+        postController.getTrendingFeed
+    )
     router.get(
         '/api/getMedia/:id',
-        authorization.verifyUser,
         postController.getPostMedia
     )
 
@@ -100,11 +103,7 @@ module.exports = (router) => {
         postController.uploadPostWithMedia
     )
 
-
-    router.get(
-        '/api/trendingFeed',
-        postController.getTrendingFeed
-    )
+    
 
     router.get(
         '/api/posts/:userid',

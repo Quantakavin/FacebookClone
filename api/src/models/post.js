@@ -43,6 +43,29 @@ module.exports.uploadMediaToCloudinary = async (files, callback) => {
     for (var i = 0; i < files.length; i++) {
         if (files[i].path.endsWith(".png") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".gif") || files[i].path.endsWith(".PNG") || files[i].path.endsWith(".JPG") || files[i].path.endsWith(".JPEG") || files[i].path.endsWith(".GIF")) {
             try {
+                /*
+                //api key is 2fed643f-0572-487f-9724-fa1b5ed98c4f
+                stuff to convert mov to mp4
+                var CloudmersiveVideoApiClient = require('cloudmersive-video-api-client');
+                var defaultClient = CloudmersiveVideoApiClient.ApiClient.instance;
+                // Configure API key authorization: Apikey
+    var Apikey = defaultClient.authentications['Apikey'];
+    Apikey.apiKey = 'YOUR API KEY';
+    var apiInstance = new CloudmersiveVideoApiClient.VideoApi();
+    var opts = { 
+     'inputFile': Buffer.from(fs.readFileSync("C:\\temp\\inputfile").buffer), // File | Input file to perform the operation on.
+    };
+    var callback = function(error, data, response) {
+    if (error) {
+         console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
+    };
+        apiInstance.videoConvertToMp4(opts, callback);
+                */
+
+
                 var result = await cloudinary.uploader.upload(files[i].path, { upload_preset: 'image_upload' })
                 console.log("url: ", result.url, " id : ", result.public_id)
                 console.log(`post.js line 67 image upload. the list of files (version: ${i + 1}) uploaded is --> `)
@@ -58,7 +81,6 @@ module.exports.uploadMediaToCloudinary = async (files, callback) => {
                 var result = await cloudinary.uploader.upload(files[i].path, { resource_type: "video", chunk_size: 5000000, upload_preset: 'image_upload' })
                 console.log("url: ", result.url, " id : ", result.public_id)
                 console.log(`post.js line 78 video upload. the list of files (version: ${i}) uploaded is --> `)
-                //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
                 cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "video" })
                 console.log(cloudinaryResults)
             } catch (error) {
@@ -80,7 +102,7 @@ module.exports.insertMedia = async (userid, caption, files, callback) => {
         const insertMediaQuery = 'insert into media (post_id, cloudinaryurl, cloudinaryid, type) values ($1,$2,$3,$4) returning id'
         for (var i = 0; i < files.length; i++) {
             try {
-                var InsertMediaResult = await connection.query(insertMediaQuery, [returnid.rows[0].id, files[i].cloudinaryurl, files[i].cloudinaryid, files[0].type])
+                var InsertMediaResult = await connection.query(insertMediaQuery, [returnid.rows[0].id, files[i].cloudinaryurl, files[i].cloudinaryid, files[i].type])
                 mediaID.push(InsertMediaResult.rows[0].id)
                 console.log(InsertMediaResult.rows[0].id)
             } catch (err) {
@@ -299,7 +321,6 @@ module.exports.trendingFeed = async (userid) => {
                 }
                 console.log(followids)
                 const feedQuery = `SELECT distinct p.id AS postid, u.id, u.name, u.picurl, p.date, p.editdate, p.content, p.type, p.caption, p.cloudinaryurl, p.media, DATE_PART('day', now()::timestamp - p.date::timestamp) * 24 + DATE_PART('hour', now()::timestamp - p.date::timestamp) as hoursAlive, (select count(post_id) from likes l where l.post_id = p.id ) as NoOfLikes FROM post p, users u, likes l where u.id = p.user_id AND u.id = ANY ($1)  ORDER BY p.date DESC`
-
                 connection.query(feedQuery, [followids])
                     .then(results2 => {
                         for (var i = 0; i < results2.rows.length; i++) {
@@ -345,20 +366,18 @@ module.exports.getById = async (id) => {
 
 module.exports.getMediaById = async (id, callback) => {
     const getPostByIdQuery = `SELECT cloudinaryurl, cloudinaryid, type, post_id as postid FROM  media where post_id = $1`;
-    return new Promise((resolve,reject)=>{
-        connection
+    connection
         .query(getPostByIdQuery, [id])
         .then(results => {
             console.log("media could be gotten from db for post " + id)
             console.log(results.rows)
-            resolve(results.rows, null)
+            callback(results.rows, null)
         })
         .catch(err => {
             console.log(err)
             console.log("media could not be gotten from db")
-            reject(null, err)
+            callback(null, err)
         })
-    })
 }
 
 module.exports.getByUserId = async (userid) => {

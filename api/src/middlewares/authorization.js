@@ -1,13 +1,12 @@
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
-
 const authorization = {
     verifyUser: (req, res, next) => {
         if (typeof req.headers.authorization !== 'undefined') {
             const token = req.headers.authorization.split(' ')[1]
 
             jwt.verify(token, config.JWTKey, (err, data) => {
-                console.log('data extracted from token \n', data)
+                // console.log('data extracted from token \n', data)
                 if (err) {
                     console.log(err)
                     res.status(401).json({ message: 'You do not have access' })
@@ -22,5 +21,4 @@ const authorization = {
         }
     }
 }
-
 module.exports = authorization

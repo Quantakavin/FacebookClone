@@ -77,15 +77,15 @@ const validation = {
     },
 
     validateImage: (req, res, next) => {
-        const { file } = req.body
-        const { userid } = req.body
+        const  file  = req.body.file
+        const  userid  = req.body.userid
 
         if (userid === null || userid === '') {
             res.status(401).json({ message: 'Please login first' })
         } else if (file === null || file === []) {
             res.status(400).json({ message: 'Please upload a file' })
         } else {
-            console.log(file.path)
+            console.log("file path is "+file.path)
             if (
                 file.path.endsWith('.png') ||
                 file.path.endsWith('.jpg') ||
@@ -128,6 +128,10 @@ const validation = {
     validateAllMedia: (req, res, next) => {
         var files = req.body.files;
         var userid = req.body.userid;
+        console.log("file[0] is a "+typeof files[0]) 
+        console.log("file is--> "+ files)
+        console.log(typeof files) 
+        console.log("file[0] name is "+ files[0].name) 
         if (userid == null || userid == "") {
             res.status(401).json({ message: "Please login first" })
         } else {
