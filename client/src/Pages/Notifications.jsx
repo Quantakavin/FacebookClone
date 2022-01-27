@@ -39,8 +39,8 @@ const Notifications = () => {
                     <h2 style={{ marginTop: 50, marginBottom: 30 }}>Notifications</h2>
                     {notification.map(notifications =>
                         <div>
-                            <p onClick={() => { history.push(`./profile/${notifications.userid}`) }}>{notifications.name}</p>
-                            <p onClick={() => { history.push(`./post/${notifications.postid}`) }}>{notifications.notification_message}</p>
+                            <span onClick={() => { history.push(`./profile/${notifications.userid}`) }} > {notifications.name}</span>
+                            <span onClick={() => { history.push(`./post/${notifications.postid}`) }}> {notifications.notification_message}</span>
                         </div>
                     )}
 
