@@ -3,10 +3,12 @@ import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import { Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
+import '../Styles/privacyswitch.css';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
 import Post from '../Components/Post';
 import config from '../config/config';
+import Switch from '@mui/material/Switch';
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
@@ -20,6 +22,8 @@ const Profile = ({ match }) => {
     const [alertContent, setAlertContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
+    const label = { inputProps: { 'aria-label': 'Switch demo' } };
+    const [checked, setChecked] = React.useState(true);
 
     useEffect(() => {
         getFeed()
@@ -96,6 +100,8 @@ const Profile = ({ match }) => {
             [event.target.name]: event.target.value
 
         })
+        setChecked(event.target.checked);
+
     }
 
     const handleSubmit = (event) => {
@@ -120,6 +126,11 @@ const Profile = ({ match }) => {
                 setAlertContent(error.response.data.message);
             })
     }
+
+    // const onChangePrivacy = (event) =>{
+    //     event.preventDefault();
+        
+    // }
 
 
 
@@ -197,7 +208,7 @@ const Profile = ({ match }) => {
     return (
         <>
             <header>
-                <TopBar />
+                {/* <TopBar /> */}
             </header>
             <div style={{ backgroundColor: "#e3e8ee", height: "100vh", overflow: 'auto', paddingTop: "50px", paddingBottom: "50px" }}>
                 <Container className="postscontainer"
@@ -222,7 +233,12 @@ const Profile = ({ match }) => {
                             <Button onClick={() => friend(match.params.id)}>
                             Add as Friend
                             </Button>
-                            : ""
+                            : 
+                            <Switch
+                            checked={checked}
+                            onChange={handleChange}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            />
                             }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?
