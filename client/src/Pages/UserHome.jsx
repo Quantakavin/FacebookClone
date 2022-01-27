@@ -306,7 +306,11 @@ const UserHome = () => {
     return( 
         <>
         <header>
+<<<<<<< HEAD
             <TopBar />
+=======
+            <TopBar/>
+>>>>>>> a6a5236f31c92535b8003cfffeadedfd261da596
         </header>
         <TextForm showForm={showTextForm} setShowForm={setShowTextForm}/>
         <ImageForm showForm={showImageForm} setShowForm={setShowImageForm}/>

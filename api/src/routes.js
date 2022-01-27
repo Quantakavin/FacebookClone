@@ -171,6 +171,11 @@ module.exports = (router) => {
         notificationController.commentNotification
     )
 
+    router.post('/api/notification',
+        authorization.verifyUser,
+        notificationController.friendNotification
+    )
+
     router.get('/api/notification',
         authorization.verifyUser,
         notificationController.getNotifications
