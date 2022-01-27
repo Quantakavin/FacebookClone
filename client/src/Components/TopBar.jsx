@@ -64,7 +64,6 @@ const TopBar = () => {
                 style={{ maxHeight: '100px' }}
                 navbarScroll
               >
-                <Nav.Link style={{ color: "white" }} href="/notifications">Notifications</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/requests">Requests</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>

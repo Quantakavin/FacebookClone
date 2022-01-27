@@ -68,6 +68,7 @@ ReactDOM.render(
                 <Route path="/editcomment/:id" component = {EditComment} />
                 <Route path="/conversations" component = {Conversations} />
                 <Route path="/notifications" component ={Notifications} />
+                <Route path="/post/:id" component ={ViewPost} />
                 <Route exact path="/" component={Home} />
                 <Route path = "*" component = {PageNotFound} />
             </Switch>

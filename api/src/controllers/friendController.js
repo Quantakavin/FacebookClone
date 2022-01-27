@@ -78,3 +78,15 @@ module.exports.declineRequests = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error!" });
   }
 };
+
+module.exports.getMutualFriends = async (req, res) => {
+  const user_id = req.body.userid;
+  const friend_id = req.body.friendid;
+  try {
+    const results = await friendship.getMutualFriends(user_id, friend_id)
+    return res.status(201).send(results.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
