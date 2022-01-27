@@ -40,7 +40,7 @@ const Notifications = () => {
                     {notification.map(notifications =>
                         <div>
                             <p onClick={() => { history.push(`./profile/${notifications.userid}`) }}>{notifications.name}</p>
-                            <p onClick={() => { history.push(`./viewpost/${notifications.postid}`) }}>{notifications.notification_message}</p>
+                            <p onClick={() => { history.push(`./post/${notifications.postid}`) }}>{notifications.notification_message}</p>
                         </div>
                     )}
 
