@@ -31,6 +31,7 @@ const Profile = ({ match }) => {
         getUsersProfile();
         getPageProfile();
         getFriendship();
+        getMutualFriends();
         setRerender(false);
       }, [rerender]);
       const [Input, setInput] = useState({
@@ -58,6 +59,18 @@ const Profile = ({ match }) => {
                 console.log("friend")
                 console.log(response.data)
                 setFriendship(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    const getMutualFriends = () => {
+        axios
+            .get(`${config.baseURL}/getMutualFriends?userid=${localStorage.getItem('user_id')}&friendid=${match.params.id}`, {
+            })
+            .then(response => {
+                console.log(response.data)
             })
             .catch(error => {
                 console.log(error);

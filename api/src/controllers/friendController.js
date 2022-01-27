@@ -78,10 +78,9 @@ module.exports.declineRequests = async (req, res) => {
 };
 
 module.exports.getMutualFriends = async (req, res) => {
-  const user_id = req.body.userid;
-  const friend_id = req.body.friendid;
+  let { user_id, friend_id } = req.query;
   try {
-    const results = await friendship.getMutualFriends(user_id, friend_id)
+    const results = await friendship.getMutualFriends(user_id, friend_id);
     return res.status(201).send(results.rows);
   } catch (error) {
     console.log(error);
