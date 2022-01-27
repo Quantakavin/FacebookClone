@@ -40,7 +40,8 @@ module.exports.getNotifications = async (receiver_id) => {
     const sql = `
         SELECT 
             notification.*,
-            notification.data ->> 'userid' AS userid, 
+            notification.data ->> 'userid' AS userid,
+            notification.data ->> 'postid' AS postid,
             users.name, 
             notificationmessage.notification_message 
         FROM 
