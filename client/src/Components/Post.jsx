@@ -154,7 +154,7 @@ const Post = (props) => {
 
     //Notification for commenting
     axios
-      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 3 }, {
+      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 3,"userid": localStorage.getItem("user_id") ,"postid": props.post.postid }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -204,17 +204,17 @@ const Post = (props) => {
 
       // Notification for liking post
       axios
-        .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 4 }, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        .then(response => {
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      .post(`${config.baseURL}/notification`, { "receiver_id": props.post.id, "notification_id": 4,"userid": localStorage.getItem("user_id") ,"postid": props.post.postid }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
     } else {
       setShowError(true);
     }
@@ -347,13 +347,6 @@ const Post = (props) => {
                 }
               </>: <><p>something went wrong, media is null</p></>
             }
-        {/* {props.post.cloudinaryurl == null ?
-          <p style={{ marginLeft: "1%", fontSize: "1.15em" }} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p> :
-          <>
-            {props.post.caption == null ? <></> : <p style={{ marginLeft: "1%", fontSize: "1.15em" }}>{props.post.caption}</p>}
-            
-          </>
-        } */}
         {props.post.id == localStorage.getItem("user_id") ?
           <div style={{ display: "flex", flexDirection: "row", justifyItems: "center" }}>
             {liked == true ? <Button onClick={() => unlikepost()} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600 }}><Image src={likephoto} style={{ width: 20, marginTop: -5 }} fluid /> Liked {likeCount}</Button> :
@@ -376,31 +369,6 @@ const Post = (props) => {
 
           : <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start" }}>{liked == true ? <Button onClick={() => unlikepost()} style={{ marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600 }}><Image src={likephoto} style={{ width: 20, marginTop: -5 }} fluid /> Liked {likeCount}</Button> :
             <Button onClick={() => likepost()} style={{ marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600 }}><Image src={likephoto} style={{ width: 20, marginTop: -5 }} fluid /> Like {likeCount}</Button>}</div>}
-
-        {/*localStorage.getItem("user_id")==null?<></>:
-                [
-                  (liked == true ? <Button onClick={() => unlikepost()} style={{backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
-                <Button onClick={() => likepost()} style={{justifyContent: "flex-start", backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>),
-                
-                (props.post.id == localStorage.getItem("user_id")? 
-                <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
-                    <DropdownButton
-                      id={`dropdown-button-drop-up`}
-                      drop={"up"}
-                      title={
-                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
-                          </Image>
-                      }
-                    >
-                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${props.post.postid}`)} }>Edit</Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(props.post.postid)}>Delete</Dropdown.Item>
-                    </DropdownButton>
-                    </div>
-                    
-                : <></>)]
-                    */}
-
 
         <Row style={{ backgroundColor: "#e3e8ee" }}>
           {localStorage.getItem("user_id") == null ? <></> :

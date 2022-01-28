@@ -3,10 +3,12 @@ import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import { Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 import '../Styles/home.scss';
+import '../Styles/privacyswitch.css';
 import profilephoto from '../Images/profilephoto.png';
 import { useHistory } from "react-router-dom";
 import Post from '../Components/Post';
 import config from '../config/config';
+import Switch from '@mui/material/Switch';
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
@@ -15,11 +17,14 @@ const Profile = ({ match }) => {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState([])
     const [PageProfile, setPageProfile] = useState([])
+    const [Privacy, setPrivacy] = useState(false);
     const [borderColor, setBorderColor] = useState('transparent');
     const [errorMsg, setErrorMsg] = useState('');
     const [alertContent, setAlertContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
+    const label = { inputProps: { 'aria-label': 'Switch demo' } };
+    const [checked, setChecked] = React.useState(false);
 
     useEffect(() => {
         getFeed()
@@ -33,11 +38,8 @@ const Profile = ({ match }) => {
     });
 
     const getFeed = () => {
-        axios.get(`${config.baseURL}/posts/${match.params.id}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
+        axios
+            .get(`${config.baseURL}/posts/${match.params.id}`)
             .then(response => {
                 console.log(response.data)
                 setPosts(response.data)
@@ -79,6 +81,31 @@ const Profile = ({ match }) => {
             })
     }
 
+    const PrivacyFalse = () => {
+        axios.put(`${config.baseURL}/privacyFalse/?${localStorage.getItem('user_id')}`)
+        .then(response => {
+            console.log(response.data)
+            setPrivacy = false;
+            
+        }
+        ).catch(error => {
+            console.log("error in frontend")
+            console.log(error);
+        })
+    }
+
+    const PrivacyTrue = () => {
+        axios.put(`${config.baseURL}/privacyTrue/?${localStorage.getItem('user_id')}`)
+        .then(response => {
+            console.log(response.data)
+            setPrivacy = true;
+            
+        }
+        ).catch(error => {
+            console.log("error in frontend")
+            console.log(error);
+        })
+    }
 
     const getPageProfile = () => {
         axios.get(`${config.baseURL}/UserData/${match.params.id}`)
@@ -99,7 +126,10 @@ const Profile = ({ match }) => {
             [event.target.name]: event.target.value
 
         })
+        setChecked(event.target.checked);
+
     }
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -125,9 +155,7 @@ const Profile = ({ match }) => {
             })
     }
 
-
-
-    const [ImageFormLoading, setImageFormLoading] = useState(false);
+const [ImageFormLoading, setImageFormLoading] = useState(false);
     const [ImageInput, setImageInput] = useState({
         file: ''
     });
@@ -188,7 +216,23 @@ const Profile = ({ match }) => {
 
     }
 
-    return (
+ const friend = (id) => {
+        axios
+        .post(`${config.baseURL}/friend`, {"friendid": id}, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          }
+        })
+        .then(response => {
+          console.log('promise fulfilled')
+          getUsers();
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        
+      }
+ return (
         <>
             <header>
                 <TopBar />
@@ -212,6 +256,19 @@ const Profile = ({ match }) => {
                                     height: '120px'
                                 }} roundedCircle></Image>
                             }
+                            {PageProfile.id != userProfile.id ?
+                            <Button onClick={() => friend(match.params.id)}>
+                            Add as Friend
+                            </Button>
+                            : 
+                            <Switch
+                            // checked={checked}
+                            // onChange={
+                                
+                            // }
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                            }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?
                                     <div>
@@ -223,11 +280,12 @@ const Profile = ({ match }) => {
                                             {ImageFormLoading!==null ?
                                                 <Button style={{ backgroundColor: "#4267B2", width: "100%" }} variant="primary" type="submit" >Upload photo</Button> :
                                                 <Button variant="primary" disabled style={{ backgroundColor: "#4267B2", width: "100%" }}>
-                                                    <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
+                                                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                                                 </Button>}
                                         </Form>
                                     </div> : ""
                             }
+
                         </Col>
                         <Col>
                             {PageProfile.id == userProfile.id ?
@@ -254,7 +312,9 @@ const Profile = ({ match }) => {
                                             </p>
                                         </Alert> : ""
                                     }
+
                                 </Container>
+
                                 :
 
                                 <Container>
@@ -264,27 +324,27 @@ const Profile = ({ match }) => {
                             }
                         </Col>
                     </Row>
+
+
                 </Container>
-                {PageProfile.privacy === true && friendship.length == 0 ?
-                    <>
-                        {
-                            PageProfile.privacy === true && friendship.length == 0 && PageProfile.id != userProfile.id ? // If true and not friends 
-                                <div><h1>This account is private. Follow this account to view their post.</h1></div>
-                                :// else display post
-                                <Container className="postscontainer">
-                                    <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
-                                    {posts.length == 0 ?
-                                        <p style={{ color: "#838383" }}>No content to display</p>
-                                        : <></>}
-                                    {posts.map(post =>
-                                        <Post key={post.postid} post={post} setRerender={setRerender} reload = {rerender} ></Post>
-                                    )}
-                                </Container>
-                        }
-                    </>
-                    :
+
+
+                {PageProfile.privacy === true && friendship.length == 0 && PageProfile.id != userProfile.id ? // If true and not friends 
+
                     <div><h1>This account is private. Follow this account to view their post.</h1></div>
+                    :// else display post
+                    <Container className="postscontainer">
+                        <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
+                        {posts.length == 0 ?
+                            <p style={{ color: "#838383" }}>No content to display</p>
+                            : <></>}
+                        {posts.map(post =>
+                            <Post key={post.postid} post={post} setRerender={setRerender} ></Post>
+                        )}
+                    </Container>
+
                 }
+
             </div>
         </>
     )

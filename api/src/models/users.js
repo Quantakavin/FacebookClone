@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt')
 const connection = require('../config/database')
-
 module.exports.insert = async (name, email, password) => {
     const insertUserQuery = `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`
     const values = [name, email, password]
@@ -16,7 +15,6 @@ module.exports.insert = async (name, email, password) => {
             })
     })
 }
-
 module.exports.login = async (email) => {
     const loginUserQuery = `SELECT id, name, password FROM users WHERE email=$1`
     return new Promise((resolve, reject) => {
@@ -31,10 +29,9 @@ module.exports.login = async (email) => {
             })
     })
 }
-
 module.exports.getUserByID = async (gottenID) => {
     const sql = 'SELECT * FROM users where id = $1 '
-    // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
+    // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"	
     return new Promise((resolve, reject) => {
         connection
             .query(sql, [gottenID])
@@ -48,7 +45,6 @@ module.exports.getUserByID = async (gottenID) => {
             })
     })
 }
-
 module.exports.updateNonSensitiveData = (userid, newName, newBio) => {
     const updateProfile =
         'Update users set name = $1, bio = $2 where id = $3 returning name AS newName, bio AS newBio'
@@ -64,7 +60,6 @@ module.exports.updateNonSensitiveData = (userid, newName, newBio) => {
             })
     })
 }
-
 module.exports.updatePassword = (userid, newPwd) => {
     const getOldData = 'SELECT password FROM users where id = $1'
     let oldPwd = ''
@@ -106,7 +101,6 @@ module.exports.updatePassword = (userid, newPwd) => {
             })
     })
 }
-
 module.exports.updatePFP = (userid, cloudinaryurl, cloudinaryid) => {
     const updatePFP = 'update users set picurl = $1, picid = $2 where id = $3 returning picurl'
     return new Promise((resolve, reject) => {
@@ -122,19 +116,7 @@ module.exports.updatePFP = (userid, cloudinaryurl, cloudinaryid) => {
             })
     })
 }
-
-module.exports.updateCoverPic = () => {}
-/*
-module.exports.getAll = (userid, callback) => {
-    const sql = "SELECT * FROM users where id != $1 "
-    connection.query(sql , [userid])
-    .then(results => {
-        callback(results.rows, null)
-    })
-    .catch(err => callback(null, err))
-}
-
-*/
+module.exports.updateCoverPic = () => { }
 
 module.exports.getAll = async (userid) => {
     const sql = 'SELECT * FROM users where id != $1 '
@@ -172,24 +154,6 @@ module.exports.getAll = async (userid) => {
     })
 }
 
-/*
-module.exports.getAll = async (userid) => {
-    const sql = `SELECT u.id, u.name, u.privacy, u.bio, u.picurl, 
-    IF(SELECT COUNT(*) FROM friendship WHERE (user_id = $1 AND friend_id=u.id) OR (user_id = u.id AND friend_id=$1) = 0, false, true) AS friended  FROM users u LEFT JOIN friendship f on users.id = friendship.user_id OR users.id = friendship.friend_id WHERE u.id != $1`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(sql, [userid])
-            .then((result) => {
-                resolve(result.rows)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
-}
-*/
-
 module.exports.getPrivacy = async (userid) => {
     const sql = 'SELECT privacy FROM users where id = $1'
     return new Promise((resolve, reject) => {
@@ -198,6 +162,39 @@ module.exports.getPrivacy = async (userid) => {
             .then((result) => {
                 console.log(result.rows[0])
                 resolve(result.rows[0])
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
+module.exports.updatePrivacyTrue = async (user_id) => {
+    const sql =
+        `UPDATE users SET privacy = true WHERE id = $1`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [user_id])
+            .then((result) => {
+                console.log(user_id)
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+module.exports.updatePrivacyFalse = async (user_id) => {
+    const sql =
+        `UPDATE users SET privacy = false WHERE id = $1`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [user_id])
+            .then((result) => {
+                console.log(user_id)
+                resolve(result)
             })
             .catch((err) => {
                 console.log(err)

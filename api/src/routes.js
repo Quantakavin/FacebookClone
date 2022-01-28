@@ -8,7 +8,7 @@ const messageController = require('./controllers/messageController')
 const conversationController = require('./controllers/conversationController')
 const validation = require('./middlewares/validation')
 const authorization = require('./middlewares/authorization')
-
+const notificationController = require('./controllers/notificationController')
 module.exports = (router) => {
     router.post(
         '/api/login',
@@ -110,7 +110,7 @@ module.exports = (router) => {
         postController.getPosts
     )
 
-    router.get(
+   router.get(
         '/api/post/:id',
         authorization.verifyUser,
         postController.getPost
@@ -153,6 +153,21 @@ module.exports = (router) => {
         friendController.unfriend
     )
     router.post('/api/friendship', friendController.checkFriendship)
+    router.get(
+        '/api/friendship',
+        authorization.verifyUser,
+        friendController.getRequests
+    )
+    router.put(
+        '/api/accept',
+        authorization.verifyUser,
+        friendController.acceptRequests
+    )
+    router.put(
+        '/api/decline',
+        authorization.verifyUser,
+        friendController.declineRequests
+    )
 
     router.post('/api/like', authorization.verifyUser, likeController.like)
     router.delete(
@@ -188,6 +203,34 @@ module.exports = (router) => {
         authorization.verifyUser,
         messageController.getMessages
     )
-
     router.get('/api/searchUser', searchController.searchUser)
+
+    router.post(
+        '/api/notification',
+        authorization.verifyUser,
+        notificationController.commentNotification
+    )
+
+    router.post(
+        '/api/notification',
+        authorization.verifyUser,
+        notificationController.friendNotification
+    )
+
+    router.get(
+        '/api/notification',
+        notificationController.getNotifications
+    )
+
+    router.put(
+        '/api/privacytrue',
+        authorization.verifyUser,
+        userController.privacyTrue
+    )
+
+    router.put(
+        '/api/privacyfalse',
+        authorization.verifyUser,
+        userController.privacyFalse
+    )
 }

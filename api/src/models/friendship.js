@@ -64,13 +64,37 @@ module.exports.getRequests = async (friend_id) => {
     })
 }
 
-module.exports.acceptRequests = async (friend_id) => {
+module.exports.acceptRequests = async (status, confirmed, friend_id, user_id) => {
     const sql =
-        `SELECT users.*, users.picurl, users.name, users.id FROM users INNER JOIN friendship ON users.id = friendship.user_id WHERE (friend_id = $1 AND status = 'requested')`
+        `UPDATE friendship SET status = $1, confirmed = $2 WHERE (friend_id = $3 AND user_id = $4 AND status = 'requested')`
     return new Promise((resolve, reject) => {
         connection
-            .query(sql, [friend_id])
+            .query(sql, [status, confirmed, friend_id, user_id])
             .then((result) => {
+                console.log(status)
+                console.log(confirmed)
+                console.log(friend_id)
+                console.log(user_id)
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
+module.exports.declineRequests = async (status, confirmed, friend_id, user_id) => {
+    const sql =
+        `UPDATE friendship SET status = $1, confirmed = $2 WHERE (friend_id = $3 AND user_id = $4 AND status = 'requested')`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [status, confirmed, friend_id, user_id])
+            .then((result) => {
+                console.log(status)
+                console.log(confirmed)
+                console.log(friend_id)
+                console.log(user_id)
                 resolve(result)
             })
             .catch((err) => {

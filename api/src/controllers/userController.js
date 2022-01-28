@@ -153,7 +153,7 @@ module.exports.updatePFP = async (req, res) => {
         const cloudinaryid = result.public_id
         try {
             await user.updatePFP(userid, cloudinaryurl, cloudinaryid)
-            return res.status(200).json({ message: 'Post Updated!' })
+            return res.status(204).json({ message: 'Post Updated!' })
         } catch (err) {
             console.log(err)
             return res
@@ -171,6 +171,28 @@ module.exports.privacyStatus = async (req, res) => {
     try {
         const results = await user.getPrivacy(userid)
         return res.status(200).json(results)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal Server Error!' })
+    }
+}
+
+module.exports.privacyTrue = async (req, res) => {
+    const { userid } = req.query
+    try {
+        const results = await user.updatePrivacyTrue(userid)
+        return res.status(200).json(results.rows)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal Server Error!' })
+    }
+}
+
+module.exports.privacyFalse = async (req, res) => {
+    const { userid } = req.query
+    try {
+        const results = await user.updatePrivacyFalse(userid)
+        return res.status(200).json(results.rows)
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal Server Error!' })
