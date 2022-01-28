@@ -27,15 +27,17 @@ const Profile = ({ match }) => {
     const [checked, setChecked] = React.useState(false);
 
     useEffect(() => {
-        getFeed()
-        getUsersProfile()
-        getPageProfile()
-        getFriendship()
-    }, [rerender])
-    const [Input, setInput] = useState({
-        name: '',
-        bio: ''
-    });
+        getFeed();
+        getUsersProfile();
+        getPageProfile();
+        getFriendship();
+        getMutualFriends();
+        setRerender(false);
+      }, [rerender]);
+      const [Input, setInput] = useState({
+        name: "",
+        bio: "",
+      });
 
     const getFeed = () => {
         axios
@@ -51,14 +53,24 @@ const Profile = ({ match }) => {
 
     const getFriendship = () => {
         axios
-            .post(`${config.baseURL}/friendship`, {
-                userid: localStorage.getItem('user_id'),
-                friendid: match.params.id
+            .get(`${config.baseURL}/friendship?userid=${localStorage.getItem('user_id')}&friendid=${match.params.id}`, {
             })
             .then(response => {
                 console.log("friend")
                 console.log(response.data)
                 setFriendship(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    const getMutualFriends = () => {
+        axios
+            .get(`${config.baseURL}/getMutualFriends?user_id=${localStorage.getItem('user_id')}&friend_id=${match.params.id}`, {
+            })
+            .then(response => {
+                console.log(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -107,6 +119,51 @@ const Profile = ({ match }) => {
         })
     }
 
+    const handlePrivacyChange = (event) => {
+        let modifyUserProfile = userProfile;
+        setChecked(event.target.checked);
+        if (event.target.checked == true) {
+          alert("Changed to true!");
+          axios
+            .put(
+              `${config.baseURL}/privacy?userid=${userProfile.id}`,
+              { privacy: true },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+              setRerender(true);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          alert("Changed to false!");
+          axios
+            .put(
+              `${config.baseURL}/privacy?userid=${userProfile.id}`,
+              { privacy: false },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+              setRerender(true);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        setUserProfile(modifyUserProfile);
+      };
+    
     const getPageProfile = () => {
         axios.get(`${config.baseURL}/UserData/${match.params.id}`)
             .then(response => {
@@ -155,7 +212,7 @@ const Profile = ({ match }) => {
             })
     }
 
-const [ImageFormLoading, setImageFormLoading] = useState(false);
+    const [ImageFormLoading, setImageFormLoading] = useState(false);
     const [ImageInput, setImageInput] = useState({
         file: ''
     });
@@ -235,7 +292,7 @@ const [ImageFormLoading, setImageFormLoading] = useState(false);
  return (
         <>
             <header>
-                <TopBar />
+                {/* <TopBar /> */}
             </header>
             <div style={{ backgroundColor: "#e3e8ee", height: "100vh", overflow: 'auto', paddingTop: "50px", paddingBottom: "50px" }}>
                 <Container className="postscontainer"
@@ -256,18 +313,20 @@ const [ImageFormLoading, setImageFormLoading] = useState(false);
                                     height: '120px'
                                 }} roundedCircle></Image>
                             }
-                            {PageProfile.id != userProfile.id ?
+                            {PageProfile.id != userProfile.id && friendship.length == 0 ?
                             <Button onClick={() => friend(match.params.id)}>
                             Add as Friend
                             </Button>
                             : 
-                            <Switch
-                            // checked={checked}
-                            // onChange={
-                                
-                            // }
-                            inputProps={{ 'aria-label': 'controlled' }}
-                            />
+                            PageProfile.id == userProfile.id?
+                            (
+                                <Switch
+                                  checked={userProfile.privacy}
+                                  onChange={handlePrivacyChange}
+                                  inputProps={{ "aria-label": "controlled" }}
+                                />
+                              ):
+                              ""
                             }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?

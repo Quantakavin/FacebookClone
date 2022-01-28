@@ -152,11 +152,16 @@ module.exports = (router) => {
         authorization.verifyUser,
         friendController.unfriend
     )
-    router.post('/api/friendship', friendController.checkFriendship)
+    router.get('/api/friendship', friendController.checkFriendship)
     router.get(
         '/api/friendship',
         authorization.verifyUser,
         friendController.getRequests
+    )
+    router.get(
+        '/api/getMutualFriends',
+        
+        friendController.getMutualFriends
     )
     router.put(
         '/api/accept',
@@ -217,10 +222,7 @@ module.exports = (router) => {
         notificationController.friendNotification
     )
 
-    router.get(
-        '/api/notification',
-        notificationController.getNotifications
-    )
+    router.get('/api/notification', notificationController.getNotifications)
 
     router.put(
         '/api/privacytrue',
@@ -230,7 +232,13 @@ module.exports = (router) => {
 
     router.put(
         '/api/privacyfalse',
-        authorization.verifyUser,
+        // authorization.verifyUser,
         userController.privacyFalse
+    )
+
+    router.put(
+        '/api/privacy',
+        authorization.verifyUser,
+        userController.setPrivacy
     )
 }

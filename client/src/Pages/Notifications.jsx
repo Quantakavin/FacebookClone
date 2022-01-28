@@ -5,7 +5,7 @@ import config from '../config/config';
 import { Container } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 
-const Notifications = (props) => {
+const Notifications = () => {
     const [notification, setNotification] = useState([]);
     const history = useHistory();
 
@@ -38,8 +38,9 @@ const Notifications = (props) => {
                 <div id="info">
                     <h2 style={{ marginTop: 50, marginBottom: 30 }}>Notifications</h2>
                     {notification.map(notifications =>
-                        <div onClick={() => { history.push(`./profile/${notifications.userid}`) }}>
-                            <p>{notifications.name} {notifications.notification_message}</p>
+                        <div>
+                            <span onClick={() => { history.push(`./profile/${notifications.userid}`) }} > {notifications.name}</span>
+                            <span onClick={() => { history.push(`./post/${notifications.postid}`) }}> {notifications.notification_message}</span>
                         </div>
                     )}
 

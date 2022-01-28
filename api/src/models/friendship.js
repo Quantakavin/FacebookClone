@@ -32,14 +32,14 @@ module.exports.delete = async (userid, friendid) => {
     })
 }
 
-module.exports.get = async (userid, friendid) => {
+module.exports.getFriendship = async (userid, friendid) => {
     const sql =
         'SELECT * FROM friendship WHERE (user_id = $1 AND friend_id=$2) OR (user_id = $2 AND friend_id=$1)'
     return new Promise((resolve, reject) => {
         connection
             .query(sql, [userid, friendid])
             .then((result) => {
-                resolve(result)
+                resolve(result.rows)
             })
             .catch((err) => {
                 console.log(err)
@@ -95,6 +95,24 @@ module.exports.declineRequests = async (status, confirmed, friend_id, user_id) =
                 console.log(confirmed)
                 console.log(friend_id)
                 console.log(user_id)
+                resolve(result)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+module.exports.getMutualFriends = async (user_id, friend_id) => {
+    const sql =
+        `(SELECT friend_id  from friendship where user_id = $1 UNION SELECT user_id  from friendship where friend_id = $1) 
+        INTERSECT 
+        (SELECT friend_id  from friendship where user_id = $2 UNION SELECT user_id  from friendship where friend_id  = $2)`
+    return new Promise((resolve, reject) => {
+        connection
+            .query(sql, [user_id, friend_id])
+            .then((result) => {
+                console.log(result)
                 resolve(result)
             })
             .catch((err) => {
