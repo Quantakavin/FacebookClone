@@ -106,9 +106,13 @@ module.exports.declineRequests = async (status, confirmed, friend_id, user_id) =
 
 module.exports.getMutualFriends = async (user_id, friend_id) => {
     const sql =
-        `(SELECT friendship.friend_id, users.*, from friendship INNER JOIN users ON friendship.friend_id = users.id where user_id = $1  UNION SELECT user_id  from friendship INNER JOIN users ON friendship.friend_id = users.id where friend_id = $1 ) 
-        INTERSECT 
-        (SELECT friendship.friend_id, users.*, from friendship INNER JOIN users ON friendship.friend_id = users.id where user_id = $2  UNION SELECT user_id  from friendship INNER JOIN users ON friendship.friend_id = users.id where friend_id = $2 )`
+        `SELECT * from users WHERE id in (
+
+            (SELECT friend_id from friendship where user_id = $1 UNION SELECT user_id  from friendship where friend_id = $1) 
+                    INTERSECT 
+            (SELECT friend_id  from friendship where user_id = $2 UNION SELECT user_id  from friendship where friend_id  = $2)
+
+        )`
     return new Promise((resolve, reject) => {
         connection
             .query(sql, [user_id, friend_id])

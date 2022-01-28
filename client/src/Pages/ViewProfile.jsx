@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
-import { Image, Spinner, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Image, Spinner, Form, Button, Container, Row, Col, Alert, Card } from 'react-bootstrap';
 import '../Styles/home.scss';
 import '../Styles/privacyswitch.css';
 import profilephoto from '../Images/profilephoto.png';
@@ -34,11 +34,11 @@ const Profile = ({ match }) => {
         getFriendship();
         getMutualFriends();
         setRerender(false);
-      }, [rerender]);
-      const [Input, setInput] = useState({
+    }, [rerender]);
+    const [Input, setInput] = useState({
         name: "",
         bio: "",
-      });
+    });
 
     const getFeed = () => {
         axios
@@ -100,47 +100,47 @@ const Profile = ({ match }) => {
         let modifyUserProfile = userProfile;
         setChecked(event.target.checked);
         if (event.target.checked == true) {
-          alert("Changed to true!");
-          axios
-            .put(
-              `${config.baseURL}/privacy?userid=${userProfile.id}`,
-              { privacy: true },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            )
-            .then((response) => {
-              console.log(response);
-              setRerender(true);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            alert("Changed to true!");
+            axios
+                .put(
+                    `${config.baseURL}/privacy?userid=${userProfile.id}`,
+                    { privacy: true },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log(response);
+                    setRerender(true);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         } else {
-          alert("Changed to false!");
-          axios
-            .put(
-              `${config.baseURL}/privacy?userid=${userProfile.id}`,
-              { privacy: false },
-              {
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-              }
-            )
-            .then((response) => {
-              console.log(response);
-              setRerender(true);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+            alert("Changed to false!");
+            axios
+                .put(
+                    `${config.baseURL}/privacy?userid=${userProfile.id}`,
+                    { privacy: false },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log(response);
+                    setRerender(true);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
         setUserProfile(modifyUserProfile);
-      };
-    
+    };
+
     const getPageProfile = () => {
         axios.get(`${config.baseURL}/UserData/${match.params.id}`)
             .then(response => {
@@ -187,10 +187,10 @@ const Profile = ({ match }) => {
             })
     }
 
-    
+
     // const onChangePrivacy = (event) =>{
     //     event.preventDefault();
-        
+
     // }
 
 
@@ -251,20 +251,37 @@ const Profile = ({ match }) => {
 
     const friend = (id) => {
         axios
-        .post(`${config.baseURL}/friend`, {"friendid": id}, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
-          }
-        })
-        .then(response => {
-          console.log('promise fulfilled')
-          getUsers();
-        })
-        .catch(error => {
-          console.log(error);
-        })
-        
-      }
+            .post(`${config.baseURL}/friend`, { "friendid": id }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                console.log('promise fulfilled')
+                getUsers();
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+    }
+
+    const unfriend = (id) => {
+        axios
+            .delete(`${config.baseURL}/friend/?id=${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(response => {
+                console.log('promise fulfilled')
+                getUsers();
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+    }
 
     return (
         <>
@@ -291,19 +308,19 @@ const Profile = ({ match }) => {
                                 }} roundedCircle></Image>
                             }
                             {PageProfile.id != userProfile.id && friendship.length == 0 ?
-                            <Button onClick={() => friend(match.params.id)}>
-                            Add as Friend
-                            </Button>
-                            : 
-                            PageProfile.id == userProfile.id?
-                            (
-                                <Switch
-                                  checked={userProfile.privacy}
-                                  onChange={handlePrivacyChange}
-                                  inputProps={{ "aria-label": "controlled" }}
-                                />
-                              ):
-                              ""
+                                <Button onClick={() => friend(match.params.id)}>
+                                    Add as Friend
+                                </Button>
+                                :
+                                PageProfile.id == userProfile.id ?
+                                    (
+                                        <Switch
+                                            checked={userProfile.privacy}
+                                            onChange={handlePrivacyChange}
+                                            inputProps={{ "aria-label": "controlled" }}
+                                        />
+                                    ) :
+                                    ""
                             }
                             {
                                 localStorage.getItem("user_id") == match.params.id ?
@@ -362,6 +379,28 @@ const Profile = ({ match }) => {
                     </Row>
 
 
+                </Container>
+                
+                
+                <Container>
+                    <Row>
+                        <h2 style={{ marginTop: 50, marginBottom: 30 }}>Mutual Friends</h2>
+                    </Row>
+                    <Row className="flex-row flex-nowrap overflow-auto" style={{ overflow: "hidden" }}>
+                        {users.map(user =>
+                            <Card className="shadow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '18rem', marginTop: 10, marginBottom: 10, paddingTop: 15, paddingBottom: 15, marginRight: 20, border: "1px solid #d3d3d3", borderRadius: 10 }} key={user.id}>
+                                {user.picurl == null ? <Image src={profilephoto} roundedCircle width="150px" height="150px" /> : <Image src={user.picurl} roundedCircle width="150px" height="150px" />}
+                                <Card.Body>
+                                    <Card.Title style={{ textTransform: "capitalize" }}>{user.name}</Card.Title>
+                                </Card.Body>
+
+                                {user.friended ? <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}>Requested</Button> :
+                                    <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => friend(user.id)}>Request Friend</Button>
+                                }
+
+                            </Card>
+                        )}
+                    </Row>
                 </Container>
 
 
