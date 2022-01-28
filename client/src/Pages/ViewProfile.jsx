@@ -23,9 +23,10 @@ const Profile = ({ match }) => {
     const [alertContent, setAlertContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const [users, setUsers] = useState([]);
+    const [mutualfriends, setMutualfriends] = useState([]);
     const label = { inputProps: { 'aria-label': 'Switch demo' } };
     const [checked, setChecked] = React.useState(false);
-
+    
     useEffect(() => {
         getFeed();
         getUsersProfile();
@@ -71,6 +72,7 @@ const Profile = ({ match }) => {
             })
             .then(response => {
                 console.log(response.data)
+                setMutualfriends(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -93,31 +95,6 @@ const Profile = ({ match }) => {
             })
     }
 
-    const PrivacyFalse = () => {
-        axios.put(`${config.baseURL}/privacyFalse/?${localStorage.getItem('user_id')}`)
-        .then(response => {
-            console.log(response.data)
-            setPrivacy = false;
-            
-        }
-        ).catch(error => {
-            console.log("error in frontend")
-            console.log(error);
-        })
-    }
-
-    const PrivacyTrue = () => {
-        axios.put(`${config.baseURL}/privacyTrue/?${localStorage.getItem('user_id')}`)
-        .then(response => {
-            console.log(response.data)
-            setPrivacy = true;
-            
-        }
-        ).catch(error => {
-            console.log("error in frontend")
-            console.log(error);
-        })
-    }
 
     const handlePrivacyChange = (event) => {
         let modifyUserProfile = userProfile;
