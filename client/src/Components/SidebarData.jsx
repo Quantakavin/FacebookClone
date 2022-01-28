@@ -8,37 +8,37 @@ import { TiMessages } from "react-icons/ti";
 export const SIdebarData = [
     {
         title: "Home",
-        path: "/",
+        path: "/userhome",
         icon: <AiFillHome />,
         cName: 'nav-text'
     },
     {
         title: "Messages",
-        path: "/reports",
+        path: "/notifications",
         icon: <TiMessages />,
         cName: 'nav-text'
     },
     {
         title: "Friend Requests",
-        path: "/product",
+        path: "/requests",
         icon: <IoMdPeople />,
         cName: 'nav-text'
     },
     {
         title: "Trending Posts",
-        path: "/team",
+        path: "/viewpost",
         icon: <IoIosTrendingUp />,
         cName: 'nav-text'
     },
     {
         title: "Profile",
-        path: "/message",
+        path: "/profile/:id",
         icon: <CgProfile />,
         cName: 'nav-text'
     },
     {
         title: "Logout",
-        path: "/support",
+        path: "/",
         icon: <CgLogOut />,
         cName: 'nav-text'
     }

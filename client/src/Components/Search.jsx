@@ -11,9 +11,16 @@ import CloseIcon from "@material-ui/icons/Close";
 
 
 const Search = () => {
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData, setFilteredData] = useState("");
   const [users, setusers] = useState();
   const [results, setresults] = useState([]);
+
+  const fuse = new Fuse(users, {
+    keys: [
+      'name'
+    ],
+    includeScore: true
+  })
 
   useEffect(async () => {
     axios.get(`${config.baseURL}/searchUser/`)
@@ -26,16 +33,6 @@ const Search = () => {
 
   }, [filteredData])
 
-  const fuse = new Fuse(users, {
-    keys: [
-      'name'
-    ],
-    includeScore: true
-  })
-
-
-
-  // searchResults = filteredData ? results.map(result => result.item) : filteredData;
 
   function handleOnSearch({ currentTarget = {} }) {
     const { value } = currentTarget;
@@ -45,7 +42,7 @@ const Search = () => {
   }
 
   const clearInput = () => {
-    setFilteredData([]);
+    setFilteredData("");
     setresults([]);
   };
 
@@ -55,7 +52,7 @@ const Search = () => {
         <div className="searchInputs">
         <input
           type="text"
-          // value={filteredData}
+          value={filteredData}
           onChange={handleOnSearch}
         />
           <div className="searchIcon">
@@ -70,7 +67,7 @@ const Search = () => {
         {/* <div className="dropdown"> */}
           {results.length != 0 && (
             <div className="dataResult">
-              {results.filter((user)=>user.score < 0.5).map((user => {
+              {results.filter((user)=>user.score < 0.6).map((user => {
                 return (
                   <a className="dataItem" href={"/profile/" + user.item.id}>
                     <div >{user.item.name}</div>

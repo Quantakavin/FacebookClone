@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Navbar from './Components/Navbar';
 import reportWebVitals from './reportWebVitals';
 import {
     BrowserRouter as Router,
@@ -31,6 +32,7 @@ const queryClient = new QueryClient()
 ReactDOM.render(
     <QueryClientProvider client={queryClient}>
         <Router>
+        <Navbar/>
             <Switch>
                 {/*
                 <Route path="/login">
