@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import TopBar from '../Components/TopBar';
 import profilephoto from '../Images/profilephoto.png';
 import config from '../config/config';
+import { motion } from "framer-motion";
 
 
 const Requests = () => {
@@ -17,7 +18,7 @@ const Requests = () => {
 
   const getRequests = () => {
     axios
-      .get(`${config.baseURL}/friendship`, {
+      .get(`${config.baseURL}/getFriendship`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -135,11 +136,10 @@ const Requests = () => {
                 </Card.Body>
 
                 {user.friended ?
-                  <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}></Button> : <>
-                    <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => acceptRequests(user.id)}>Accept</Button>
-                    <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500 }} onClick={() => declineRequests(user.id)}>Decline</Button></>
+                  <motion.button style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}></motion.button> : <>
+                    <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => acceptRequests(user.id)}>Accept</motion.button>
+                    <motion.button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500 }} onClick={() => declineRequests(user.id)}>Decline</motion.button></>
                 }
-
               </Card>
             )}
           </Row>

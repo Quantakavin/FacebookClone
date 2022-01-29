@@ -16,9 +16,10 @@ import "../Styles/home.scss";
 import "../Styles/privacyswitch.css";
 import profilephoto from "../Images/profilephoto.png";
 import { useHistory } from "react-router-dom";
-import Post from "../Components/Post";
-import config from "../config/config";
-import Switch from "@mui/material/Switch";
+import Post from '../Components/Post';
+import config from '../config/config';
+import Switch from '@mui/material/Switch';
+import { motion } from "framer-motion";
 
 const Profile = ({ match }) => {
   //const [postid,setPostid] = useState(0);
