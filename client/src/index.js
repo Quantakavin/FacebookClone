@@ -19,10 +19,13 @@ import EditPost from './Pages/EditPost';
 import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
+import Messages from './Pages/Messages';
 import PageNotFound from './Pages/404';
 import InternalServer from './Pages/500';
 import Notifications from './Pages/Notifications'
 import ViewPost from './Pages/ViewPost'
+import VideoChat2 from './Pages/VideoChat2'
+import {SocketContext, socket} from './context/socket';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
 dotenv.config();
@@ -32,6 +35,7 @@ const queryClient = new QueryClient()
 
 ReactDOM.render(
     <QueryClientProvider client={queryClient}>
+        <SocketContext.Provider value={socket}>
         <Router>
         <Navbar/>
             <Switch>
@@ -70,6 +74,8 @@ ReactDOM.render(
                 <Route path="/editpost/:id" component = {EditPost} />
                 <Route path="/editcomment/:id" component = {EditComment} />
                 <Route path="/conversations" component = {Conversations} />
+                <Route path="/messages/:id" component = {Messages} />
+                <Route path="/video" component = {VideoChat2} />
                 <Route path="/notifications" component ={Notifications} />
                 <Route path="/post/:id" component ={ViewPost} />
                 <Route exact path="/" component={Home} />
@@ -77,6 +83,7 @@ ReactDOM.render(
                 <Route path = "*" component = {PageNotFound} />
             </Switch>
         </Router>
+        </SocketContext.Provider>
     </QueryClientProvider>
     ,
     document.getElementById('root')

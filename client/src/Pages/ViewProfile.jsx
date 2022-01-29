@@ -16,9 +16,9 @@ import "../Styles/home.scss";
 import "../Styles/privacyswitch.css";
 import profilephoto from "../Images/profilephoto.png";
 import { useHistory } from "react-router-dom";
-import Post from '../Components/Post';
-import config from '../config/config';
-import Switch from '@mui/material/Switch';
+import Post from "../Components/Post";
+import config from "../config/config";
+import Switch from "@mui/material/Switch";
 import { motion } from "framer-motion";
 
 const Profile = ({ match }) => {
@@ -145,7 +145,6 @@ const Profile = ({ match }) => {
     let modifyUserProfile = userProfile;
     setChecked(event.target.checked);
     if (event.target.checked == true) {
-      alert("Changed to true!");
       axios
         .put(
           `${config.baseURL}/privacy?userid=${userProfile.id}`,
@@ -164,7 +163,6 @@ const Profile = ({ match }) => {
           console.log(error);
         });
     } else {
-      alert("Changed to false!");
       axios
         .put(
           `${config.baseURL}/privacy?userid=${userProfile.id}`,
@@ -553,10 +551,10 @@ const Profile = ({ match }) => {
                     Requested
                   </Button>
                 ) : (
-                  <motion.button 
-                  whileHover={{scale: 1.1}} 
-                  whileTap={{scale: 0.9}} 
-                  className="save-button"
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="save-button"
                     style={{
                       width: "auto",
                       marginBottom: 10,
@@ -569,7 +567,7 @@ const Profile = ({ match }) => {
                     onClick={() => friend(user.id)}
                   >
                     Request Friend
-                  </motion.button >
+                  </motion.button>
                 )}
               </Card>
             ))}

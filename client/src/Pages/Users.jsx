@@ -113,6 +113,15 @@ const Users = () => {
             )}
           </Row>
           <Row>
+          <motion.button 
+                  whileHover={{scale: 1.1}} 
+                  whileTap={{scale: 0.9}} 
+                  className="save-button" 
+                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href='/userhome';
+                    }}>Proceed to Home</motion.button>
             <h4 style={{ textAlign: "center", marginTop: 50 }}><a style={{ color: "#4267B2" }} href="/userhome">Proceed to Home</a></h4>
           </Row>
         </Container>

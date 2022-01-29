@@ -159,25 +159,31 @@ module.exports = (router) => {
         likeController.checklike
     )
     router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
-
+    
     router.post(
         '/api/conversation',
         authorization.verifyUser,
         conversationController.newConversation
     )
     router.get(
-        '/api/conversations/:userid',
+        '/api/conversations',
         authorization.verifyUser,
         conversationController.getConversations
     )
 
+    router.get(
+        '/api/conversation/:id',
+        authorization.verifyUser,
+        conversationController.getConversation
+    )
+
     router.post(
-        '/api/message',
+        '/api/message/:conversationid',
         authorization.verifyUser,
         messageController.newMessage
     )
     router.get(
-        '/api/messages',
+        '/api/messages/:id',
         authorization.verifyUser,
         messageController.getMessages
     )
