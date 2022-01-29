@@ -127,7 +127,7 @@ module.exports = (router) => {
     )
     router.get('/api/friendship', friendController.checkFriendship)
     router.get(
-        '/api/friendship',
+        '/api/getFriendship',
         authorization.verifyUser,
         friendController.getRequests
     )

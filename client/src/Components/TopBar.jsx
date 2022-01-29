@@ -4,7 +4,6 @@ import '../Styles/nav.scss';
 import { useHistory } from "react-router-dom";
 import Search from "./Search.jsx"
 
-
 const TopBar = () => {
   const history = useHistory();
 
