@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import Post from '../Components/Post';
 import config from '../config/config';
 import Switch from '@mui/material/Switch';
+import { motion } from "framer-motion";
 
 const Profile = ({ match }) => {
     //const [postid,setPostid] = useState(0);
@@ -276,20 +277,34 @@ const Profile = ({ match }) => {
 
     const friend = (id) => {
         axios
-            .post(`${config.baseURL}/friend`, { "friendid": id }, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
-            .then(response => {
-                console.log('promise fulfilled')
-                getUsers();
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
-    }
+          .post(`${config.baseURL}/friend`, { "friendid": id }, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          .then(response => {
+            console.log('promise fulfilled')
+            getUsers();
+          })
+          .catch(error => {
+            console.log(error);
+          })
+    
+          //Notification for sending friend request
+          axios
+          .post(`${config.baseURL}/notification`, { "receiver_id": id, "notification_id": 1}, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          .then(response => {
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+    
+      }
 
     const unfriend = (id) => {
         axios
@@ -419,8 +434,8 @@ const Profile = ({ match }) => {
                                     <Card.Title style={{ textTransform: "capitalize" }}>{user.name}</Card.Title>
                                 </Card.Body>
 
-                                {user.friended ? <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}>Requested</Button> :
-                                    <Button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => friend(user.id)}>Request Friend</Button>
+                                {user.friended ? <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}>Requested</motion.button> :
+                                    <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => friend(user.id)}>Request Friend</motion.button>
                                 }
 
                             </Card>

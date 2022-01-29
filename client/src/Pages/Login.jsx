@@ -7,6 +7,7 @@ import TopBar from '../Components/TopBar';
 import facebooklogo from '../Images/facebooklogo.png';
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
+import { motion } from "framer-motion";
 
   const Login = () => {
     const [loading,setLoading] = useState(false);
@@ -68,9 +69,9 @@ import config from '../config/config';
       </Alert></div>: <></> }
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
             {!loading? 
-            <Button variant="primary" type="submit" className="submitbutton">
+            <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} variant="primary" type="submit" className="submitbutton">
             Continue
-            </Button>:
+            </motion.button>:
             <Button variant="primary" disabled className="submitbutton">
                 <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
             </Button>
