@@ -20,6 +20,7 @@ import EditComment from './Pages/EditComment';
 import ViewProfile from './Pages/ViewProfile';
 import Conversations from './Pages/Conversations';
 import PageNotFound from './Pages/404';
+import InternalServer from './Pages/500';
 import Notifications from './Pages/Notifications'
 import ViewPost from './Pages/ViewPost'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -72,6 +73,7 @@ ReactDOM.render(
                 <Route path="/notifications" component ={Notifications} />
                 <Route path="/post/:id" component ={ViewPost} />
                 <Route exact path="/" component={Home} />
+                <Route path="/500" component={InternalServer} />
                 <Route path = "*" component = {PageNotFound} />
             </Switch>
         </Router>
