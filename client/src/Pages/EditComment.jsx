@@ -11,6 +11,9 @@ const EditComment = ({match}) => {
     const history = useHistory();
     const [borderColor, setBorderColor]= useState('transparent');
     const [errorMsg, setErrorMsg]= useState('');
+    const [TextInput, setTextInput] = useState({
+        content: ''
+      });
 
 
     useEffect(() => {
@@ -23,6 +26,7 @@ const EditComment = ({match}) => {
         .then(response => {
           console.log('promise fulfilled')
           setComment(response.data)
+          setTextInput({content:response.data.content})
         })
         .catch(error => {
           console.log(error);
@@ -30,9 +34,6 @@ const EditComment = ({match}) => {
     }, [])
 
     const [textFormLoading,setTextFormLoading] = useState(false);
-    const [TextInput, setTextInput] = useState({
-        content: comment.content
-      });
     const handleTextChange = (event) => {
         setTextInput({
             ...TextInput,
@@ -78,7 +79,7 @@ const EditComment = ({match}) => {
           <Form onSubmit={createTextPost}>
             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control style={{borderColor: borderColor,width: "85%"}} name="content" className="text-secondary" as="textarea" rows={5} placeholder={comment.content} value={TextInput.content} onChange={handleTextChange}/>
+                <Form.Control style={{borderColor: borderColor,width: "85%"}} name="content" className="text-secondary" as="textarea" rows={5} value={TextInput.content} onChange={handleTextChange}/>
             </div>
             </Form.Group>
             {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{errorMsg}!</p>: <></>}

@@ -17,6 +17,7 @@ import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
+import trendingIcon from '../Images/check.svg';
 
 
 //const queryClient = new QueryClient()
@@ -137,7 +138,7 @@ const ImageForm = (props) => {
     return (
         <Modal show={props.showForm} onHide={handleCloseForm} centered>
             <Modal.Header closeButton>
-                <Modal.Title className="text-center" style={{ fontWeight: 600, fontSize: "1.25em" }}>Upload Image(s)</Modal.Title>
+                <Modal.Title className="text-center" style={{ fontWeight: 600, fontSize: "1.25em" }}>Upload Media</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -240,8 +241,8 @@ const Feed = () => {
 
     return (
         <>
-            {trending == true ? <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600 }}> get chronological  </Button> :
-                <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600 }}> get trending  </Button>}
+            {trending == true ? <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontSize: 22 }}> Trending  <Image src={trendingIcon} style={{ height: 30, marginTop: -5 }} fluid /></Button> :
+                <Button onClick={() => setTrending(!trending)} style={{ justifySelf: "start", marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontSize: 22 }}> Trending </Button>}
             {isLoading ?
                 <>
                     <Card sx={{ m: 2 }}>
@@ -303,7 +304,7 @@ const Feed = () => {
                     </>
                         : <></>}
                     {data.data.map(post =>
-                        <Post key={post.postid} post={post} setRerender={setRerender} reload={rerender}></Post>
+                        <Post key={post.postid} post={post} setRerender={setRerender} reload={rerender}/>
                     )}
                 </>
             }
@@ -324,7 +325,6 @@ const UserHome = () => {
             </header>
             <TextForm showForm={showTextForm} setShowForm={setShowTextForm} />
             <ImageForm showForm={showImageForm} setShowForm={setShowImageForm} />
-            <VideoForm showForm={showVideoForm} setShowForm={setShowVideoForm} />
             <div style={{ backgroundColor: "#e3e8ee", height: "100vh", overflow: 'auto', paddingTop: "50px", paddingBottom: "50px" }}>
                 <Container className="formcontainer shadow" style={{ height: 'auto', marginBottom: 0, display: "flex", flexDirection: "row", alignItems: 'center', justifyContent: 'center' }}>
 
@@ -333,8 +333,6 @@ const UserHome = () => {
 
                     <Button onClick={() => setShowImageForm(true)} style={{ flexShrink: 0.5, marginLeft: 10, marginRight: -10, border: "none", backgroundColor: "transparent" }}><Image src={photo} alt="Upload photo" height="30px" /></Button>
 
-
-                    <Button onClick={() => setShowVideoForm(true)} style={{ flexShrink: 0.5, border: "none", backgroundColor: "transparent" }}><Image src={video} alt="Upload video" height="30px" /></Button>
 
                 </Container>
                 <Container className="postscontainer">

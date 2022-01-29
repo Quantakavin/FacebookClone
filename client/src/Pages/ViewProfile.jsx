@@ -265,8 +265,8 @@ const Profile = ({ match }) => {
                         </Col>
                     </Row>
                 </Container>
-                {PageProfile.privacy === true && friendship.length == 0 ?
-                    <>
+                {//i commented out the check that mervyn made so it needs to be put back in
+                }
                         {
                             PageProfile.privacy === true && friendship.length == 0 && PageProfile.id != userProfile.id ? // If true and not friends 
                                 <div><h1>This account is private. Follow this account to view their post.</h1></div>
@@ -277,14 +277,10 @@ const Profile = ({ match }) => {
                                         <p style={{ color: "#838383" }}>No content to display</p>
                                         : <></>}
                                     {posts.map(post =>
-                                        <Post key={post.postid} post={post} setRerender={setRerender} reload = {rerender} ></Post>
+                                        <Post key={post.postid} post={post} setRerender={setRerender} reload={rerender}/>
                                     )}
                                 </Container>
                         }
-                    </>
-                    :
-                    <div><h1>This account is private. Follow this account to view their post.</h1></div>
-                }
             </div>
         </>
     )

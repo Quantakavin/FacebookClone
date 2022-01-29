@@ -140,7 +140,7 @@ const validation = {
             } else {
                 for (var i = 0; i < files.length; i++) {
                     console.log(files[i].path)
-                    if (files[i].path.endsWith(".mp4") || files[i].path.endsWith(".mov") || files[i].path.endsWith(".MP4") || files[i].path.endsWith(".MOV") || files[i].path.endsWith(".png") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".gif") || files[i].path.endsWith(".PNG") || files[i].path.endsWith(".JPG") || files[i].path.endsWith(".JPEG") || files[i].path.endsWith(".GIF")) {
+                    if (files[i].path.endsWith(".mp4") || files[i].path.endsWith(".MP4") || files[i].path.endsWith(".png") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".gif") || files[i].path.endsWith(".PNG") || files[i].path.endsWith(".JPG") || files[i].path.endsWith(".JPEG") || files[i].path.endsWith(".GIF")) {
                     } else {
                         res.status(400).json({ message: `Only png, jpg, jpeg, gif, mp4 and mov files are allowed. check the files ` })
                     }

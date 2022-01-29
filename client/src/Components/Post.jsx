@@ -12,6 +12,20 @@ import ReactPlayer from 'react-player';
 import DOMPurify from 'dompurify';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+// import VideoPlayer from './VideoPlayer.jsx'
+
+const VideoPlayer = (props) => {
+  const VisibilitySensor = require('react-visibility-sensor');
+    const [playing, setPlaying] = useState(false)
+    return (
+        <VisibilitySensor
+            onChange={(isVisible) => {
+                setPlaying(isVisible)
+            }}>
+            <ReactPlayer width="100%" playing={playing} controls={true} style={{ marginBottom: 15 }} url={props.cloudinaryurl} />
+        </VisibilitySensor>
+    )
+}
 
 const Post = (props) => {
   const history = useHistory();
@@ -61,15 +75,14 @@ const Post = (props) => {
       axios.get(`${config.baseURL}/getMedia/${props.post.postid}`)
         .then(response => {
           setMedia(response.data)
-          console.log(response.data)
-          console.log("post " + props.post.postid + " has media")
+          // console.log(response.data)
+          // console.log("post " + props.post.postid + " has media")
         }
         )
         .catch(error => {
           console.log(error)
           console.log("post media could not be gotten id " + props.post.postid);
         })
-    } else {
     }
   }
   const getComments = () => {
@@ -322,7 +335,18 @@ const Post = (props) => {
                         {
                           mediaItem.type == "image" ?
                             <LazyLoadImage effect = {"blur"} width="100%" style={{ marginBottom: 15 }} src={mediaItem.cloudinaryurl} fluid /> :
-                            <ReactPlayer width="100%" controls={true} loop={true} style={{ marginBottom: 15 }} url={mediaItem.cloudinaryurl} />
+                            // <ReactPlayer width="100%"  style={{ marginBottom: 15 }} url={mediaItem.cloudinaryurl} />
+
+                            <VideoPlayer cloudinaryurl={mediaItem.cloudinaryurl}/>
+
+                            // <VisibilitySensor
+                            //   partialVisibility
+                            //   onChange={(isVisible) => {
+                            //     // this.setState({ visibility: isVisible })
+                            //   }}
+                            // >
+                            // <ReactPlayer width="100%"  style={{ marginBottom: 15 }} url={mediaItem.cloudinaryurl} />
+                            // </VisibilitySensor>
                         }
                       </>
                     })
@@ -330,7 +354,7 @@ const Post = (props) => {
                   </>
                   : 
                   <>
-                <Carousel>
+                <Carousel interval={null}>
                   {
                     media.map((mediaItem) => {
                       return <Carousel.Item>
@@ -376,31 +400,6 @@ const Post = (props) => {
 
           : <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start" }}>{liked == true ? <Button onClick={() => unlikepost()} style={{ marginBottom: 15, backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600 }}><Image src={likephoto} style={{ width: 20, marginTop: -5 }} fluid /> Liked {likeCount}</Button> :
             <Button onClick={() => likepost()} style={{ marginBottom: 15, backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600 }}><Image src={likephoto} style={{ width: 20, marginTop: -5 }} fluid /> Like {likeCount}</Button>}</div>}
-
-        {/*localStorage.getItem("user_id")==null?<></>:
-                [
-                  (liked == true ? <Button onClick={() => unlikepost()} style={{backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
-                <Button onClick={() => likepost()} style={{justifyContent: "flex-start", backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>),
-                
-                (props.post.id == localStorage.getItem("user_id")? 
-                <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
-                    <DropdownButton
-                      id={`dropdown-button-drop-up`}
-                      drop={"up"}
-                      title={
-                          <Image style={{marginBottom: 15, height: 20}} src={dots} fluid>
-                          </Image>
-                      }
-                    >
-                      <Dropdown.Item eventKey="1" onClick={() => {history.push(`/editpost/${props.post.postid}`)} }>Edit</Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(props.post.postid)}>Delete</Dropdown.Item>
-                    </DropdownButton>
-                    </div>
-                    
-                : <></>)]
-                    */}
-
 
         <Row style={{ backgroundColor: "#e3e8ee" }}>
           {localStorage.getItem("user_id") == null ? <></> :

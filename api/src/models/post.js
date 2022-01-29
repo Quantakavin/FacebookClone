@@ -43,34 +43,12 @@ module.exports.uploadMediaToCloudinary = async (files, callback) => {
     for (var i = 0; i < files.length; i++) {
         if (files[i].path.endsWith(".png") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".gif") || files[i].path.endsWith(".PNG") || files[i].path.endsWith(".JPG") || files[i].path.endsWith(".JPEG") || files[i].path.endsWith(".GIF")) {
             try {
-                /*
-                //api key is 2fed643f-0572-487f-9724-fa1b5ed98c4f
-                stuff to convert mov to mp4
-                var CloudmersiveVideoApiClient = require('cloudmersive-video-api-client');
-                var defaultClient = CloudmersiveVideoApiClient.ApiClient.instance;
-                // Configure API key authorization: Apikey
-    var Apikey = defaultClient.authentications['Apikey'];
-    Apikey.apiKey = 'YOUR API KEY';
-    var apiInstance = new CloudmersiveVideoApiClient.VideoApi();
-    var opts = { 
-     'inputFile': Buffer.from(fs.readFileSync("C:\\temp\\inputfile").buffer), // File | Input file to perform the operation on.
-    };
-    var callback = function(error, data, response) {
-    if (error) {
-         console.error(error);
-    } else {
-      console.log('API called successfully. Returned data: ' + data);
-    }
-    };
-        apiInstance.videoConvertToMp4(opts, callback);
-                */
-
-
                 var result = await cloudinary.uploader.upload(files[i].path, { upload_preset: 'image_upload' })
                 console.log("url: ", result.url, " id : ", result.public_id)
+                console.log(result)
                 console.log(`post.js line 67 image upload. the list of files (version: ${i + 1}) uploaded is --> `)
                 //let data = { imageURL: result.url, publicId: result.public_id, status: 'success' };
-                cloudinaryResults.push({ "cloudinaryurl": result.url, "cloudinaryid": result.public_id, "type": "image" })
+                cloudinaryResults.push({ "cloudinaryurl": result.secure_url, "cloudinaryid": result.public_id, "type": "image" })
                 console.log(cloudinaryResults)
             } catch (error) {
                 console.log(error)
@@ -381,7 +359,8 @@ module.exports.getMediaById = async (id, callback) => {
 }
 
 module.exports.getByUserId = async (userid) => {
-    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`
+    const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl, post.media, DATE_PART('day', now()::timestamp - post.date::timestamp) * 24 + 
+    DATE_PART('hour', now()::timestamp - post.date::timestamp) as hoursAlive FROM post  INNER JOIN users ON post.user_id = users.id WHERE users.id = ($1) ORDER BY post.date DESC`
     return new Promise((resolve, reject) => {
         connection
             .query(getPostByUserIdQuery, [userid])
