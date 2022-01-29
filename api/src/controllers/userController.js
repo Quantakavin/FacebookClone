@@ -31,7 +31,7 @@ module.exports.loginUser = async (req, res) => {
             .status(500)
             .json({ message: 'Invalid Email/Password Combination' })
     } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error!' })
+        return res.status(500).json({ message: 'Invalid Email/Password Combination' })
     }
 }
 
@@ -40,7 +40,10 @@ module.exports.registerUser = async (req, res) => {
 
     //Must have caps and no other characters allowed
     const nameRegex =
-        /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/
+        /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
+
+    // const emailRegex = 
+    //  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
     if (nameRegex.test(name)) {
         try {
@@ -135,7 +138,7 @@ module.exports.updateUserPassword = async (req, res) => {
             return res.status(500).json({ message: error })
         }
     } else {
-        return res.status(400).json({ message: 'password not good enough' })
+        return res.status(400).json({ message: 'Please choose a stronger password' })
     }
 }
 

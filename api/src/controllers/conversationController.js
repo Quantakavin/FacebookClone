@@ -12,9 +12,21 @@ module.exports.newConversation = async (req, res) => {
 }
 
 module.exports.getConversations = async (req, res) => {
-    const { userid } = req.params
+    const { userid } = req.body
     try {
         const results = await conversation.getAll(userid)
+        return res.status(200).send(results)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Internal Server Error!' })
+    }
+}
+
+module.exports.getConversation = async (req, res) => {
+    const conversationID = req.params.id
+    const { userid } = req.body
+    try {
+        const results = await conversation.get(conversationID, userid)
         return res.status(200).send(results)
     } catch (error) {
         console.log(error)

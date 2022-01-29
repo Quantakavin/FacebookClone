@@ -16,10 +16,25 @@ module.exports.insert = (sender_id, receiver_id) => {
 }
 
 module.exports.getAll = (user_id) => {
-    const getConversationsQuery = `SELECT sender_id, receiver_id FROM conversation WHERE sender_id = $1 OR receiver_id = $1 `
+    const getConversationsQuery = `SELECT c.id AS ConversationID, c.sender_id, c.receiver_id, u.id AS UserID, u.name, u.picurl  FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) WHERE (c.sender_id = $1 OR c.receiver_id = $1) AND u.id != $1 `
     return new Promise((resolve, reject) => {
         connection
             .query(getConversationsQuery, [user_id])
+            .then((results) => {
+                resolve(results)
+            })
+            .catch((err) => {
+                console.log(err)
+                reject(err)
+            })
+    })
+}
+
+module.exports.get = (conversation_id, user_id) => {
+    const getConversationsQuery = `SELECT c.id AS ConversationID,  u.name, u.picurl  FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) WHERE c.id = $1 AND u.id != $2 `
+    return new Promise((resolve, reject) => {
+        connection
+            .query(getConversationsQuery, [conversation_id, user_id])
             .then((results) => {
                 resolve(results)
             })
