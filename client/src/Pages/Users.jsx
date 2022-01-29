@@ -100,7 +100,7 @@ const Users = () => {
                   <Card.Title style={{ textTransform: "capitalize" }}>{user.name}</Card.Title>
                 </Card.Body>
 
-                {user.friended ? <motion.button className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}>Requested</motion.button> :
+                {user.friended ? <motion.button className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}>Unfriend/Unrequest</motion.button> :
                   <motion.button 
                   whileHover={{scale: 1.1}} 
                   whileTap={{scale: 0.9}} 
