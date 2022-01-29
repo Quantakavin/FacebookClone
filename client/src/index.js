@@ -24,6 +24,7 @@ import PageNotFound from './Pages/404';
 import InternalServer from './Pages/500';
 import Notifications from './Pages/Notifications'
 import ViewPost from './Pages/ViewPost'
+import VideoChat2 from './Pages/VideoChat2'
 import {SocketContext, socket} from './context/socket';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
@@ -74,6 +75,7 @@ ReactDOM.render(
                 <Route path="/editcomment/:id" component = {EditComment} />
                 <Route path="/conversations" component = {Conversations} />
                 <Route path="/messages/:id" component = {Messages} />
+                <Route path="/video" component = {VideoChat2} />
                 <Route path="/notifications" component ={Notifications} />
                 <Route path="/post/:id" component ={ViewPost} />
                 <Route exact path="/" component={Home} />
