@@ -5,7 +5,9 @@ const connectionString = config.database
 
 const pool = new Pool({
     connectionString,
-    max: 5
+    ssl: {
+        rejectUnauthorized: false
+    }
 })
 
 module.exports = pool
