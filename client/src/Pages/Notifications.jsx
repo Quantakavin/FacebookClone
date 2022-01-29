@@ -32,7 +32,7 @@ const Notifications = () => {
     return (
         <>
             <header>
-                {/* <TopBar/> */}
+                <TopBar/>
             </header>
             <div id="wrapper">
                 <div id="info">

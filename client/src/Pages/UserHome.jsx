@@ -400,7 +400,7 @@ const UserHome = () => {
         <>
         {/* <Particles /> */}
         <header>
-            {/* <TopBar /> */}
+            <TopBar />
         </header>
         <TextForm showForm={showTextForm} setShowForm={setShowTextForm}/>
         <ImageForm showForm={showImageForm} setShowForm={setShowImageForm}/>

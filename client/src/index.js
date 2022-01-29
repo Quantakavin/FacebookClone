@@ -37,7 +37,6 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
         <SocketContext.Provider value={socket}>
         <Router>
-        <Navbar/>
             <Switch>
                 {/*
                 <Route path="/login">

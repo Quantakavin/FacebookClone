@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
     "framer-motion": "^4.1.17"
   }
 }
