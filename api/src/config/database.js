@@ -4,8 +4,10 @@ const config = require('./config')
 const connectionString = config.database
 
 const pool = new Pool({
-    connectionString,
-    max: 5
+  connectionString,
+  ssl: {
+    rejectUnauthorized: false
+  }
 })
 
 module.exports = pool
