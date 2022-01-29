@@ -42,6 +42,7 @@ class ChromeDinoComponent extends React.Component {
           The link you followed may be broken, or the page may have been
           removed.
         </h4>
+        
         <Link to="/UserHome">Back to home</Link>
       </div>
     );

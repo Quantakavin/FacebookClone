@@ -137,14 +137,22 @@ const Requests = () => {
 
                 {user.friended ?
                   <motion.button style={{ width: "auto", marginBottom: 10, marginTop: 5, color: "#4267B2", border: "1px solid #4267B2", backgroundColor: "white", borderRadius: 5, fontWeight: 500 }} onClick={() => unfriend(user.id)}></motion.button> : <>
-                    <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} onClick={() => acceptRequests(user.id)}>Accept</motion.button>
-                    <motion.button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500 }} onClick={() => declineRequests(user.id)}>Decline</motion.button></>
+                    <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="save-button" style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500,color:'#ffffff' }} onClick={() => acceptRequests(user.id)}>Accept</motion.button>
+                    <motion.button style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#808080", borderRadius: 5, fontWeight: 500,color:'#ffffff' }} onClick={() => declineRequests(user.id)}>Decline</motion.button></>
                 }
               </Card>
             )}
           </Row>
           <Row>
-            <h4 style={{ textAlign: "center", marginTop: 50 }}><a style={{ color: "#4267B2" }} href="/userhome">Proceed to Home</a></h4>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="save-button"
+              style={{ width: "auto", marginBottom: 10, marginTop: 50, border: "1px solid #4267B2", backgroundColor: "#6c89c6", borderRadius: 5, fontWeight: 500, color:'#ffffff'}}
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/userhome';
+              }}>Proceed to Home</motion.button>
           </Row>
         </Container>
       </div>

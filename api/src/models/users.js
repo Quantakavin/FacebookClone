@@ -36,7 +36,7 @@ module.exports.getUserByID = async (gottenID) => {
     const sql = 'SELECT * FROM users where id = $1 '
     // const privacy = getterID == gottenID ? ";" : "AND privacy = true;"
     return new Promise((resolve, reject) => {
-        connection
+        connection 
             .query(sql, [gottenID])
             .then((result) => {
                 console.log(result.rows[0])
