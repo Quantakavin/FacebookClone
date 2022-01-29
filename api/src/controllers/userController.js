@@ -42,6 +42,9 @@ module.exports.registerUser = async (req, res) => {
     const nameRegex =
         /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/
 
+    // const emailRegex = 
+    //  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+
     if (nameRegex.test(name)) {
         try {
             const hash = await bcrypt.hash(password, 10)
@@ -135,7 +138,7 @@ module.exports.updateUserPassword = async (req, res) => {
             return res.status(500).json({ message: error })
         }
     } else {
-        return res.status(400).json({ message: 'password not good enough' })
+        return res.status(400).json({ message: 'Please choose a stronger password' })
     }
 }
 
