@@ -37,10 +37,9 @@ class ChromeDinoComponent extends React.Component {
           <Resources />
           <div ref={(el) => (this.endDiv = el)}></div>
         </div>
-        <h3>404 page not found</h3>
+        <h3>500 Server Error</h3>
         <h4>
-          The link you followed may be broken, or the page may have been
-          removed.
+          Oops, something went wrong. Please try again later or feel free to contact us if the problem persists.
         </h4>
         <Link to="/UserHome">Back to home</Link>
       </div>

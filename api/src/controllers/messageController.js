@@ -1,9 +1,10 @@
 const message = require('../models/message')
 
 module.exports.newMessage = async (req, res) => {
-    const { sender, receiver, content } = req.body
+    const conversationid = req.params.conversationid
+    const { userid, content } = req.body
     try {
-        const results = await message.insert(sender, receiver, content)
+        const results = await message.insert(userid, conversationid, content)
         return res.status(201).send(results)
     } catch (error) {
         console.log(error)
@@ -11,10 +12,12 @@ module.exports.newMessage = async (req, res) => {
     }
 }
 
-module.exports.getMessages = async (req, res) => {
-    const { sender, receiver } = req.query
+module.exports.getMessages = async (req, res) => { 
+    const conversationid = req.params.id
+    const { userid } = req.body
     try {
-        const results = await message.getAll(sender, receiver)
+        const results = await message.getAll(conversationid, userid)
+        console.log(results)
         return res.status(200).send(results)
     } catch (error) {
         console.log(error)

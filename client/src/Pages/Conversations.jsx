@@ -1,6 +1,77 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import config from '../config/config';
 import TopBar from '../Components/TopBar';
-import { Image, Container, Row, Card, Button } from 'react-bootstrap';
+import { Container, Row, Image, Button} from 'react-bootstrap';
+import {useQuery, useQueryClient, useMutation } from 'react-query';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import { useHistory } from "react-router-dom";
+import Skeleton from '@mui/material/Skeleton';
+import profilephoto from '../Images/profilephoto.png';
+import '../Styles/messages.scss';
+
+const LoadingScreen = () => {
+    return(
+        <>
+        <Card sx={{ m: 2 }} className="shadow conversation">
+        <CardHeader
+        avatar={<Skeleton animation="wave" variant="circular" width={100} height={100} />} 
+        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
+        subheader={<Skeleton animation="wave" height={10} width="40%" />}
+        />
+        </Card>
+        </>
+    )
+}
+
+const Contacts = () => {
+    const history = useHistory();
+
+    const { isLoading, error, data } = useQuery(['conversations'], async () =>
+    await axios.get(`${config.baseURL}/conversations`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
+        }
+    })
+    ) 
+
+    if (error) {
+        console.log(error)
+        return <p style={{color: "#838383"}}>No content to display</p> 
+    }
+
+    return(
+        <>
+        {isLoading?
+        <>
+        <LoadingScreen />
+        <LoadingScreen />
+        <LoadingScreen />
+        </>
+        :<>
+        {data.data.rows.length===0? 
+        <p style={{color: "#838383"}}>No content to display</p> 
+        
+        :<></>}    
+        {data.data.rows.map(conversation => 
+        <div key={conversation.conversationid} className="shadow conversation" style={{display: "flex", flexDirection: "row"}}>
+            <div style={{flexGrow: 1}}>{conversation.picurl==null ? <Image src={profilephoto}  roundedCircle width="100px" height="100px" /> : <Image src={conversation.picurl}  roundedCircle width="100px" height="100px"/> }</div>
+            <div style={{flexGrow: 9}}>
+            <h4 style={{textTransform: "capitalize", marginTop: 10}}>{conversation.name}</h4> 
+            </div>
+            <div style={{flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <Button  style={{width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #d3d3d3", backgroundColor: "#32CD32", borderRadius: 5, fontWeight: 500}} onClick={() => history.push(`/messages/${conversation.conversationid}`)}>Message</Button>
+            </div>
+        </div>
+       )}
+        
+        </>}
+        </>
+    )
+
+}
 
 const Conversations = () => {
 
@@ -14,6 +85,7 @@ const Conversations = () => {
             <Row>
                 <h2 style={{marginTop: 10, marginBottom: 20}}>Conversations</h2>
             </Row>
+            <Contacts />
         </Container>
         </div>
         </>
