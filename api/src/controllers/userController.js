@@ -40,7 +40,7 @@ module.exports.registerUser = async (req, res) => {
 
     //Must have caps and no other characters allowed
     const nameRegex =
-        /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/
+        /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
 
     // const emailRegex = 
     //  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
