@@ -4,7 +4,7 @@ import {FaBars} from 'react-icons/fa'
 import { AiOutlineClose } from 'react-icons/ai'
 import { SIdebarData } from './SidebarData'
 import { IconContext } from 'react-icons/lib'
-import "./Navbar.css"
+import "../Styles/SideBar.css"
 const Navbar = () => {
 
     const [sidebar, setSidebar] = useState(false)

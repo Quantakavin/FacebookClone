@@ -37,53 +37,64 @@ module.exports.loginUser = async (req, res) => {
 
 module.exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body
-    try {
-        const hash = await bcrypt.hash(password, 10)
+
+    //Must have caps and no other characters allowed
+    const nameRegex =
+        /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/
+
+    if (nameRegex.test(name)) {
         try {
-            const results = await user.insert(name, email, hash)
-            const msg = {
-                from: 'spfacebookclone@gmail.com',
-                template_id: config.sendgridwelcome,
-                personalizations: [
-                    {
-                        to: email,
-                        dynamic_template_data: {
-                            firstName: name
+            const hash = await bcrypt.hash(password, 10)
+            try {
+                const results = await user.insert(name, email, hash)
+                const msg = {
+                    from: 'spfacebookclone@gmail.com',
+                    template_id: config.sendgridwelcome,
+                    personalizations: [
+                        {
+                            to: email,
+                            dynamic_template_data: {
+                                firstName: name
+                            }
                         }
-                    }
-                ]
+                    ]
+                }
+                sgMail
+                    .send(msg)
+                    .then(() => {
+                        console.log('Confirmation Email Sent')
+                    })
+                    .catch((error) => {
+                        console.error(error)
+                    })
+                const data = {
+                    id: results.rows[0].id,
+                    name,
+                    token: jwt.sign({ id: results.rows[0].id }, config.JWTKey, {
+                        expiresIn: 86400
+                    })
+                }
+                return res.status(201).send(data)
+            } catch (issue) {
+                if (issue.code === '23505') {
+                    return res.status(422).json({
+                        message: 'User with that email already exists'
+                    })
+                }
+                console.log(issue)
+                return res.status(500).json({
+                    message: 'Internal Server Error!'
+                })
             }
-            sgMail
-                .send(msg)
-                .then(() => {
-                    console.log('Confirmation Email Sent')
-                })
-                .catch((error) => {
-                    console.error(error)
-                })
-            const data = {
-                id: results.rows[0].id,
-                name,
-                token: jwt.sign({ id: results.rows[0].id }, config.JWTKey, {
-                    expiresIn: 86400
-                })
-            }
-            return res.status(201).send(data)
-        } catch (issue) {
-            if (issue.code === '23505') {
-                return res.status(422).json({
-                    message: 'User with that email already exists'
-                })
-            }
-            console.log(issue)
-            return res.status(500).json({
-                message: 'Internal Server Error!'
-            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ message: 'Internal Server Error!' })
         }
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({ message: 'Internal Server Error!' })
+    } else {
+        return res.status(400).json({ message: 'Please use a valid name!' })
     }
+
+
 }
 
 module.exports.retrieveUserById = async (req, res) => {
@@ -113,11 +124,6 @@ module.exports.updateUser = (req, res) => {
 module.exports.updateUserPassword = async (req, res) => {
     const { userid } = req.body
     const { newPassword } = req.body
-    /*
-    passswordRegex = new RegExp(
-        `^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9@$!%*#?&]{8,}$`
-    )
-    */
     const passswordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9@$!%*#?&]{8,}$/
     if (passswordRegex.test(newPassword)) {

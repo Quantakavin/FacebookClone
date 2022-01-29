@@ -36,45 +36,6 @@ import config from '../config/config';
         })
         }
 
-        /*
-      const [Input, setInput] = useState({
-        name: '',
-        email: '',
-        password: ''
-      });
-
-      const handleChange = (event) => {
-          setInput({
-              ...Input,
-              [event.target.name]: event.target.value
-
-          })
-      }
-
-      const handleSubmit = (event) => {
-          event.preventDefault();
-          setLoading(true);
-          axios
-          .post(`${config.baseURL}/register`, {"name": Input.name, "email": Input.email,"password": Input.password})
-          .then(response => {
-              setLoading(false)
-              console.log(response);
-              localStorage.setItem('token', response.data.token);
-              localStorage.setItem('user_id', response.data.id);
-              localStorage.setItem('username', response.data.name);
-              history.push("/users");
-          })
-          .catch(error => {
-              setLoading(false)
-              console.log(error);
-              //alert(error.response.data.message)
-              setAlertContent(error.response.data.message);
-              setAlert(true);
-          })
-      }
-
-      */
-
       return(
         <>
         <header>
