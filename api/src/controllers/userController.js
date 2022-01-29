@@ -31,7 +31,7 @@ module.exports.loginUser = async (req, res) => {
             .status(500)
             .json({ message: 'Invalid Email/Password Combination' })
     } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error!' })
+        return res.status(500).json({ message: 'Invalid Email/Password Combination' })
     }
 }
 
