@@ -553,7 +553,10 @@ const Profile = ({ match }) => {
                     Requested
                   </Button>
                 ) : (
-                  <Button
+                  <motion.button 
+                  whileHover={{scale: 1.1}} 
+                  whileTap={{scale: 0.9}} 
+                  className="save-button"
                     style={{
                       width: "auto",
                       marginBottom: 10,
@@ -566,7 +569,7 @@ const Profile = ({ match }) => {
                     onClick={() => friend(user.id)}
                   >
                     Request Friend
-                  </Button>
+                  </motion.button >
                 )}
               </Card>
             ))}
