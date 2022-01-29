@@ -1,7 +1,7 @@
 const connection = require('../config/database')
 
 module.exports.insert = (sender_id, receiver_id) => {
-    const createConversationQuery = `INSERT INTO conversation (sender_id, receiver_id) VALUES ($1, $2)`
+    const createConversationQuery = `INSERT INTO conversation (sender_id, receiver_id) VALUES ($1, $2) returning id`
     return new Promise((resolve, reject) => {
         connection
             .query(createConversationQuery, [sender_id, receiver_id])
@@ -43,4 +43,9 @@ module.exports.get = (conversation_id, user_id) => {
                 reject(err)
             })
     })
+}
+
+module.exports.check = (sender_id, receiver_id) => {
+    const checkConversationsQuery = `SELECT * FROM conversation WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1) `
+    return connection.query(checkConversationsQuery, [sender_id, receiver_id])
 }

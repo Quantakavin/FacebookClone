@@ -11,6 +11,7 @@ import {
   Col,
   Alert,
   Card,
+  Modal
 } from "react-bootstrap";
 import "../Styles/home.scss";
 import "../Styles/privacyswitch.css";
@@ -34,14 +35,17 @@ const Profile = ({ match }) => {
   const [alertContent, setAlertContent] = useState("");
   const [rerender, setRerender] = useState(false);
   const [users, setUsers] = useState([]);
+  const [friendList, setFriendList] = useState([]);
   const [mutualfriends, setMutualfriends] = useState([]);
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [checked, setChecked] = React.useState(false);
+  const [showFriendList, setShowFriendList] = useState(false);
 
   useEffect(() => {
     getFeed();
     getUsersProfile();
     getPageProfile();
+    getTotalFriends();
     getFriendship();
     getMutualFriends();
     setRerender(false);
@@ -92,6 +96,21 @@ const Profile = ({ match }) => {
       .then((response) => {
         console.log(response.data);
         setMutualfriends(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const getTotalFriends = () => {
+    axios
+    .get(
+      `${config.baseURL}/getFriendList/${match.params.id}`,
+      {}
+    )
+      .then((response) => {
+        console.log("hello" + response.data);
+        setFriendList(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -324,6 +343,48 @@ const Profile = ({ match }) => {
       });
   };
 
+  const createChat = () => {
+    axios
+    .post(
+      `${config.baseURL}/conversation?sender=${localStorage.getItem("user_id")}&receiver=${match.params.id}`,{} , 
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+    .then((response) => {
+      if (response.data.rowCount > 0) {
+        history.push(`/messages/${response.data.rows[0].id}`)
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
+
+  }
+
+  const checkChat = () => {
+    axios
+    .get(`${config.baseURL}/checkConversation?sender=${match.params.id}&receiver=${localStorage.getItem('user_id')}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      if (response.data.rowCount > 0) {
+        history.push(`/messages/${response.data.rows[0].id}`)
+      } else {
+        createChat()
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+    
+
+  }
+
   return (
     <>
       <header>
@@ -338,6 +399,26 @@ const Profile = ({ match }) => {
           paddingBottom: "50px",
         }}
       >
+      {friendList.length == 0? <></>: 
+      <Modal show={showFriendList} onHide={() => setShowFriendList(false)} >
+        <Modal.Header closeButton>
+          <Modal.Title>Friends ({friendList[0].friendcount})</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            {friendList.map(friend => 
+              <div style={{display: "flex", flexDirection: "row"}}>
+                {friend.picurl == null ? <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={profilephoto} width="50px" height="50px" roundedCircle /> : <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={friend.picurl} width="50px" height="50px" roundedCircle />}
+                <p style={{ flexGrow: 1, marginLeft: 20, marginTop: 10, fontWeight: 600, textTransform: "capitalize" }}>{friend.name}</p>
+                <div style={{ justifyContent: "flex-end"}}>
+                <Button  className="btn btn-primary">View Profile</Button>
+                </div>
+              </div>
+             )}
+
+        </Modal.Body>
+      </Modal>
+      }
+
         <Container
           className="postscontainer"
           style={{ backgroundColor: "#fff" }}
@@ -483,6 +564,8 @@ const Profile = ({ match }) => {
                   </p>
                 </Container>
               )}
+              {friendship.length != 0 && localStorage.getItem("user_id") != match.params.id ? <Button  style={{color: "white", backgroundColor: "#32CD32"}} class="btn" onClick={() => checkChat()}>Chat</Button>:<></>} 
+              {friendList.length == 0 ? <p style={{marginTop: 15}}>No Friends Yet</p>: <h6 style={{marginTop: 15}} onClick={() => {setShowFriendList(true)}} >{friendList[0].friendcount} Friends</h6>}
             </Col>
           </Row>
         </Container>

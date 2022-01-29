@@ -150,7 +150,7 @@ const Messages = ({ match }) => {
         <header>
             <TopBar />
         </header>
-        <div style={{display: "flex", width: "100%", height: "100vh"}}> 
+        <div style={{display: "flex", width: "100%", minHeight: "calc(100vh - 80px)"}}> 
             <div style={{flexGrow: 1}} className="d-none d-sm-block">
             <ConversationsList />
             </div>
@@ -166,7 +166,7 @@ const Messages = ({ match }) => {
 
             <div style={{display: "flex", flexDirection: "column"}} >
 
-            <div style={{overflowY: "scroll", height: "80vh", display: "flex", flexDirection: "column", backgroundColor: "#e3e8ee", flexGrow: 4}}>
+            <div style={{overflowY: "scroll", height: "72vh", display: "flex", flexDirection: "column", backgroundColor: "#e3e8ee", flexGrow: 4}}>
                 {
                     messagesLoading ? <></> :
                     <div style={{paddingBottom: 20}}>
@@ -233,7 +233,7 @@ const Messages = ({ match }) => {
                 }
                 </div>
 
-                <div style={{backgroundColor: "white",bottom: 0, display: "block", width: "100%", paddingBottom: 15, paddingTop: 10, flexGrow: 1, height: "20vh",}}>
+                <div style={{backgroundColor: "white",bottom: 0, display: "block", width: "100%", paddingBottom: 15, paddingTop: 10, flexGrow: 1}}>
                 <Form onSubmit={handleSubmit(onSubmit)} style={{display: "flex", justifyContent: "center", alignItems:"center"}}>
                 <Form.Control type="text" placeholder="Send Message..." style={{width: "auto", minWidth: "70%", paddingTop: 10, paddingBottom: 10}} {...register("content",  { required: "Message cannot be empty!"})} />
                 <Button style={{backgroundColor: "#4267B2", marginLeft: 15}} type="submit" className=""><SendIcon /></Button>

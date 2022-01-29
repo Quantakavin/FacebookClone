@@ -125,4 +125,14 @@ module.exports.getMutualFriends = async (user_id, friend_id) => {
                 reject(err)
             })
     })
+
+    
 }
+
+module.exports.getFriendList = async (user_id) => {
+    const sql =
+        `SELECT COUNT(*) OVER () AS friendcount, u.id, u.name, u.picurl FROM friendship f INNER JOIN users u ON (f.user_id = u.id OR f.friend_id = u.id)
+        where f.status='accepted' And (f.user_id = $1 OR f.friend_id = $1) AND u.id != $1`
+    return connection.query(sql, [user_id])
+}
+
