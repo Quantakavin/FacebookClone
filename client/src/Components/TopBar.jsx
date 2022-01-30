@@ -35,7 +35,6 @@ const TopBar = () => {
       })
 
   }
-<<<<<<< HEAD
 
   const getUnreadMessages = () => {
     axios
@@ -57,9 +56,6 @@ const TopBar = () => {
   }
 
 
-=======
-  
->>>>>>> 7f012f5c9e82fe4ae9e341ad252fbf3baec59f08
   useEffect(() => {
     getRequests()
     getUnreadMessages()
