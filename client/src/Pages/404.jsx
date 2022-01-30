@@ -6,6 +6,7 @@ import DinoScript from "../DinoScript.js";
 import DinoStyle from "../DinoStyle.js";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "../Styles/Dino.css";
+import Sadness from "../Images/Sadness.png";
 
 class ChromeDinoComponent extends React.Component {
   appendDinoScript() {
@@ -35,20 +36,26 @@ class ChromeDinoComponent extends React.Component {
         <style>{DinoStyle}</style>
         <div id="main-frame-error" className="interstitial-wrapper">
           <Resources />
+
           <div ref={(el) => (this.endDiv = el)}></div>
         </div>
-        <h1>Awww...Don't Cry</h1>
-        <h2>It's just a 404 error!</h2>
-        <h4>
-          The link you followed may be broken, or the page may have been
-          removed.
-        </h4>
-        
-        <Link to="/UserHome">Back to home</Link>
+        {/* here */}
+        <div >  
+          <div style={{ float: "left" }}>
+            <img src={Sadness} style={{ height: 300, width: 300 }}></img>
+          </div>
+          <div>
+            <h2>Awww...Don't Cry</h2>
+            <h3>It's just a 404 error!</h3>
+            <h4>
+              What you're looking for may have been replaced in Long Term Memory
+            </h4>
+            <Link to="/UserHome">Back to home</Link>
+          </div>
+        </div>
       </div>
     );
   }
 }
 
 export default ChromeDinoComponent;
-

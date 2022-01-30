@@ -121,6 +121,7 @@ const Messages = ({ match }) => {
         getMessages();
         setRoom();
         socket.on('message', (addedmessage)  => {
+            alert("Hello")
             let  belongstouser = (addedmessage.userid == localStorage.getItem("user_id"))
             const newMessage = {id: 1, case: belongstouser, content: addedmessage.text, date: addedmessage.date}
             setSocketMessages([...socketMessages, newMessage]);

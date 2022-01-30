@@ -511,7 +511,6 @@ const Profile = ({ match }) => {
 
               {PageProfile.id != userProfile.id && friendship.length == 0 ? (
                 <Button onClick={() => friend(match.params.id)}>
-                  {alert(friendship.length)}
                   Add as Friend
                 </Button>
               ) : friendship.status == "accepted" ? (

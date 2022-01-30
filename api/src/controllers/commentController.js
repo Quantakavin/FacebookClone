@@ -21,7 +21,6 @@ module.exports.getComment = async (req, res) => {
         return res.status(500).json({ error: 'Cannot find comment' })
     }
 }
-
 module.exports.updateComment = async (req, res) => {
     const { id } = req.params
     const { userid, content } = req.body
