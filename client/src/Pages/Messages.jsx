@@ -37,7 +37,22 @@ const ConversationsList = ()  => {
         <>
         <div style={{backgroundColor: "white", paddingTop: 15}}>
             <h4 style={{textAlign: "center", borderBottom: "solid 1px #d3d3d3", paddingBottom: 15}}>Conversations</h4>
-            {isLoading? <></>:
+            {isLoading?
+            <>
+            {Array.from(new Array(5)).map((item, index) => 
+
+            <div key={index} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
+            <Skeleton style={{flexGrow: 1}} animation="wave" variant="circular" width={50} height={50} />
+            <div style={{flexGrow: 4}}>
+            <Skeleton animation="wave" width={70} height={15} style={{ }} />
+            </div>
+            </div>
+            
+            
+            )}
+            </>
+            
+            :
             <>
             {data.data.rows.map(conversation => 
             <div key={conversation.conversationid} onClick = {()=>{history.push(`/messages/${conversation.conversationid}`)}} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
@@ -156,7 +171,15 @@ const Messages = ({ match }) => {
             </div>
             <div style={{flexGrow:9, borderLeft: "solid 1px #d3d3d3"}} >
             <div style={{height: "auto", display: "block", backgroundColor: "white", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
-            {conversationQuery.isLoading? <></>: 
+            {conversationQuery.isLoading? 
+            <div style={{display: "flex", flexDirection: "row"}}>
+                <Skeleton style={{ flexShrink: 2 }} animation="wave" variant="circular" width={65} height={65} />
+                <div style={{flexGrow: 15}}>
+                <Skeleton animation="wave" width={150} height={25} style={{ marginTop: 10, marginLeft: 20}} />
+                </div>
+            </div>
+            
+            : 
             <div style={{display: "flex", flexDirection: "row"}}>
             {conversationQuery.data.data.rows[0].picurl==null ? <Image src={profilephoto} style={{flexShrink: 2}} roundedCircle width="65px" height="65px" /> : <Image src={conversationQuery.data.data.rows[0].picurl} style={{flexShrink: 2}} roundedCircle width="65px" height="65px"/> }
             <h2 style={{marginLeft: 20, marginTop: 10,textTransform: "capitalize", flexGrow: 15}}>{conversationQuery.data.data.rows[0].name}</h2>

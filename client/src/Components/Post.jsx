@@ -10,10 +10,14 @@ import config from '../config/config';
 import '../Styles/post.scss';
 import ReactPlayer from 'react-player';
 import DOMPurify from 'dompurify';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 
 const Post = (props) => {
   const history = useHistory();
   const [comments, setComments] = useState([]);
+  const [showComments, setShowComments] = useState(false);
   const [borderColor, setBorderColor] = useState('transparent');
   const [errorMsg, setErrorMsg] = useState('');
   const [commentsRerender, setCommentsRerender] = useState(false);
@@ -356,7 +360,12 @@ const Post = (props) => {
               <button onClick={handleShowTextForm} style={{ width: "100%", backgroundColor: "white", borderRadius: "20px", textAlign: "left", marginBottom: 15, marginTop: 15 }} type="button" className="btn text-secondary">Type a comment...</button>
             </div>
           }
+          {comments.length == 0? <></> :
+          <>{showComments? <a style={{color: "#4267B2", marginLeft: 15, marginBottom: 10}} onClick={() => setShowComments(!showComments)}>Hide Comments {<ArrowDropUpIcon />}</a>: <a style={{color: "#4267B2", marginLeft: 15, marginBottom: 10}} onClick={() => setShowComments(!showComments)}>View Comments ({comments.length}) {<ArrowDropDownIcon />}</a>} </>
+          }
 
+          {showComments?
+          <>
           {comments.map(comment =>
             <Container key={comment.commentid} style={{ paddingLeft: 25, paddingRight: 25, paddingTop: 10, paddingBottom: 10 }}>
               <div style={{ display: "flex", flexDirection: "row", padding: 5 }} onClick={() => {
@@ -381,7 +390,7 @@ const Post = (props) => {
                 : <></>}
             </Container>
 
-          )}
+          )}</>:<></>}
 
         </Row>
       </Container>

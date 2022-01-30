@@ -21,12 +21,15 @@ import Post from "../Components/Post";
 import config from "../config/config";
 import Switch from "@mui/material/Switch";
 import { motion } from "framer-motion";
+import PostSkeleton from '../skeletons/PostSkeleton';
+import UserSkeleton from '../skeletons/UserSkeleton';
 
 const Profile = ({ match }) => {
   //const [postid,setPostid] = useState(0);
   const history = useHistory();
   const [friendship, setFriendship] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(true)
   const [userProfile, setUserProfile] = useState([]);
   const [PageProfile, setPageProfile] = useState([]);
   const [Privacy, setPrivacy] = useState(false);
@@ -37,6 +40,7 @@ const Profile = ({ match }) => {
   const [users, setUsers] = useState([]);
   const [friendList, setFriendList] = useState([]);
   const [mutualfriends, setMutualfriends] = useState([]);
+  const [mutualfriendsLoading, setMutualfriendsLoading] = useState(true);
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [checked, setChecked] = React.useState(false);
   const [showFriendList, setShowFriendList] = useState(false);
@@ -61,9 +65,11 @@ const Profile = ({ match }) => {
       .then((response) => {
         console.log(response.data);
         setPosts(response.data);
+        setPostsLoading(false)
       })
       .catch((error) => {
         console.log(error);
+        setPostsLoading(false)
       });
   };
 
@@ -96,9 +102,11 @@ const Profile = ({ match }) => {
       .then((response) => {
         console.log(response.data);
         setMutualfriends(response.data);
+        setMutualfriendsLoading(false)
       })
       .catch((error) => {
         console.log(error);
+        setMutualfriendsLoading(false)
       });
   };
 
@@ -574,10 +582,18 @@ const Profile = ({ match }) => {
           <Row>
             <h2 style={{ marginTop: 50, marginBottom: 30 }}>Mutual Friends</h2>
           </Row>
+          {mutualfriendsLoading? 
+          <Row className="flex-row flex-nowrap overflow-auto" style={{ overflow: "hidden" }} >
+              <>
+                {Array.from(new Array(5)).map((item, index) => <UserSkeleton key={index}/>)}
+              </>
+          </Row>
+          :
           <Row
             className="flex-row flex-nowrap overflow-auto"
             style={{ overflow: "hidden" }}
           >
+            <>
             {mutualfriends.map((user) => (
               <Card
                 className="shadow"
@@ -654,7 +670,10 @@ const Profile = ({ match }) => {
                 )}
               </Card>
             ))}
+            </>
+            
           </Row>
+          }
         </Container>
 
         {PageProfile.privacy === true &&
@@ -669,6 +688,13 @@ const Profile = ({ match }) => {
           // else display post
           <Container className="postscontainer">
             <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
+            {
+              postsLoading ? 
+              <>
+              {Array.from(new Array(5)).map((item, index) => <PostSkeleton key={index}/>)}
+              </>
+            :
+            <>
             {posts.length == 0 ? (
               <p style={{ color: "#838383" }}>No content to display</p>
             ) : (
@@ -681,6 +707,7 @@ const Profile = ({ match }) => {
                 setRerender={setRerender}
               ></Post>
             ))}
+           </>}
           </Container>
         )}
       </div>

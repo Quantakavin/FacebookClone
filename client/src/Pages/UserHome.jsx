@@ -9,14 +9,11 @@ import video from '../Images/video.png';
 import config from '../config/config';
 import { useForm } from "react-hook-form";
 import {useQuery, useQueryClient, useMutation } from 'react-query';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Skeleton from '@mui/material/Skeleton';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
+import PostSkeleton from '../skeletons/PostSkeleton';
 // import Particles from "react-tsparticles";
 
 
@@ -242,139 +239,8 @@ const Feed = () => {
         <>
         {isLoading?
         <>
-         {/* <Particles
-      id="tsparticles"
-      init={particlesInit}
-      loaded={particlesLoaded}
-      options={{
-        background: {
-          color: {
-            value: "#0d47a1",
-          },
-        },
-        fpsLimit: 60,
-        interactivity: {
-          events: {
-            onClick: {
-              enable: true,
-              mode: "push",
-            },
-            onHover: {
-              enable: true,
-              mode: "repulse",
-            },
-            resize: true,
-          },
-          modes: {
-            bubble: {
-              distance: 400,
-              duration: 2,
-              opacity: 0.8,
-              size: 40,
-            },
-            push: {
-              quantity: 4,
-            },
-            repulse: {
-              distance: 200,
-              duration: 0.4,
-            },
-          },
-        },
-        particles: {
-          color: {
-            value: "#ffffff",
-          },
-          links: {
-            color: "#ffffff",
-            distance: 150,
-            enable: true,
-            opacity: 0.5,
-            width: 1,
-          },
-          collisions: {
-            enable: true,
-          },
-          move: {
-            direction: "none",
-            enable: true,
-            outMode: "bounce",
-            random: false,
-            speed: 6,
-            straight: false,
-          },
-          number: {
-            density: {
-              enable: true,
-              area: 800,
-            },
-            value: 80,
-          },
-          opacity: {
-            value: 0.5,
-          },
-          shape: {
-            type: "circle",
-          },
-          size: {
-            random: true,
-            value: 5,
-          },
-        },
-        detectRetina: true,
-      }}
-    /> */}
-        <Card sx={{ m: 2 }}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
+        {Array.from(new Array(5)).map((item, index) => <PostSkeleton key={index}/>)}
         </>
-        </CardContent>
-
-     
-        </Card>
-        <Card sx={{ m: 2}}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-        </>
-        </CardContent>
-
-     
-        </Card>
-        <Card sx={{ m: 2 }}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-        </>
-        </CardContent>
-
-     
-        </Card>
-        </>
-        
-        
         :
         <>
         {data.data.length===0? 
