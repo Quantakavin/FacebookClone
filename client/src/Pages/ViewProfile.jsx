@@ -43,7 +43,7 @@ const Profile = ({ match }) => {
   const [mutualfriendsLoading, setMutualfriendsLoading] = useState(true);
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [checked, setChecked] = React.useState(false);
-  const [showFriendList, setShowFriendList] = useState(false);
+const [ifFriends, setIfFriends] = useState()
 
   useEffect(() => {
     getFeed();
@@ -84,7 +84,9 @@ const Profile = ({ match }) => {
       .then((response) => {
         console.log("friend");
         console.log(response.data);
-        setFriendship(response.data);
+        
+        setIfFriends(response.data);
+        console.log(setIfFriends);
       })
       .catch((error) => {
         console.log(error);
@@ -455,11 +457,33 @@ const Profile = ({ match }) => {
                   roundedCircle
                 ></Image>
               )}
+              {friendship.length != 0 ?(
+                  
+                  <motion.button 
+                  whileHover={{scale: 1.1}} 
+                  whileTap={{scale: 0.9}} 
+                  className="save-button" 
+                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
+                  onClick={() => unfriend(match.params.id)}>Remove as Friend</motion.button>
+              ) : ""}
+
+            
+
               {PageProfile.id != userProfile.id && friendship.length == 0 ? (
                 <Button onClick={() => friend(match.params.id)}>
+                  {alert(friendship.length)}
                   Add as Friend
                 </Button>
-              ) : PageProfile.id == userProfile.id ? (
+              ) : friendship.status == "accepted" ? (
+              
+                <motion.button 
+                    whileHover={{scale: 1.1}} 
+                    whileTap={{scale: 0.9}} 
+                    className="save-button" 
+                    style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
+                    onClick={() => unfriend(match.params.id)}>{alert("benis")}Request Friend</motion.button>
+              ):
+                PageProfile.id == userProfile.id ? (
                 <Switch
                   checked={userProfile.privacy}
                   onChange={handlePrivacyChange}
@@ -468,6 +492,8 @@ const Profile = ({ match }) => {
               ) : (
                 ""
               )}
+
+
               {localStorage.getItem("user_id") == match.params.id ? (
                 <div>
                   <Form onSubmit={createImagePost}>
@@ -650,23 +676,7 @@ const Profile = ({ match }) => {
                     Requested
                   </Button>
                 ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="save-button"
-                    style={{
-                      width: "auto",
-                      marginBottom: 10,
-                      marginTop: 5,
-                      border: "1px solid #4267B2",
-                      backgroundColor: "#4267B2",
-                      borderRadius: 5,
-                      fontWeight: 500,
-                    }}
-                    onClick={() => friend(user.id)}
-                  >
-                    Request Friend
-                  </motion.button>
+                  ""
                 )}
               </Card>
             ))}
