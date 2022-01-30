@@ -11,7 +11,7 @@ import {
   Col,
   Alert,
   Card,
-  Modal
+  Modal,
 } from "react-bootstrap";
 import "../Styles/home.scss";
 import "../Styles/privacyswitch.css";
@@ -21,15 +21,15 @@ import Post from "../Components/Post";
 import config from "../config/config";
 import Switch from "@mui/material/Switch";
 import { motion } from "framer-motion";
-import PostSkeleton from '../skeletons/PostSkeleton';
-import UserSkeleton from '../skeletons/UserSkeleton';
+import PostSkeleton from "../skeletons/PostSkeleton";
+import UserSkeleton from "../skeletons/UserSkeleton";
 
 const Profile = ({ match }) => {
   //const [postid,setPostid] = useState(0);
   const history = useHistory();
   const [friendship, setFriendship] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [postsLoading, setPostsLoading] = useState(true)
+  const [postsLoading, setPostsLoading] = useState(true);
   const [userProfile, setUserProfile] = useState([]);
   const [PageProfile, setPageProfile] = useState([]);
   const [Privacy, setPrivacy] = useState(false);
@@ -43,7 +43,8 @@ const Profile = ({ match }) => {
   const [mutualfriendsLoading, setMutualfriendsLoading] = useState(true);
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [checked, setChecked] = React.useState(false);
-const [ifFriends, setIfFriends] = useState()
+  const [ifFriends, setIfFriends] = useState();
+  const [showFriendList, setShowFriendList] = useState(false);
 
   useEffect(() => {
     getFeed();
@@ -65,11 +66,11 @@ const [ifFriends, setIfFriends] = useState()
       .then((response) => {
         console.log(response.data);
         setPosts(response.data);
-        setPostsLoading(false)
+        setPostsLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setPostsLoading(false)
+        setPostsLoading(false);
       });
   };
 
@@ -84,7 +85,7 @@ const [ifFriends, setIfFriends] = useState()
       .then((response) => {
         console.log("friend");
         console.log(response.data);
-        
+
         setIfFriends(response.data);
         console.log(setIfFriends);
       })
@@ -104,20 +105,17 @@ const [ifFriends, setIfFriends] = useState()
       .then((response) => {
         console.log(response.data);
         setMutualfriends(response.data);
-        setMutualfriendsLoading(false)
+        setMutualfriendsLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setMutualfriendsLoading(false)
+        setMutualfriendsLoading(false);
       });
   };
 
   const getTotalFriends = () => {
     axios
-    .get(
-      `${config.baseURL}/getFriendList/${match.params.id}`,
-      {}
-    )
+      .get(`${config.baseURL}/getFriendList/${match.params.id}`, {})
       .then((response) => {
         console.log("hello" + response.data);
         setFriendList(response.data);
@@ -355,45 +353,50 @@ const [ifFriends, setIfFriends] = useState()
 
   const createChat = () => {
     axios
-    .post(
-      `${config.baseURL}/conversation?sender=${localStorage.getItem("user_id")}&receiver=${match.params.id}`,{} , 
-      {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      .post(
+        `${config.baseURL}/conversation?sender=${localStorage.getItem(
+          "user_id"
+        )}&receiver=${match.params.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.rowCount > 0) {
+          history.push(`/messages/${response.data.rows[0].id}`);
         }
       })
-    .then((response) => {
-      if (response.data.rowCount > 0) {
-        history.push(`/messages/${response.data.rows[0].id}`)
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
-
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const checkChat = () => {
     axios
-    .get(`${config.baseURL}/checkConversation?sender=${match.params.id}&receiver=${localStorage.getItem('user_id')}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-    .then((response) => {
-      if (response.data.rowCount > 0) {
-        history.push(`/messages/${response.data.rows[0].id}`)
-      } else {
-        createChat()
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    });
-    
-
-  }
+      .get(
+        `${config.baseURL}/checkConversation?sender=${
+          match.params.id
+        }&receiver=${localStorage.getItem("user_id")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.rowCount > 0) {
+          history.push(`/messages/${response.data.rows[0].id}`);
+        } else {
+          createChat();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -409,25 +412,52 @@ const [ifFriends, setIfFriends] = useState()
           paddingBottom: "50px",
         }}
       >
-      {friendList.length == 0? <></>: 
-      <Modal show={showFriendList} onHide={() => setShowFriendList(false)} >
-        <Modal.Header closeButton>
-          <Modal.Title>Friends ({friendList[0].friendcount})</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            {friendList.map(friend => 
-              <div style={{display: "flex", flexDirection: "row"}}>
-                {friend.picurl == null ? <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={profilephoto} width="50px" height="50px" roundedCircle /> : <Image style={{ marginBottom: 10, flexShrink: 0.2 }} src={friend.picurl} width="50px" height="50px" roundedCircle />}
-                <p style={{ flexGrow: 1, marginLeft: 20, marginTop: 10, fontWeight: 600, textTransform: "capitalize" }}>{friend.name}</p>
-                <div style={{ justifyContent: "flex-end"}}>
-                <Button  className="btn btn-primary">View Profile</Button>
+        {friendList.length == 0 ? (
+          <></>
+        ) : (
+          <Modal show={showFriendList} onHide={() => setShowFriendList(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>Friends ({friendList[0].friendcount})</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {friendList.map((friend) => (
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {friend.picurl == null ? (
+                    <Image
+                      style={{ marginBottom: 10, flexShrink: 0.2 }}
+                      src={profilephoto}
+                      width="50px"
+                      height="50px"
+                      roundedCircle
+                    />
+                  ) : (
+                    <Image
+                      style={{ marginBottom: 10, flexShrink: 0.2 }}
+                      src={friend.picurl}
+                      width="50px"
+                      height="50px"
+                      roundedCircle
+                    />
+                  )}
+                  <p
+                    style={{
+                      flexGrow: 1,
+                      marginLeft: 20,
+                      marginTop: 10,
+                      fontWeight: 600,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {friend.name}
+                  </p>
+                  <div style={{ justifyContent: "flex-end" }}>
+                    <Button className="btn btn-primary">View Profile</Button>
+                  </div>
                 </div>
-              </div>
-             )}
-
-        </Modal.Body>
-      </Modal>
-      }
+              ))}
+            </Modal.Body>
+          </Modal>
+        )}
 
         <Container
           className="postscontainer"
@@ -457,17 +487,27 @@ const [ifFriends, setIfFriends] = useState()
                   roundedCircle
                 ></Image>
               )}
-              {friendship.length != 0 ?(
-                  
-                  <motion.button 
-                  whileHover={{scale: 1.1}} 
-                  whileTap={{scale: 0.9}} 
-                  className="save-button" 
-                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
-                  onClick={() => unfriend(match.params.id)}>Remove as Friend</motion.button>
-              ) : ""}
-
-            
+              {friendship.length != 0 ? (
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="save-button"
+                  style={{
+                    width: "auto",
+                    marginBottom: 10,
+                    marginTop: 5,
+                    border: "1px solid #4267B2",
+                    backgroundColor: "#4267B2",
+                    borderRadius: 5,
+                    fontWeight: 500,
+                  }}
+                  onClick={() => unfriend(match.params.id)}
+                >
+                  Remove as Friend
+                </motion.button>
+              ) : (
+                ""
+              )}
 
               {PageProfile.id != userProfile.id && friendship.length == 0 ? (
                 <Button onClick={() => friend(match.params.id)}>
@@ -475,15 +515,24 @@ const [ifFriends, setIfFriends] = useState()
                   Add as Friend
                 </Button>
               ) : friendship.status == "accepted" ? (
-              
-                <motion.button 
-                    whileHover={{scale: 1.1}} 
-                    whileTap={{scale: 0.9}} 
-                    className="save-button" 
-                    style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
-                    onClick={() => unfriend(match.params.id)}>{alert("benis")}Request Friend</motion.button>
-              ):
-                PageProfile.id == userProfile.id ? (
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="save-button"
+                  style={{
+                    width: "auto",
+                    marginBottom: 10,
+                    marginTop: 5,
+                    border: "1px solid #4267B2",
+                    backgroundColor: "#4267B2",
+                    borderRadius: 5,
+                    fontWeight: 500,
+                  }}
+                  onClick={() => unfriend(match.params.id)}
+                >
+                  {alert("benis")}Request Friend
+                </motion.button>
+              ) : PageProfile.id == userProfile.id ? (
                 <Switch
                   checked={userProfile.privacy}
                   onChange={handlePrivacyChange}
@@ -492,7 +541,6 @@ const [ifFriends, setIfFriends] = useState()
               ) : (
                 ""
               )}
-
 
               {localStorage.getItem("user_id") == match.params.id ? (
                 <div>
@@ -598,94 +646,124 @@ const [ifFriends, setIfFriends] = useState()
                   </p>
                 </Container>
               )}
-              {friendship.length != 0 && localStorage.getItem("user_id") != match.params.id ? <Button  style={{color: "white", backgroundColor: "#32CD32"}} class="btn" onClick={() => checkChat()}>Chat</Button>:<></>} 
-              {friendList.length == 0 ? <p style={{marginTop: 15}}>No Friends Yet</p>: <h6 style={{marginTop: 15}} onClick={() => {setShowFriendList(true)}} >{friendList[0].friendcount} Friends</h6>}
+              {friendship.length != 0 &&
+              localStorage.getItem("user_id") != match.params.id ? (
+                <Button
+                  style={{ color: "white", backgroundColor: "#32CD32" }}
+                  class="btn"
+                  onClick={() => checkChat()}
+                >
+                  Chat
+                </Button>
+              ) : (
+                <></>
+              )}
+              {friendList.length == 0 ? (
+                <p style={{ marginTop: 15 }}>No Friends Yet</p>
+              ) : (
+                <h6
+                  style={{ marginTop: 15 }}
+                  onClick={() => {
+                    setShowFriendList(true);
+                  }}
+                >
+                  {friendList[0].friendcount} Friends
+                </h6>
+              )}
             </Col>
           </Row>
         </Container>
-        {PageProfile.id != userProfile.id?
-        <Container>
-          <Row>
-            <h2 style={{ marginTop: 50, marginBottom: 30 }}>Mutual Friends</h2>
-          </Row>
-          {mutualfriendsLoading? 
-          <Row className="flex-row flex-nowrap overflow-auto" style={{ overflow: "hidden" }} >
-              <>
-                {Array.from(new Array(5)).map((item, index) => <UserSkeleton key={index}/>)}
-              </>
-          </Row>
-          :
-          <Row
-            className="flex-row flex-nowrap overflow-auto"
-            style={{ overflow: "hidden" }}
-          >
-            <>
-            {mutualfriends.map((user) => (
-              <Card
-                className="shadow"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "18rem",
-                  marginTop: 10,
-                  marginBottom: 10,
-                  paddingTop: 15,
-                  paddingBottom: 15,
-                  marginRight: 20,
-                  border: "1px solid #d3d3d3",
-                  borderRadius: 10,
-                }}
-                key={user.id}
+        {PageProfile.id != userProfile.id ? (
+          <Container>
+            <Row>
+              <h2 style={{ marginTop: 50, marginBottom: 30 }}>
+                Mutual Friends
+              </h2>
+            </Row>
+            {mutualfriendsLoading ? (
+              <Row
+                className="flex-row flex-nowrap overflow-auto"
+                style={{ overflow: "hidden" }}
               >
-                {user.picurl == null ? (
-                  <Image
-                    src={profilephoto}
-                    roundedCircle
-                    width="150px"
-                    height="150px"
-                  />
-                ) : (
-                  <Image
-                    src={user.picurl}
-                    roundedCircle
-                    width="150px"
-                    height="150px"
-                  />
-                )}
-                <Card.Body>
-                  <Card.Title style={{ textTransform: "capitalize" }}>
-                    {user.name}
-                  </Card.Title>
-                </Card.Body>
+                <>
+                  {Array.from(new Array(5)).map((item, index) => (
+                    <UserSkeleton key={index} />
+                  ))}
+                </>
+              </Row>
+            ) : (
+              <Row
+                className="flex-row flex-nowrap overflow-auto"
+                style={{ overflow: "hidden" }}
+              >
+                <>
+                  {mutualfriends.map((user) => (
+                    <Card
+                      className="shadow"
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "18rem",
+                        marginTop: 10,
+                        marginBottom: 10,
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        marginRight: 20,
+                        border: "1px solid #d3d3d3",
+                        borderRadius: 10,
+                      }}
+                      key={user.id}
+                    >
+                      {user.picurl == null ? (
+                        <Image
+                          src={profilephoto}
+                          roundedCircle
+                          width="150px"
+                          height="150px"
+                        />
+                      ) : (
+                        <Image
+                          src={user.picurl}
+                          roundedCircle
+                          width="150px"
+                          height="150px"
+                        />
+                      )}
+                      <Card.Body>
+                        <Card.Title style={{ textTransform: "capitalize" }}>
+                          {user.name}
+                        </Card.Title>
+                      </Card.Body>
 
-                {user.friended ? (
-                  <Button
-                    style={{
-                      width: "auto",
-                      marginBottom: 10,
-                      marginTop: 5,
-                      color: "#4267B2",
-                      border: "1px solid #4267B2",
-                      backgroundColor: "white",
-                      borderRadius: 5,
-                      fontWeight: 500,
-                    }}
-                    onClick={() => unfriend(user.id)}
-                  >
-                    Requested
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Card>
-            ))}
-            </>
-            
-          </Row>
-          }
-        </Container>:""
-          }
+                      {user.friended ? (
+                        <Button
+                          style={{
+                            width: "auto",
+                            marginBottom: 10,
+                            marginTop: 5,
+                            color: "#4267B2",
+                            border: "1px solid #4267B2",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                            fontWeight: 500,
+                          }}
+                          onClick={() => unfriend(user.id)}
+                        >
+                          Requested
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </Card>
+                  ))}
+                </>
+              </Row>
+            )}
+          </Container>
+        ) : (
+          ""
+        )}
 
         {PageProfile.privacy === true &&
         friendship.length == 0 &&
@@ -699,26 +777,28 @@ const [ifFriends, setIfFriends] = useState()
           // else display post
           <Container className="postscontainer">
             <h2 style={{ marginTop: 10, marginBottom: 20 }}>Posts</h2>
-            {
-              postsLoading ? 
+            {postsLoading ? (
               <>
-              {Array.from(new Array(5)).map((item, index) => <PostSkeleton key={index}/>)}
+                {Array.from(new Array(5)).map((item, index) => (
+                  <PostSkeleton key={index} />
+                ))}
               </>
-            :
-            <>
-            {posts.length == 0 ? (
-              <p style={{ color: "#838383" }}>No content to display</p>
             ) : (
-              <></>
+              <>
+                {posts.length == 0 ? (
+                  <p style={{ color: "#838383" }}>No content to display</p>
+                ) : (
+                  <></>
+                )}
+                {posts.map((post) => (
+                  <Post
+                    key={post.postid}
+                    post={post}
+                    setRerender={setRerender}
+                  ></Post>
+                ))}
+              </>
             )}
-            {posts.map((post) => (
-              <Post
-                key={post.postid}
-                post={post}
-                setRerender={setRerender}
-              ></Post>
-            ))}
-           </>}
           </Container>
         )}
       </div>
