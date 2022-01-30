@@ -94,7 +94,7 @@ const Users = () => {
           </Row>
           <Row className="flex-row flex-nowrap overflow-auto" style={{ overflow: "hidden" }}>
             {users.map(user =>
-              <Card className="shadow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '18rem', marginTop: 10, marginBottom: 10, paddingTop: 15, paddingBottom: 15, marginRight: 20, border: "1px solid #d3d3d3", borderRadius: 10 }} key={user.id}>
+              <Card onClick={() => { history.push(`./profile/${user.id}`) }} className="shadow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '18rem', marginTop: 10, marginBottom: 10, paddingTop: 15, paddingBottom: 15, marginRight: 20, border: "1px solid #d3d3d3", borderRadius: 10 }} key={user.id}>
                 {user.picurl == null ? <Image src={profilephoto} roundedCircle width="150px" height="150px" /> : <Image src={user.picurl} roundedCircle width="150px" height="150px" />}
                 <Card.Body>
                   <Card.Title style={{ textTransform: "capitalize" }}>{user.name}</Card.Title>
