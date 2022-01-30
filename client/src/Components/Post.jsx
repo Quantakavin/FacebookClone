@@ -296,7 +296,7 @@ const Post = (props) => {
         </div>
         <hr style={{ marginTop: -5, marginRight: "-2%", marginLeft: "-2%", color: "d3d3d3" }} />
         {props.post.cloudinaryurl == null ?
-          <p style={{ marginLeft: "1%", fontSize: "1.15em" }} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p> :
+          <p style={{ marginLeft: "1%", fontSize: "1.15em" }} onClick={() => { history.push(`./post/${props.post.postid}`) }} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p> :
           <>
             {props.post.caption == null ? <></> : <p  onClick={() => { history.push(`./post/${props.post.postid}`) }} style={{ marginLeft: "1%", fontSize: "1.15em" }}>{props.post.caption}</p>}
             {props.post.type == "image" ?
