@@ -11,20 +11,7 @@ import { useHistory } from "react-router-dom";
 import Skeleton from '@mui/material/Skeleton';
 import profilephoto from '../Images/profilephoto.png';
 import '../Styles/messages.scss';
-
-const LoadingScreen = () => {
-    return(
-        <>
-        <Card sx={{ m: 2 }} className="shadow conversation">
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={100} height={100} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        </Card>
-        </>
-    )
-}
+import ConversationSkeleton from '../skeletons/ConversationSkeleton';
 
 const Contacts = () => {
     const history = useHistory();
@@ -45,11 +32,9 @@ const Contacts = () => {
     return(
         <>
         {isLoading?
-        <>
-        <LoadingScreen />
-        <LoadingScreen />
-        <LoadingScreen />
-        </>
+              <>
+              {Array.from(new Array(5)).map((item, index) => <ConversationSkeleton key={index}/>)}
+            </>
         :<>
         {data.data.rows.length===0? 
         <p style={{color: "#838383"}}>No content to display</p> 

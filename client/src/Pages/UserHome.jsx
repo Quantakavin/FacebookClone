@@ -9,14 +9,13 @@ import video from '../Images/video.png';
 import config from '../config/config';
 import { useForm } from "react-hook-form";
 import {useQuery, useQueryClient, useMutation } from 'react-query';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Skeleton from '@mui/material/Skeleton';
-import { EditorState } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
+import {stateToHTML} from 'draft-js-export-html';
+import PostSkeleton from '../skeletons/PostSkeleton';
+import draftToHtml from 'draftjs-to-html';
 // import Particles from "react-tsparticles";
 
 
@@ -36,14 +35,38 @@ const TextForm = (props) => {
       }
       const convertContentToHTML = () => {
         //let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+        let currentContentAsHTML = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+
+        /*
+        let options = {
+
+          inlineStyles: {
+            BOLD: {element: 'b'},
+            ITALIC: {
+              attributes: {class: 'foo'},
+              style: {fontSize: 12}
+            },
+            RED: {style: {color: '#900'}},
+          },
+
+        }
+        let currentContentAsHTML = stateToHTML(editorState.getCurrentContent(),options)
+
+        */
+
         
+        /*
         let currentContentAsHTML = convertToHTML({
-            /*
+            
             styleToHTML: (style) => {
-              if (style === 'BOLD') {
-                return <span style={{color: 'blue'}} />;
+              if (style === 'STRIKETHROUGH') {
+                return <span style={{textDecoration: 'line-through'}} />;
+              } else if (style === 'SUPERSCRIPT') {
+                return <sup />
+              } else if (style === 'SUBSCRIPT') {
+                return <sub />
               }
-            },*/
+            },
             blockToHTML: (block) => {
               if (block.type === 'PARAGRAPH') {
                 return <p />;
@@ -54,8 +77,9 @@ const TextForm = (props) => {
                 return <a href={entity.data.url} target="_blank" rel="noopener noreferrer">{originalText}</a>;
               }
               return originalText;
-            }
+            },
           })(editorState.getCurrentContent())
+          */
           
         setConvertedContent(currentContentAsHTML);
               
@@ -242,139 +266,8 @@ const Feed = () => {
         <>
         {isLoading?
         <>
-         {/* <Particles
-      id="tsparticles"
-      init={particlesInit}
-      loaded={particlesLoaded}
-      options={{
-        background: {
-          color: {
-            value: "#0d47a1",
-          },
-        },
-        fpsLimit: 60,
-        interactivity: {
-          events: {
-            onClick: {
-              enable: true,
-              mode: "push",
-            },
-            onHover: {
-              enable: true,
-              mode: "repulse",
-            },
-            resize: true,
-          },
-          modes: {
-            bubble: {
-              distance: 400,
-              duration: 2,
-              opacity: 0.8,
-              size: 40,
-            },
-            push: {
-              quantity: 4,
-            },
-            repulse: {
-              distance: 200,
-              duration: 0.4,
-            },
-          },
-        },
-        particles: {
-          color: {
-            value: "#ffffff",
-          },
-          links: {
-            color: "#ffffff",
-            distance: 150,
-            enable: true,
-            opacity: 0.5,
-            width: 1,
-          },
-          collisions: {
-            enable: true,
-          },
-          move: {
-            direction: "none",
-            enable: true,
-            outMode: "bounce",
-            random: false,
-            speed: 6,
-            straight: false,
-          },
-          number: {
-            density: {
-              enable: true,
-              area: 800,
-            },
-            value: 80,
-          },
-          opacity: {
-            value: 0.5,
-          },
-          shape: {
-            type: "circle",
-          },
-          size: {
-            random: true,
-            value: 5,
-          },
-        },
-        detectRetina: true,
-      }}
-    /> */}
-        <Card sx={{ m: 2 }}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
+        {Array.from(new Array(5)).map((item, index) => <PostSkeleton key={index}/>)}
         </>
-        </CardContent>
-
-     
-        </Card>
-        <Card sx={{ m: 2}}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-        </>
-        </CardContent>
-
-     
-        </Card>
-        <Card sx={{ m: 2 }}>
-        <CardHeader
-        avatar={<Skeleton animation="wave" variant="circular" width={40} height={40} />} 
-        title={<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />}
-        subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <CardContent>
-        <>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-        </>
-        </CardContent>
-
-     
-        </Card>
-        </>
-        
-        
         :
         <>
         {data.data.length===0? 
@@ -400,12 +293,12 @@ const UserHome = () => {
         <>
         {/* <Particles /> */}
         <header>
-            {/* <TopBar /> */}
+            <TopBar />
         </header>
         <TextForm showForm={showTextForm} setShowForm={setShowTextForm}/>
         <ImageForm showForm={showImageForm} setShowForm={setShowImageForm}/>
         <VideoForm showForm={showVideoForm} setShowForm={setShowVideoForm}/>
-        <div style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
+        <div style={{backgroundColor: "#e3e8ee", minHeight: "100vh",overflow: 'auto',paddingTop: "50px",paddingBottom: "50px" }}>
         <Container className="formcontainer shadow" style={{height: 'auto', marginBottom: 0, display: "flex", flexDirection: "row", alignItems: 'center', justifyContent: 'center'}}>
  
             <button onClick={() => setShowTextForm(true)}  style={{flexGrow: 12, backgroundColor: "#e3e8ee", borderRadius: "20px", width: "100%",textAlign: "left"}} type="button" className="btn text-secondary">Whats on your mind, {localStorage.getItem("username")}?</button>

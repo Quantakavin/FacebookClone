@@ -87,3 +87,14 @@ module.exports.getMutualFriends = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error!" });
   }
 };
+
+module.exports.getFriendList = async (req, res) => {
+  let { userid} = req.params;
+  try {
+    const results = await friendship.getFriendList(userid);
+    return res.status(200).send(results.rows);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};

@@ -65,7 +65,13 @@ const Search = () => {
           </div>
         </div>
         {/* <div className="dropdown"> */}
-          {results.length != 0 && (
+        {results.length ==0? 
+          <> {filteredData == "" ? <></>:
+          <div className="dataResult">
+              <div className="dataItem">
+                <p >No results found</p>
+              </div>
+        </div>}</>: 
             <div className="dataResult">
               {results.filter((user)=>user.score < 0.6).map((user => {
                 return (
@@ -76,7 +82,7 @@ const Search = () => {
               }))}
             </div>
 
-          )}
+          }
       </div>
       {/* </div> */}
 
