@@ -408,11 +408,6 @@ const Post = (props) => {
             )}
           </div>
         </div>
-<<<<<<< HEAD
-        <hr style={{ marginTop: -5, marginRight: "-2%", marginLeft: "-2%", color: "d3d3d3" }} />
-        {props.post.cloudinaryurl == null ?
-          <p style={{ marginLeft: "1%", fontSize: "1.15em" }} onClick={() => { history.push(`./post/${props.post.postid}`) }} dangerouslySetInnerHTML={createMarkup(props.post.content)}></p> :
-=======
         <hr
           style={{
             marginTop: -5,
@@ -427,7 +422,6 @@ const Post = (props) => {
             dangerouslySetInnerHTML={createMarkup(props.post.content)}
           ></p>
         ) : (
->>>>>>> 1962e118e8c2a45b8e889085f0e78ff22cb48a9a
           <>
             {props.post.caption == null ? (
               <></>
