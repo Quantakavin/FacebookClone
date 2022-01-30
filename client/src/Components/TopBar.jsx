@@ -17,6 +17,7 @@ const TopBar = () => {
     localStorage.clear();
     history.push('/')
   }
+  
   const getRequests = () => {
     axios
       .get(`${config.baseURL}/getFriendship`, {
@@ -34,6 +35,7 @@ const TopBar = () => {
       })
 
   }
+<<<<<<< HEAD
 
   const getUnreadMessages = () => {
     axios
@@ -55,6 +57,9 @@ const TopBar = () => {
   }
 
 
+=======
+  
+>>>>>>> 7f012f5c9e82fe4ae9e341ad252fbf3baec59f08
   useEffect(() => {
     getRequests()
     getUnreadMessages()
@@ -118,6 +123,7 @@ const TopBar = () => {
                 <span className={"iconBadge"}>{users.length}</span> :""
                 }
                 </div>
+    
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <div className={"iconSection"}>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>

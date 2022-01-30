@@ -37,7 +37,8 @@ class ChromeDinoComponent extends React.Component {
           <Resources />
           <div ref={(el) => (this.endDiv = el)}></div>
         </div>
-        <h3>404 page not found</h3>
+        <h1>Awww...Don't Cry</h1>
+        <h2>It's just a 404 error!</h2>
         <h4>
           The link you followed may be broken, or the page may have been
           removed.

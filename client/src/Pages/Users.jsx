@@ -105,7 +105,7 @@ const Users = () => {
             :
             <>
             {users.map(user =>
-              <Card className="shadow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '18rem', marginTop: 10, marginBottom: 10, paddingTop: 15, paddingBottom: 15, marginRight: 20, border: "1px solid #d3d3d3", borderRadius: 10 }} key={user.id}>
+              <Card onClick={() => { history.push(`./profile/${user.id}`) }} className="shadow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '18rem', marginTop: 10, marginBottom: 10, paddingTop: 15, paddingBottom: 15, marginRight: 20, border: "1px solid #d3d3d3", borderRadius: 10 }} key={user.id}>
                 {user.picurl == null ? <Image src={profilephoto} roundedCircle width="150px" height="150px" /> : <Image src={user.picurl} roundedCircle width="150px" height="150px" />}
                 <Card.Body>
                   <Card.Title style={{ textTransform: "capitalize" }}>{user.name}</Card.Title>
@@ -116,7 +116,7 @@ const Users = () => {
                   whileHover={{scale: 1.1}} 
                   whileTap={{scale: 0.9}} 
                   className="save-button" 
-                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
+                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500, color:'#ffffff'  }} 
                   onClick={() => friend(user.id)}>Request Friend</motion.button>
                 }
 
@@ -130,12 +130,12 @@ const Users = () => {
                   whileHover={{scale: 1.1}} 
                   whileTap={{scale: 0.9}} 
                   className="save-button" 
-                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#4267B2", borderRadius: 5, fontWeight: 500 }} 
+                  style={{ width: "auto", marginBottom: 10, marginTop: 5, border: "1px solid #4267B2", backgroundColor: "#6c89c6", borderRadius: 5, fontWeight: 500, color:'#ffffff' }} 
                   onClick={(e) => {
                     e.preventDefault();
                     window.location.href='/userhome';
                     }}>Proceed to Home</motion.button>
-            <h4 style={{ textAlign: "center", marginTop: 50 }}><a style={{ color: "#4267B2" }} href="/userhome">Proceed to Home</a></h4>
+            <h4 style={{ textAlign: "center", marginTop: 50 }}><a style={{ color: "#6c89c6" }} href="/userhome">Proceed to Home</a></h4>
           </Row>
         </Container>
       </div>
