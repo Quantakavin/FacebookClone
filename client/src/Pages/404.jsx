@@ -40,15 +40,19 @@ class ChromeDinoComponent extends React.Component {
           <div ref={(el) => (this.endDiv = el)}></div>
         </div>
         {/* here */}
-        <div >  
+        <div style ={{marginTop: 100, marginLeft: 400}}>  
           <div style={{ float: "left" }}>
             <img src={Sadness} style={{ height: 300, width: 300 }}></img>
           </div>
           <div>
             <h2>Awww...Don't Cry</h2>
             <h3>It's just a 404 error!</h3>
+            <p></p>
             <h4>
-              What you're looking for may have been replaced in Long Term Memory
+              What you're looking for may have been 
+            </h4>
+            <h4>
+            replaced in Long Term Memory
             </h4>
             <Link to="/UserHome">Back to home</Link>
           </div>
