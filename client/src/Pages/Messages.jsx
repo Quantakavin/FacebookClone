@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import config from '../config/config';
 import TopBar from '../Components/TopBar';
-import { Container, Form, Image, Button} from 'react-bootstrap';
+import { Container, Form, Image, Button, Alert} from 'react-bootstrap';
 import SendIcon from '@mui/icons-material/Send';
 import {useQuery, useQueryClient } from 'react-query';
 import Card from '@mui/material/Card';
@@ -73,6 +73,7 @@ const ConversationsList = ()  => {
 const Messages = ({ match }) => { 
     const [messages, setMessages] = useState();
     const [messagesLoading, setMessagesLoading] = useState(true);
+    const  [messageError, setMessageError] = useState('')
     const [socketMessages, setSocketMessages] = useState([]);
     const [socketMessageLoading, setSocketMessagesLoading] = useState(false);
     const socket = useContext(SocketContext);
@@ -97,6 +98,7 @@ const Messages = ({ match }) => {
         })
         .catch(error => {
             console.log(error);
+            setMessageError(error)
             setMessagesLoading(false);
         })
     }
@@ -172,7 +174,7 @@ const Messages = ({ match }) => {
             </div>
             <div style={{flexGrow:9, borderLeft: "solid 1px #d3d3d3"}} >
             <div style={{height: "auto", display: "block", backgroundColor: "white", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
-            {conversationQuery.isLoading? 
+            {(conversationQuery.isLoading)? 
             <div style={{display: "flex", flexDirection: "row"}}>
                 <Skeleton style={{ flexShrink: 2 }} animation="wave" variant="circular" width={65} height={65} />
                 <div style={{flexGrow: 15}}>
@@ -182,8 +184,19 @@ const Messages = ({ match }) => {
             
             : 
             <div style={{display: "flex", flexDirection: "row"}}>
+            {conversationQuery.error? 
+            <Container style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Alert style={{width: "80%"}} variant="danger">
+                    <Alert.Heading>Forbidden!</Alert.Heading>
+                    <p>You do not have access to view this conversation. </p>
+                </Alert>
+            </Container>
+            
+             :
+            <>
             {conversationQuery.data.data.rows[0].picurl==null ? <Image src={profilephoto} style={{flexShrink: 2}} roundedCircle width="65px" height="65px" /> : <Image src={conversationQuery.data.data.rows[0].picurl} style={{flexShrink: 2}} roundedCircle width="65px" height="65px"/> }
             <h2 style={{marginLeft: 20, marginTop: 10,textTransform: "capitalize", flexGrow: 15}}>{conversationQuery.data.data.rows[0].name}</h2>
+            </>}
             </div>
             }
             </div>
@@ -194,11 +207,13 @@ const Messages = ({ match }) => {
                 {
                     messagesLoading ? <></> :
                     <div style={{paddingBottom: 20}}>
+                        {messageError === '' ?
+                    <>
                     {messages.rows.map(message => 
                     <React.Fragment key={message.id}>
                     {message.case === true ?
                     <>
-                    <div style={{display: "flex", flexDirection: "row"}}>
+                    <div style={{display: "flex", flexDirection: "row", alignItems: "flex-start"}}>
                         <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
                             <p style={{ marginTop: 10}}>{message.content}</p>
@@ -209,7 +224,7 @@ const Messages = ({ match }) => {
                     </>
                     : 
                     <>
-                    <div key={message.id} style={{display: "flex", flexDirection: "row"}}>
+                    <div key={message.id} style={{display: "flex", flexDirection: "row", alignItems: "flex-end"}}>
                         <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
                             <p style={{ marginTop: 10}}>{message.content}</p> 
@@ -221,6 +236,7 @@ const Messages = ({ match }) => {
                     }
                     </ React.Fragment>
                 )}
+                </> :<></>}
                     </div>
                 }
                 {
@@ -258,10 +274,19 @@ const Messages = ({ match }) => {
                 </div>
 
                 <div style={{backgroundColor: "white",bottom: 0, display: "block", width: "100%", paddingBottom: 15, paddingTop: 10, flexGrow: 1}}>
+                {(conversationQuery.isLoading || messagesLoading) ?
+                <><Skeleton animation="wave" width={"70%"} height={25} style={{ marginTop: 10, marginLeft: 20}} /></>:
+                <>
+                {(conversationQuery.error || messageError != "") ? <>
+                <p style={{color: "#838383"}}>No content to display</p> 
+                </>:
                 <Form onSubmit={handleSubmit(onSubmit)} style={{display: "flex", justifyContent: "center", alignItems:"center"}}>
                 <Form.Control type="text" placeholder="Send Message..." style={{width: "auto", minWidth: "70%", paddingTop: 10, paddingBottom: 10}} {...register("content",  { required: "Message cannot be empty!"})} />
                 <Button style={{backgroundColor: "#4267B2", marginLeft: 15}} type="submit" className=""><SendIcon /></Button>
                 </Form>
+                }
+                </>
+                }
                 </div>
 
                 </div>
