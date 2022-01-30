@@ -1,16 +1,40 @@
 import { Navbar, Nav, Container, Form, FormControl, Button, NavDropdown } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 import facebookicon from '../Images/facebookicon.png';
 import '../Styles/nav.scss';
 import { useHistory } from "react-router-dom";
 import Search from "./Search.jsx"
+import axios from 'axios';
+import config from '../config/config';
 
 const TopBar = () => {
   const history = useHistory();
-
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
   const logout = () => {
     localStorage.clear();
     history.push('/')
   }
+  const getRequests = () => {
+    axios
+      .get(`${config.baseURL}/getFriendship`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log('promise fulfilled')
+        setUsers(response.data)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+  }
+  useEffect(() => {
+    getRequests()
+  }, [])
   if (localStorage.getItem("token") == null) {
     return (
       <>
@@ -64,7 +88,12 @@ const TopBar = () => {
                 navbarScroll
               >
                 <Nav.Link style={{ color: "white" }} href="/notifications">Notifications</Nav.Link>
+                <div className={"iconSection"}>
                 <Nav.Link style={{ color: "white" }} href="/requests">Requests</Nav.Link>
+                {users.length != 0?
+                <span className={"iconBadge"}>{users.length}</span> :""
+                }
+                </div>
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">

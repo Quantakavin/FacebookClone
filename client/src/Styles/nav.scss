@@ -1,35 +1,56 @@
 .brand {
-    font-weight: 600;
-    @media screen and (min-width: 800px) {
-        margin-left: 10% !important;
-    }
-
+  font-weight: 600;
+  @media screen and (min-width: 800px) {
+    margin-left: 10% !important;
+  }
 }
 nav a {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .navitems {
-    @media screen and (min-width: 800px) {
-        margin-left: 1% !important;
-    }
+  @media screen and (min-width: 800px) {
+    margin-left: 1% !important;
+  }
 }
 
 #navbarScrollingDropdown {
-    color: white !important;
+  color: white !important;
 }
 
 .navlinks {
-    @media screen and (min-width: 800px) {
-        margin-right: 10% !important;
-    }
-
+  @media screen and (min-width: 800px) {
+    margin-right: 10% !important;
+  }
 }
 
 .searchform {
-    @media screen and (min-width: 1000px) {
-        margin-left: 5% !important;
-        width: 40%;
-    }
+  @media screen and (min-width: 1000px) {
+    margin-left: 5% !important;
+    width: 40%;
+  }
+}
 
+.iconBadge {
+  background: red;
+  width: 15px;
+  display: block;
+  text-align: center;
+  height: 15px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 9px;
+  line-height: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 13px;
+  left: 12px;
+  margin-left: 55px;
+  margin-bottom: 8px;
+}
+
+.iconSection {
+  position: relative;
+  width: fit-content;
+  display: inline-flex;
 }
