@@ -32,32 +32,49 @@ class ChromeDinoComponent extends React.Component {
 
   render() {
     return (
-      <div ref={(el) => (this.startDiv = el)}>
-        <style>{DinoStyle}</style>
-        <div id="main-frame-error" className="interstitial-wrapper">
-          <Resources />
+      <>
+        <TopBar></TopBar>
+        <div ref={(el) => (this.startDiv = el)}>
+          <style>{DinoStyle}</style>
+          <div id="main-frame-error" className="interstitial-wrapper">
+            <Resources />
 
-          <div ref={(el) => (this.endDiv = el)}></div>
-        </div>
-        {/* here */}
-        <div style ={{marginTop: 100, marginLeft: 400}}>  
-          <div style={{ float: "left" }}>
-            <img src={Sadness} style={{ height: 300, width: 300 }}></img>
+            <div ref={(el) => (this.endDiv = el)}></div>
           </div>
-          <div>
-            <h2>Awww...Don't Cry</h2>
-            <h3>It's just a 404 error!</h3>
-            <p></p>
-            <h4>
-              What you're looking for may have been 
-            </h4>
-            <h4>
-            replaced in Long Term Memory
-            </h4>
-            <Link to="/UserHome">Back to home</Link>
+          {/* here */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{ marginTop: 60, display: "flex", flexDirection: "row" }}
+            >
+              <div style={{ alignSelf: "flex-end" }}>
+                <img src={Sadness} style={{ height: 300, width: 300 }}></img>
+              </div>
+              <div style={{ marginTop: 30 }}>
+                <h2>Awww...Don't Cry</h2>
+                <p></p>
+                <p></p>
+                <p></p>
+                <h3>It's just a 404 error!</h3>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+
+                <h6>What you're looking for may have been</h6>
+                <h6>replaced in Long Term Memory</h6>
+                <Link to="/UserHome">Back to home</Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
