@@ -577,7 +577,7 @@ const Profile = ({ match }) => {
             </Col>
           </Row>
         </Container>
-
+        {PageProfile.id != userProfile.id?
         <Container>
           <Row>
             <h2 style={{ marginTop: 50, marginBottom: 30 }}>Mutual Friends</h2>
@@ -674,7 +674,8 @@ const Profile = ({ match }) => {
             
           </Row>
           }
-        </Container>
+        </Container>:""
+          }
 
         {PageProfile.privacy === true &&
         friendship.length == 0 &&

@@ -15,6 +15,7 @@ const TopBar = () => {
     localStorage.clear();
     history.push('/')
   }
+  
   const getRequests = () => {
     axios
       .get(`${config.baseURL}/getFriendship`, {
@@ -32,6 +33,7 @@ const TopBar = () => {
       })
 
   }
+  
   useEffect(() => {
     getRequests()
   }, [])
@@ -94,6 +96,7 @@ const TopBar = () => {
                 <span className={"iconBadge"}>{users.length}</span> :""
                 }
                 </div>
+    
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">
