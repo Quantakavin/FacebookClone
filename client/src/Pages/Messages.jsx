@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import config from '../config/config';
 import TopBar from '../Components/TopBar';
@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 //import { io } from "socket.io-client";
 import styled from 'styled-components'
 import {SocketContext} from '../context/socket';
+import { motion } from "framer-motion"
 
 
 const ConversationsList = ()  => {
@@ -55,12 +56,12 @@ const ConversationsList = ()  => {
             :
             <>
             {data.data.rows.map(conversation => 
-            <div key={conversation.conversationid} onClick = {()=>{history.push(`/messages/${conversation.conversationid}`)}} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.8 }} key={conversation.conversationid} onClick = {()=>{history.push(`/messages/${conversation.conversationid}`)}} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
                 <div style={{flexGrow: 1}}>{conversation.picurl==null ? <Image src={profilephoto}  roundedCircle width="50px" height="50px" /> : <Image src={conversation.picurl}  roundedCircle width="50px" height="50px"/> }</div>
                 <div style={{flexGrow: 4}}>
                     <p style={{textTransform: "capitalize", fontWeight: "bold", textAlign: "left"}}>{conversation.name}</p> 
                 </div>
-            </div>
+            </motion.div>
             )}
             </>
         }
@@ -74,6 +75,7 @@ const Messages = ({ match }) => {
     const [messages, setMessages] = useState();
     const [messagesLoading, setMessagesLoading] = useState(true);
     const  [messageError, setMessageError] = useState('')
+    const messagesEndRef = useRef(null)
     const [socketMessages, setSocketMessages] = useState([]);
     const [socketMessageLoading, setSocketMessagesLoading] = useState(false);
     const socket = useContext(SocketContext);
@@ -95,12 +97,17 @@ const Messages = ({ match }) => {
         .then(response => {
             setMessages(response.data);
             setMessagesLoading(false);
+            scrollToBottom()
         })
         .catch(error => {
             console.log(error);
             setMessageError(error)
             setMessagesLoading(false);
         })
+    }
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     const setRoom = () => {
@@ -123,20 +130,21 @@ const Messages = ({ match }) => {
         getMessages();
         setRoom();
         socket.on('message', (addedmessage)  => {
-            alert("Hello")
             let  belongstouser = (addedmessage.userid == localStorage.getItem("user_id"))
             const newMessage = {id: 1, case: belongstouser, content: addedmessage.text, date: addedmessage.date}
             setSocketMessages([...socketMessages, newMessage]);
+            scrollToBottom()
         });  
 
         return (() => {socket.off()})
     }, [match.params.id, socketMessages])
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const onSubmit = message => {
         socket.emit('chat', message.content);
         saveMessage(message.content)
+        reset()
     }
     
     const MessageBox = styled.div`
@@ -212,7 +220,7 @@ const Messages = ({ match }) => {
                     {messages.rows.map(message => 
                     <React.Fragment key={message.id}>
                     {message.case === true ?
-                    <>
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
                     <div style={{display: "flex", flexDirection: "row", alignItems: "flex-start"}}>
                         <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
@@ -221,9 +229,9 @@ const Messages = ({ match }) => {
                         </MessageBox> 
                     </div>
                     <p className="yourmessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
-                    </>
+                    </motion.div >
                     : 
-                    <>
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
                     <div key={message.id} style={{display: "flex", flexDirection: "row", alignItems: "flex-end"}}>
                         <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
@@ -232,7 +240,7 @@ const Messages = ({ match }) => {
                         </MessageBox>
                     </div>
                     <p className="othermessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
-                    </>
+                    </motion.div>
                     }
                     </ React.Fragment>
                 )}
@@ -271,6 +279,7 @@ const Messages = ({ match }) => {
                 )}
                     </div>
                 }
+                <div ref={messagesEndRef} />
                 </div>
 
                 <div style={{backgroundColor: "white",bottom: 0, display: "block", width: "100%", paddingBottom: 15, paddingTop: 10, flexGrow: 1}}>

@@ -14,7 +14,7 @@ module.exports.insert = (sender_id, receiver_id) => {
             })
     })
 }
-
+/*
 module.exports.getAll = (user_id) => {
     const getConversationsQuery = `SELECT c.id AS ConversationID, c.sender_id, c.receiver_id, u.id AS UserID, u.name, u.picurl  FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) WHERE (c.sender_id = $1 OR c.receiver_id = $1) AND u.id != $1 `
     return new Promise((resolve, reject) => {
@@ -28,6 +28,17 @@ module.exports.getAll = (user_id) => {
                 reject(err)
             })
     })
+}
+*/
+
+module.exports.getAll = (user_id) => {
+    const getConversationsQuery = `SELECT DISTINCT ON (c.id) c.id AS ConversationID, 
+    COUNT(case when m.read = false and m.user_id!=u.id and m.conversation_id = c.id then 1 else null end) OVER () AS total_count,
+    c.sender_id, c.receiver_id, u.id AS UserID, u.name, u.picurl, m.content, m.date, m.id
+    FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) 
+    LEFT JOIN Message m ON (m.conversation_id = c.id)
+    WHERE (c.sender_id = $1 OR c.receiver_id = $1) AND u.id != $1 ORDER BY c.id ASC, m.id DESC`
+    return connection.query(getConversationsQuery, [user_id])
 }
 
 module.exports.get = (conversation_id, user_id) => {

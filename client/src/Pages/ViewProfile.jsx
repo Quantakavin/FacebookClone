@@ -482,7 +482,7 @@ const Profile = ({ match }) => {
                   src={PageProfile.picurl}
                   style={{
                     width: "120px",
-                    height: "120px",
+                    height: "120px"
                   }}
                   roundedCircle
                 ></Image>
@@ -529,7 +529,7 @@ const Profile = ({ match }) => {
                   }}
                   onClick={() => unfriend(match.params.id)}
                 >
-                  {alert("benis")}Request Friend
+                  Request Friend
                 </motion.button>
               ) : PageProfile.id == userProfile.id ? (
                 <Switch
