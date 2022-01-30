@@ -31,7 +31,7 @@ module.exports.getAll = (user_id) => {
 }
 
 module.exports.get = (conversation_id, user_id) => {
-    const getConversationsQuery = `SELECT c.id AS ConversationID,  u.name, u.picurl  FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) WHERE c.id = $1 AND u.id != $2 `
+    const getConversationsQuery = `SELECT c.id AS ConversationID,  u.name, u.picurl  FROM Users u INNER JOIN Conversation c ON (u.id = c.sender_id OR u.id = c.receiver_id) WHERE c.id = $1 AND u.id != $2 AND (c.sender_id=$2 OR c.receiver_id = $2)`
     return new Promise((resolve, reject) => {
         connection
             .query(getConversationsQuery, [conversation_id, user_id])

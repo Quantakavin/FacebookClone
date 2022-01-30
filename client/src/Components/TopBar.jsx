@@ -10,6 +10,8 @@ import config from '../config/config';
 const TopBar = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(true);
+  const [unreadmessage, setUnreadmessage] = useState([])
+  const [unreadmessageLoading, setUnreadmessageLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const logout = () => {
     localStorage.clear();
@@ -33,9 +35,30 @@ const TopBar = () => {
       })
 
   }
-  
+
+  const getUnreadMessages = () => {
+    axios
+      .get(`${config.baseURL}/unreadmessagescount`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log('promise fulfilled')
+        setUnreadmessage(response.data)
+        setUnreadmessageLoading(false)
+      })
+      .catch(error => {
+        console.log(error);
+        setUnreadmessageLoading(false)
+      })
+
+  }
+
+
   useEffect(() => {
     getRequests()
+    getUnreadMessages()
   }, [])
   if (localStorage.getItem("token") == null) {
     return (
@@ -98,7 +121,12 @@ const TopBar = () => {
                 </div>
     
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
+                <div className={"iconSection"}>
                 <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
+                {unreadmessage.length != 0?
+                <span className={"iconBadge"}>{unreadmessage[0].count}</span> :""
+                }
+                </div>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">
                   <NavDropdown.Item
                     onClick={() => {

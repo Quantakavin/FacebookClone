@@ -197,6 +197,18 @@ module.exports = (router) => {
         authorization.verifyUser,
         messageController.getMessages
     )
+
+    router.get(
+        '/api/unreadmessagescount',
+        authorization.verifyUser,
+        messageController.getUnread
+    )
+
+    router.put(
+        '/api/messages/:conversationid',
+        authorization.verifyUser,
+        messageController.updateRead
+    )
     router.get('/api/searchUser', searchController.searchUser)
 
     router.post(
