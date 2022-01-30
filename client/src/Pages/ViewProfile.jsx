@@ -582,11 +582,7 @@ const Profile = ({ match }) => {
                   }}
                   onClick={() => unfriend(match.params.id)}
                 >
-<<<<<<< HEAD
-                  Request Friend
-=======
                   Remove as Friend
->>>>>>> 2ae110f83a2d06494b7031c6dd1a9c26333debaa
                 </motion.button>
               ) : (
                 ""
