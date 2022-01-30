@@ -9,11 +9,13 @@ import video from '../Images/video.png';
 import config from '../config/config';
 import { useForm } from "react-hook-form";
 import {useQuery, useQueryClient, useMutation } from 'react-query';
-import { EditorState } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { convertToHTML } from 'draft-convert';
+import {stateToHTML} from 'draft-js-export-html';
 import PostSkeleton from '../skeletons/PostSkeleton';
+import draftToHtml from 'draftjs-to-html';
 // import Particles from "react-tsparticles";
 
 
@@ -33,14 +35,38 @@ const TextForm = (props) => {
       }
       const convertContentToHTML = () => {
         //let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+        let currentContentAsHTML = draftToHtml(convertToRaw(editorState.getCurrentContent()))
+
+        /*
+        let options = {
+
+          inlineStyles: {
+            BOLD: {element: 'b'},
+            ITALIC: {
+              attributes: {class: 'foo'},
+              style: {fontSize: 12}
+            },
+            RED: {style: {color: '#900'}},
+          },
+
+        }
+        let currentContentAsHTML = stateToHTML(editorState.getCurrentContent(),options)
+
+        */
+
         
+        /*
         let currentContentAsHTML = convertToHTML({
-            /*
+            
             styleToHTML: (style) => {
-              if (style === 'BOLD') {
-                return <span style={{color: 'blue'}} />;
+              if (style === 'STRIKETHROUGH') {
+                return <span style={{textDecoration: 'line-through'}} />;
+              } else if (style === 'SUPERSCRIPT') {
+                return <sup />
+              } else if (style === 'SUBSCRIPT') {
+                return <sub />
               }
-            },*/
+            },
             blockToHTML: (block) => {
               if (block.type === 'PARAGRAPH') {
                 return <p />;
@@ -51,8 +77,9 @@ const TextForm = (props) => {
                 return <a href={entity.data.url} target="_blank" rel="noopener noreferrer">{originalText}</a>;
               }
               return originalText;
-            }
+            },
           })(editorState.getCurrentContent())
+          */
           
         setConvertedContent(currentContentAsHTML);
               
