@@ -69,7 +69,7 @@ const Search = () => {
           <> {filteredData == "" ? <></>:
           <div className="dataResult">
               <div className="dataItem">
-                <p >No results found</p>
+                <p >No such users found</p>
               </div>
         </div>}</>: 
             <div className="dataResult">
