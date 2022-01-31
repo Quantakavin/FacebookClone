@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom";
 import Search from "./Search.jsx"
 import axios from 'axios';
 import config from '../config/config';
-import Notifications from "react-notifications-menu";
 import NotificationDropDown from '../Components/NotificationDropDown'
 
 const TopBar = () => {

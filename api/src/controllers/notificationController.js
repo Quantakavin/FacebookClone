@@ -27,9 +27,9 @@ module.exports.friendNotification = async (req, res) => {
 }
 
 module.exports.getNotifications = async (req, res) => {
-  const {userid} = req.query;
-  try {
-      const results = await notification.getNotifications(userid)
+  const {receiver_id,userid} = req.query;
+    try {
+      const results = await notification.getNotifications(receiver_id,userid)
       return res.status(201).send(results.rows)
   } catch (error) {
       console.log(error)
