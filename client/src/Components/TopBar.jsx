@@ -166,14 +166,6 @@ const TopBar = () => {
 
                 <Nav.Link style={{ color: "white" }} href="/users">Friends</Nav.Link>
 
-                <NavDropdown style={{ color: "white", textTransform: "capitalize" }} id="navbarScrollingDropdown" title="Games">
-                  <NavDropdown.Item href = "/2048">
-                    Space Fighter</NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href = "/DinoGame">
-                    Dino Game
-                  </NavDropdown.Item>
-                </NavDropdown>
                                 <div className={"iconSection"}>
                   <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                   {unreadmessage.length != 0 ?
