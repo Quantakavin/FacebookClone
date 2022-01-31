@@ -37,14 +37,16 @@ module.exports.getMessages = async (req, res) => {
 }
 
 module.exports.updateRead = async (req, res) => { 
-    const conversationid = req.params.id
+    const  { conversationid }= req.params
     const { userid } = req.body
     try {
         const results = await conversation.get(conversationid, userid) 
         if (results.rows.length == 0) {
+            console.log("error with this part" + userid + " " + conversationid)
             return res.status(402).json({ message: 'You do not have access' })
         } else {
             const results2 = await message.updateRead(conversationid, userid)
+            console.log(results2)
             return res.status(201).send(results2)
         }
     } catch (error) {

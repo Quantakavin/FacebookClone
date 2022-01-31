@@ -98,6 +98,7 @@ const Messages = ({ match }) => {
             setMessages(response.data);
             setMessagesLoading(false);
             setMessagesLoaded(true)
+            setRead()
             scrollToBottom()
         })
         .catch(error => {
@@ -123,9 +124,19 @@ const Messages = ({ match }) => {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
+        }).then(response =>
+            setRead()
+        )
+
+
+    }
+
+    const setRead = () => {
+        axios.put(`${config.baseURL}/readmessage/${match.params.id}`, {} , {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
         })
-
-
     }
 
     useEffect(() => {
@@ -146,6 +157,7 @@ const Messages = ({ match }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const onSubmit = message => {
+        message.content.trim()
         socket.emit('chat', message.content);
         saveMessage(message.content)
         reset()

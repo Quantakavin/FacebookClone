@@ -438,8 +438,12 @@ function Post(props) {
                 {props.post.caption}
               </p>
             )}
-            {props.post.type == 'image' ? (
+            {props.post.type == "image" ? (
+              
               <Image
+               onClick={() => {
+                  history.push(`/post/${props.post.postid}`);
+                }}
                 width="100%"
                 style={{ marginBottom: 15 }}
                 src={props.post.cloudinaryurl}

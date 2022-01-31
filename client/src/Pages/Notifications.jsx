@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import TopBar from '../Components/TopBar';
-import axios from 'axios';
-import config from '../config/config';
-import { Container } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import TopBar from "../Components/TopBar";
+import axios from "axios";
+import config from "../config/config";
+import { Container } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 const Notifications = () => {
