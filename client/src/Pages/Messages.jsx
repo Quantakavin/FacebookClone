@@ -124,7 +124,7 @@ const Messages = ({ match }) => {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
-        }).then(
+        }).then(response =>
             setRead()
         )
 
@@ -132,11 +132,7 @@ const Messages = ({ match }) => {
     }
 
     const setRead = () => {
-        alert("hello")
-    }
-
-    const setRead2 = () => {
-        axios.put(`${config.baseURL}/unreadmessagescount/${match.params.id}`, {} , {
+        axios.put(`${config.baseURL}/readmessage/${match.params.id}`, {} , {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
@@ -161,7 +157,7 @@ const Messages = ({ match }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const onSubmit = message => {
-        message.trim()
+        message.content.trim()
         socket.emit('chat', message.content);
         saveMessage(message.content)
         reset()
