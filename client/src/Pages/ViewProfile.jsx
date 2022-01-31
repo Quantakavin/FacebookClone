@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import PostSkeleton from "../skeletons/PostSkeleton";
 import UserSkeleton from "../skeletons/UserSkeleton";
 
+
 const Profile = ({ match }) => {
   //const [postid,setPostid] = useState(0);
   const history = useHistory();
@@ -43,7 +44,6 @@ const Profile = ({ match }) => {
   const [mutualfriendsLoading, setMutualfriendsLoading] = useState(true);
   const label = { inputProps: { "aria-label": "Switch demo" } };
   const [checked, setChecked] = React.useState(false);
-  const [ifFriends, setIfFriends] = useState();
   const [showFriendList, setShowFriendList] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -87,9 +87,7 @@ const Profile = ({ match }) => {
         console.log("friend");
         console.log(response.data);
         setFriendship(response.data);
-        setIfFriends(response.data);
         setLoading(false);
-        console.log(setIfFriends);
       })
       .catch((error) => {
         console.log(error);
@@ -103,7 +101,11 @@ const Profile = ({ match }) => {
         `${config.baseURL}/getMutualFriends?user_id=${localStorage.getItem(
           "user_id"
         )}&friend_id=${match.params.id}`,
-        {}
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       )
       .then((response) => {
         console.log(response.data);
@@ -118,7 +120,11 @@ const Profile = ({ match }) => {
 
   const getTotalFriends = () => {
     axios
-      .get(`${config.baseURL}/getFriendList/${match.params.id}`, {})
+      .get(`${config.baseURL}/getFriendList/${match.params.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         console.log("hello" + response.data);
         setFriendList(response.data);
@@ -318,6 +324,38 @@ const Profile = ({ match }) => {
       });
   };
 
+  const acceptRequests = (id) => {
+    axios
+      .put(`${config.baseURL}/accept`, { "friendid": id }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log('promise fulfilled')
+
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+    //Notification for accepting friend request
+    axios
+      .post(`${config.baseURL}/notification`, { "receiver_id": id, "notification_id": 5 }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+
+  }
+
+
   const friend = (id) => {
     axios
       .post(
@@ -453,7 +491,7 @@ const Profile = ({ match }) => {
                     {friend.name}
                   </p>
                   <div style={{ justifyContent: "flex-end" }}>
-                    <Button className="btn btn-primary" onClick = {() => history.push(`/profile/${friend.id}`)}>View Profile</Button>
+                    <Button className="btn btn-primary" onClick={() => history.push(`/profile/${friend.id}`)}>View Profile</Button>
                   </div>
                 </div>
               ))}
@@ -491,104 +529,79 @@ const Profile = ({ match }) => {
               )}
 
               {(PageProfile.id != userProfile.id && friendship.length == 0) || loading ? (
+                <>
                 <Button onClick={() => friend(match.params.id)}>
                   Add as Friend
                 </Button>
+                </>
               ) : PageProfile.id == userProfile.id ? (
                 <Switch
                   checked={userProfile.privacy}
                   onChange={handlePrivacyChange}
                   inputProps={{ "aria-label": "controlled" }}
                 />
-              ) : friendship[0].status == "requested" ?(
+              ) : friendship[0].status == "requested" ? (
+                <>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="save-button"
+                    style={{
+                      backgroundColor: "#4267B2",
+                      color: "white",
+                      width: "auto",
+                      marginBottom: 10,
+                      marginTop: 5,
+                      border: "1px solid #4267B2",
+                      backgroundColor: "#4267B2",
+                      borderRadius: 5,
+                      fontWeight: 500,
+                    }}
+                    onClick={() => acceptRequests(match.params.id)}
+                  >
+                    Accept
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="save-button"
+                    style={{
+                      backgroundColor: "white",
+                      color: '#4267B2',
+                      width: "auto",
+                      marginBottom: 10,
+                      marginTop: 5,
+                      border: "1px solid #4267B2",
+                      borderRadius: 5,
+                      fontWeight: 500,
+                    }}
+                    onClick={() => unfriend(match.params.id)}
+                  >
+                    Decline
+                  </motion.button>
+                </>
+
+              ) : friendship[0].status == "accepted" ? (
                 <>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="save-button"
                   style={{
-                    backgroundColor: "#4267B2",
-                    color: "white",
                     width: "auto",
                     marginBottom: 10,
                     marginTop: 5,
                     border: "1px solid #4267B2",
                     backgroundColor: "#4267B2",
-                    borderRadius: 5,
-                    fontWeight: 500,
-                  }}
-                  onClick={() => friend(match.params.id)}
-                >
-                Accept
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="save-button"
-                  style={{
-                    backgroundColor: "white",
-                    color: '#4267B2',
-                    width: "auto",
-                    marginBottom: 10,
-                    marginTop: 5,
-                    border: "1px solid #4267B2",
                     borderRadius: 5,
                     fontWeight: 500,
                   }}
                   onClick={() => unfriend(match.params.id)}
                 >
-                Decline
+                  Unfriend
                 </motion.button>
                 </>
-                
-              ) : friendship[0].status == "accepted" ? (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="save-button"
-                  style={{
-                    width: "auto",
-                    marginBottom: 10,
-                    marginTop: 5,
-                    border: "1px solid #4267B2",
-                    backgroundColor: "#4267B2",
-                    borderRadius: 5,
-                    fontWeight: 500,
-                  }}
-                  onClick={() => unfriend(match.params.id)}
-                >
-                Unfriend
-                </motion.button>
               ) : ""}
-
-              {/* {friendship.length != 0 ? (
-              {PageProfile.id != userProfile.id && friendship.length == 0 ? (
-                <Button onClick={() => friend(match.params.id)}>
-                  Add as Friend
-                </Button>
-              ) : friendship.status == "accepted" ? (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="save-button"
-                  style={{
-                    width: "auto",
-                    marginBottom: 10,
-                    marginTop: 5,
-                    border: "1px solid #4267B2",
-                    backgroundColor: "#4267B2",
-                    borderRadius: 5,
-                    fontWeight: 500,
-                  }}
-                  onClick={() => unfriend(match.params.id)}
-                >
-                  Remove as Friend
-                </motion.button>
-              ) : (
-                ""
-              )} */}
-
-
 
               {localStorage.getItem("user_id") == match.params.id ? (
                 <div>
@@ -695,7 +708,7 @@ const Profile = ({ match }) => {
                 </Container>
               )}
               {friendship.length != 0 &&
-                localStorage.getItem("user_id") != match.params.id ? (
+                localStorage.getItem("user_id") != match.params.id && friendship[0].confirmed === true ? (
                 <Button
                   style={{ color: "white", backgroundColor: "#32CD32" }}
                   class="btn"

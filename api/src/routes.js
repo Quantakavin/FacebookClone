@@ -113,11 +113,13 @@ module.exports = (router) => {
     )
     router.get(
         '/api/comments/:id',
+        sanitization.sanitizeResult,
         commentController.getAllComments
     )
     router.get(
         '/api/comment/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         commentController.getComment
     )
     router.put(
@@ -220,6 +222,7 @@ module.exports = (router) => {
     router.get(
         '/api/messages/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         messageController.getMessages
     )
 
@@ -256,6 +259,8 @@ module.exports = (router) => {
 
     router.get(
         '/api/notification',
+        authorization.verifyUser,
+        sanitization.sanitizeResult,
         notificationController.getNotifications
     )
 
