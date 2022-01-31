@@ -37,10 +37,20 @@ const Notifications = () => {
             <div id="wrapper">
                 <div id="info">
                     <h2 style={{ marginTop: 50, marginBottom: 30 }}>Notifications</h2>
-                    {notification.map(notifications =>
+                    { notification.map(notifications =>
                         <div>
-                            <span onClick={() => { history.push(`./profile/${notifications.userid}`) }} > {notifications.name}</span>
-                            <span onClick={() => { history.push(`./post/${notifications.postid}`) }}>{notifications.notification_message}</span>
+                            {notifications.notification_id == 3 || notifications.notification_id == 4 ? (
+                                <>
+                                <span onClick={() => { history.push(`./profile/${notifications.userid}`) }} style={{fontWeight: 'bold'}}> {notifications.name}</span>
+                                <span onClick={() => { history.push(`./post/${notifications.postid}`) }}>{notifications.notification_message}</span>
+                                </>
+                            ): notifications.notification_id == 1 ? (
+                                <>
+                                <span onClick={() => { history.push(`./profile/${notifications.userid}`) }} style={{fontWeight: 'bold'}}> {notifications.name}</span>
+                                <span onClick={() => { history.push(`./requests/`) }}>{notifications.notification_message}</span>
+                                </>
+                            ) : ""}
+                            
                         </div>
                     )}
 
