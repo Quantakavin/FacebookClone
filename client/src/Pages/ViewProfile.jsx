@@ -453,7 +453,7 @@ const Profile = ({ match }) => {
                     {friend.name}
                   </p>
                   <div style={{ justifyContent: "flex-end" }}>
-                    <Button className="btn btn-primary">View Profile</Button>
+                    <Button className="btn btn-primary" onClick = {() => history.push(`/profile/${friend.id}`)}>View Profile</Button>
                   </div>
                 </div>
               ))}
