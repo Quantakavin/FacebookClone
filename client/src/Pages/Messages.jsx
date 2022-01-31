@@ -71,6 +71,7 @@ const ConversationsList = ()  => {
 
 const Messages = ({ match }) => { 
     const [messages, setMessages] = useState();
+    const [messagesLoaded, setMessagesLoaded] = useState(false)
     const [messagesLoading, setMessagesLoading] = useState(true);
     const  [messageError, setMessageError] = useState('')
     const messagesEndRef = useRef(null)
@@ -96,12 +97,14 @@ const Messages = ({ match }) => {
         .then(response => {
             setMessages(response.data);
             setMessagesLoading(false);
+            setMessagesLoaded(true)
             scrollToBottom()
         })
         .catch(error => {
             console.log(error);
             setMessageError(error)
             setMessagesLoading(false);
+            setMessagesLoaded(true)
         })
     }
 
@@ -126,7 +129,9 @@ const Messages = ({ match }) => {
     }
 
     useEffect(() => {
-        getMessages();
+        if (!messagesLoaded) {
+            getMessages();
+        }
         setRoom();
         socket.on('message', (addedmessage)  => {
             let  belongstouser = (addedmessage.userid == localStorage.getItem("user_id"))
@@ -145,6 +150,17 @@ const Messages = ({ match }) => {
         saveMessage(message.content)
         reset()
     }
+
+    const MessageDate = styled.p`
+    @media screen and (min-width: 800px) {
+        margin-left: ${props => props.mymessage ? "auto" : "6%"};
+        margin-right: ${props => props.mymessage ? "6%" : "auto"};
+      }
+      @media screen and (max-width: 800px) {
+        margin-left: ${props => props.mymessage ? "auto" : "10px"};
+        margin-right: ${props => props.mymessage ? "10px" : "auto"};
+      }
+    `
     
     const MessageBox = styled.div`
     background-color: ${props => props.mymessage ? "#006AFF" : "white"};
@@ -161,7 +177,8 @@ const Messages = ({ match }) => {
     font-weight: 500;
     @media screen and (min-width: 900px) {
       width: 350px !important;
-      margin-left: 5%;
+      margin-left: ${props => props.mymessage ? "auto" : "5%"};
+      margin-right: ${props => props.mymessage ? "5%" : "auto"};
     }
     @media screen and (max-width: 800px) {
         max-width: auto;
@@ -221,25 +238,27 @@ const Messages = ({ match }) => {
                     <React.Fragment key={message.id}>
                     {message.case === true ?
                     <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
-                    <div style={{display: "flex", flexDirection: "row", alignItems: "flex-start"}}>
+                    <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
                         <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
                             <p style={{ marginTop: 10}}>{message.content}</p>
                             </div>
                         </MessageBox> 
                     </div>
-                    <p className="yourmessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
+                    <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
+                    <MessageDate mymessage style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
+                    </div>
                     </motion.div >
                     : 
                     <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
-                    <div key={message.id} style={{display: "flex", flexDirection: "row", alignItems: "flex-end"}}>
+                    <div key={message.id} style={{display: "flex", flexDirection: "row", justifyContent: "flex-start"}}>
                         <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
                             <p style={{ marginTop: 10}}>{message.content}</p> 
                             </div>
                         </MessageBox>
                     </div>
-                    <p className="othermessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
+                    <MessageDate style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
                     </motion.div>
                     }
                     </ React.Fragment>
@@ -261,18 +280,18 @@ const Messages = ({ match }) => {
                             </div>
                         </MessageBox> 
                     </div>
-                    <p className="yourmessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
+                    <MessageDate mymessage style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
                     </motion.div>
                     : 
                     <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
                     <div key={message.id} style={{display: "flex", flexDirection: "row"}}>
-                        <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
+                        <MessageBox  className="shadow" style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
                             <p style={{ marginTop: 10}}>{message.content}</p> 
                             </div>
                         </MessageBox>
                     </div>
-                    <p className="othermessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
+                    <MessageDate style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
                     </motion.div>
                     }
                     </ React.Fragment>
