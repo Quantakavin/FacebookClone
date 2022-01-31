@@ -494,24 +494,6 @@ const Profile = ({ match }) => {
                 <Button onClick={() => friend(match.params.id)}>
                   Add as Friend
                 </Button>
-              ) : friendship[0].status == "accepted" ? (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="save-button"
-                  style={{
-                    width: "auto",
-                    marginBottom: 10,
-                    marginTop: 5,
-                    border: "1px solid #4267B2",
-                    backgroundColor: "#4267B2",
-                    borderRadius: 5,
-                    fontWeight: 500,
-                  }}
-                  onClick={() => unfriend(match.params.id)}
-                >
-                Unfriend
-                </motion.button>
               ) : PageProfile.id == userProfile.id ? (
                 <Switch
                   checked={userProfile.privacy}
@@ -559,6 +541,24 @@ const Profile = ({ match }) => {
                 </motion.button>
                 </>
                 
+              ) : friendship[0].status == "accepted" ? (
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="save-button"
+                  style={{
+                    width: "auto",
+                    marginBottom: 10,
+                    marginTop: 5,
+                    border: "1px solid #4267B2",
+                    backgroundColor: "#4267B2",
+                    borderRadius: 5,
+                    fontWeight: 500,
+                  }}
+                  onClick={() => unfriend(match.params.id)}
+                >
+                Unfriend
+                </motion.button>
               ) : ""}
 
               {/* {friendship.length != 0 ? (
