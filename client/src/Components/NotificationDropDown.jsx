@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const NotificationDropDown = ({ notifications, setNotificationState }) => {
 
@@ -9,12 +10,25 @@ const NotificationDropDown = ({ notifications, setNotificationState }) => {
         setNotificationState(false);
     }
     return (
-        <div>
-            <button onClick={onClose}>Close</button>
-            <h2 style={{ marginTop: 50, marginBottom: 30 }}>Notifications</h2>
+        <div style={{height: "600px", overflowY: "scroll"}}>
+            <motion.button whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="save-button"
+                  style={{
+                    backgroundColor: "#4267B2",
+                    color: "black",
+                    width: "auto",
+                    marginBottom: 10,
+                    marginTop: 5,
+                    border: "1px solid black",
+                    backgroundColor: "white",
+                    borderRadius: 5,
+                    fontWeight: 500,
+                  }} onClick={onClose}>Close</motion.button>
+            <h2 style={{ marginTop: 18, marginBottom: 10, backgroundColor: 'white', border: "1px solid black"  }}>Notifications</h2>
             {notifications.map(n => {
                 return (
-                    <div>
+                    <div style={{backgroundColor: 'white', border: "1px solid black", height: 50}}>
                         {
                             n.notification_id === 1 ?
                                 <>

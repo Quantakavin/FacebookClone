@@ -7,6 +7,7 @@ import Search from "./Search.jsx"
 import axios from 'axios';
 import config from '../config/config';
 import NotificationDropDown from '../Components/NotificationDropDown'
+import { width } from '@mui/system';
 
 const TopBar = () => {
   const history = useHistory();
@@ -15,20 +16,20 @@ const TopBar = () => {
   const [unreadmessageLoading, setUnreadmessageLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [notifications, setNotifications] = useState([])
-  const [notificationState, setNotificationState]= useState(false);
+  const [notificationState, setNotificationState] = useState(false);
 
   const [data, setData] = useState([
     {
-      image :'https://synergi-dev.s3.ap-southeast-1.amazonaws.com/profile-pictures/6b9.png' ,
-      message : 'Lorem ipsum dolor sit amet.',
-      detailPage : '/events', 
-      receivedTime:'12h ago'
+      image: 'https://synergi-dev.s3.ap-southeast-1.amazonaws.com/profile-pictures/6b9.png',
+      message: 'Lorem ipsum dolor sit amet.',
+      detailPage: '/events',
+      receivedTime: '12h ago'
     },
     {
-      image :'https://synergi-dev.s3.ap-southeast-1.amazonaws.com/profile-pictures/6b9.png' ,
-      message : 'Lorem ipsum dolor sit amet.',
-      detailPage : '/events', 
-      receivedTime:'12h ago'
+      image: 'https://synergi-dev.s3.ap-southeast-1.amazonaws.com/profile-pictures/6b9.png',
+      message: 'Lorem ipsum dolor sit amet.',
+      detailPage: '/events',
+      receivedTime: '12h ago'
     }
   ])
 
@@ -155,8 +156,8 @@ const TopBar = () => {
                 style={{ maxHeight: '40px' }}
                 navbarScroll>
                 {/* <Nav.Link style={{ color: "white" }} onClick={() => openNotification}>Notifications</Nav.Link> */}
-                <button onClick={openNotification}>Notification</button>
-                {notificationState === true && <NotificationDropDown notifications={notifications} setNotificationState={setNotificationState} />}
+                <Nav.Link style={{ color: "white" }} onClick={openNotification}>Notification</Nav.Link>
+                {notificationState === true && <div style={{ height: "600px", width: "400px"}}><NotificationDropDown notifications={notifications} setNotificationState={setNotificationState} /></div>}
                 <div className={"iconSection"}>
                   <Nav.Link style={{ color: "white" }} href="/requests">Requests</Nav.Link>
                   {users.length != 0 ?
