@@ -31,18 +31,19 @@ module.exports.loginUser = async (req, res) => {
             .status(500)
             .json({ message: 'Invalid Email/Password Combination' })
     } catch (error) {
-        return res.status(500).json({ message: 'Invalid Email/Password Combination' })
+        return res
+            .status(500)
+            .json({ message: 'Invalid Email/Password Combination' })
     }
 }
 
 module.exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body
 
-    //Must have caps and no other characters allowed
-    const nameRegex =
-        /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
+    // Must have caps and no other characters allowed
+    const nameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/
 
-    // const emailRegex = 
+    // const emailRegex =
     //  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
     if (nameRegex.test(name)) {
@@ -96,8 +97,6 @@ module.exports.registerUser = async (req, res) => {
     } else {
         return res.status(400).json({ message: 'Please use a valid name!' })
     }
-
-
 }
 
 module.exports.retrieveUserById = async (req, res) => {
@@ -106,7 +105,7 @@ module.exports.retrieveUserById = async (req, res) => {
         // var getterID = req.body.getterID
         // no need yet
         const results = await user.getUserByID(gottenID)
-        return res.status(201).send(results)
+        return res.status(201).send(results.rows[0])
     } catch (error) {
         console.log(error)
         return res.status(404).send('Cannot find user with that id')
@@ -120,7 +119,7 @@ module.exports.updateUser = (req, res) => {
         return res.status(200).send(results)
     } catch (error) {
         console.log(error)
-        return res.status(500).send(error)
+        return res.status(500).send(error.rows[0])
     }
 }
 
@@ -138,7 +137,9 @@ module.exports.updateUserPassword = async (req, res) => {
             return res.status(500).json({ message: error })
         }
     } else {
-        return res.status(400).json({ message: 'Please choose a stronger password' })
+        return res
+            .status(400)
+            .json({ message: 'Please choose a stronger password' })
     }
 }
 
@@ -179,7 +180,7 @@ module.exports.privacyStatus = async (req, res) => {
     const { userid } = req.body
     try {
         const results = await user.getPrivacy(userid)
-        return res.status(200).json(results)
+        return res.status(200).json(results.rows[0])
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal Server Error!' })

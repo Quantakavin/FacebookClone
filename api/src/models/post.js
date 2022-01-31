@@ -10,32 +10,12 @@ cloudinary.config({
 
 module.exports.insertText = async (userid, content) => {
     const insertPostQuery = `INSERT INTO post (type, user_id, content, date) VALUES ($1, $2, $3, NOW() at time zone 'SGT') RETURNING id;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(insertPostQuery, ['text', userid, content])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(insertPostQuery, ['text', userid, content])
 }
 
 module.exports.updateText = async (postid, content) => {
     const updatePostQuery = `UPDATE post SET content=$1, editdate=NOW() at time zone 'SGT' WHERE id=$2;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(updatePostQuery, [content, postid])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(updatePostQuery, [content, postid])
 }
 
 module.exports.uploadFile = async (file) => {
@@ -79,23 +59,13 @@ module.exports.insertImage = async (
     cloudinaryid
 ) => {
     const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, NOW() at time zone 'SGT') RETURNING id;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(insertPostQuery, [
-                'image',
-                userid,
-                caption,
-                cloudinaryurl,
-                cloudinaryid
-            ])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(insertPostQuery, [
+        'image',
+        userid,
+        caption,
+        cloudinaryurl,
+        cloudinaryid
+    ])
 }
 
 module.exports.updateImage = async (
@@ -105,22 +75,12 @@ module.exports.updateImage = async (
     cloudinaryid
 ) => {
     const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(updatePostQuery, [
-                caption,
-                cloudinaryurl,
-                cloudinaryid,
-                postid
-            ])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(updatePostQuery, [
+        caption,
+        cloudinaryurl,
+        cloudinaryid,
+        postid
+    ])
 }
 
 module.exports.insertVideo = async (
@@ -130,23 +90,13 @@ module.exports.insertVideo = async (
     cloudinaryid
 ) => {
     const insertPostQuery = `INSERT INTO post (type, user_id, caption, cloudinaryurl, cloudinaryid, date) VALUES ($1, $2, $3, $4, $5, NOW() at time zone 'SGT') RETURNING id;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(insertPostQuery, [
-                'video',
-                userid,
-                caption,
-                cloudinaryurl,
-                cloudinaryid
-            ])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(insertPostQuery, [
+        'video',
+        userid,
+        caption,
+        cloudinaryurl,
+        cloudinaryid
+    ])
 }
 
 module.exports.updateVideo = async (
@@ -156,22 +106,12 @@ module.exports.updateVideo = async (
     cloudinaryid
 ) => {
     const updatePostQuery = `UPDATE post SET caption=$1, editdate=NOW() at time zone 'SGT',cloudinaryurl=$2,cloudinaryid=$3 WHERE id=$4;`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(updatePostQuery, [
-                caption,
-                cloudinaryurl,
-                cloudinaryid,
-                postid
-            ])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(updatePostQuery, [
+        caption,
+        cloudinaryurl,
+        cloudinaryid,
+        postid
+    ])
 }
 
 module.exports.feed = async (userid) => {
@@ -211,46 +151,14 @@ module.exports.feed = async (userid) => {
 
 module.exports.getById = async (id) => {
     const getPostByIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.id =  $1`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(getPostByIdQuery, [id])
-            .then((results) => {
-                console.log(results.rows)
-                resolve(results.rows)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(getPostByIdQuery, [id])
 }
 
 module.exports.getByUserId = async (userid) => {
     const getPostByUserIdQuery = `SELECT post.id AS postid, users.id, users.name, users.picurl, post.date, post.editdate, post.content, post.type, post.caption, post.cloudinaryurl FROM post INNER JOIN users ON post.user_id = users.id WHERE post.user_id =  $1 ORDER BY post.date DESC`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(getPostByUserIdQuery, [userid])
-            .then((results) => {
-                console.log(results.rows)
-                resolve(results.rows)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(getPostByUserIdQuery, [userid])
 }
 module.exports.delete = async (id) => {
     const deletePostQuery = `DELETE FROM post Where id = $1`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(deletePostQuery, [id])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(deletePostQuery, [id])
 }
