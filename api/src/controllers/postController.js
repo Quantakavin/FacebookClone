@@ -16,7 +16,7 @@ module.exports.updateText = async (req, res) => {
     const { userid, content } = req.body
     try {
         const results = await post.getById(postid)
-        if (results[0].id === userid) {
+        if (results.rows[0].id === userid) {
             try {
                 await post.updateText(postid, content)
                 return res.status(204).json({ message: 'Post Updated!' })
@@ -65,7 +65,7 @@ module.exports.updatePhoto = async (req, res) => {
     const { userid, caption, file } = req.body
     try {
         const results = await post.getById(postid)
-        if (results[0].id === userid) {
+        if (results.rows[0].id === userid) {
             try {
                 const result = await post.uploadFile(file)
                 const cloudinaryurl = result.url
@@ -131,7 +131,7 @@ module.exports.updateVideo = async (req, res) => {
     const { userid, caption, file } = req.body
     try {
         const results = await post.getById(postid)
-        if (results[0].id === userid) {
+        if (results.rows[0].id === userid) {
             try {
                 const result = await post.uploadVideo(file)
                 const cloudinaryurl = result.url
@@ -180,7 +180,7 @@ module.exports.getPosts = async (req, res) => {
     const { userid } = req.params
     try {
         const results = await post.getByUserId(userid)
-        return res.status(200).json(results)
+        return res.status(200).json(results.rows)
     } catch (error) {
         console.log(error)
         return res.status(500).json({ error: 'Cannot find post' })
@@ -191,7 +191,7 @@ module.exports.getPost = async (req, res) => {
     const { id } = req.params
     try {
         const results = await post.getById(id)
-        return res.status(200).json(results[0])
+        return res.status(200).json(results.rows[0])
     } catch (error) {
         console.log(error)
         return res.status(500).json({ error: 'Cannot find post' })
@@ -203,7 +203,7 @@ module.exports.deletePost = async (req, res) => {
     try {
         const results = await post.getById(id)
 
-        if (results[0].id === userid) {
+        if (results.rows[0].id === userid) {
             try {
                 await post.delete(id)
                 return res

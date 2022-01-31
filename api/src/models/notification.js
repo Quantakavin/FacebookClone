@@ -1,40 +1,35 @@
 const connection = require('../config/database')
 
-
-module.exports.commentNotification = async (receiver_id, notification_id,userid, postid ) => {
-    let jsondata = {"userid": userid, "postid": postid };
+module.exports.commentNotification = async (
+    receiver_id,
+    notification_id,
+    userid,
+    postid
+) => {
+    const jsondata = { userid, postid }
     console.log(jsondata)
     const insertNotificationQuery = `INSERT into Notification (Receiver_ID, notification_ID, Time, Data) VALUES ($1, $2, NOW() at time zone 'SGT', $3)`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(insertNotificationQuery, [receiver_id, notification_id, jsondata])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(insertNotificationQuery, [
+        receiver_id,
+        notification_id,
+        jsondata
+    ])
 }
 
-module.exports.friendNotification = async (receiver_id, notification_id, userid) => {
-    let jsondata = {"userid": userid};
+module.exports.friendNotification = async (
+    receiver_id,
+    notification_id,
+    userid
+) => {
+    const jsondata = { userid }
     console.log(jsondata)
     const insertNotificationQuery = `INSERT into Notification (Receiver_ID, notification_ID, Time, Data) VALUES ($1, $2, NOW() at time zone 'SGT', $3)`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(insertNotificationQuery, [receiver_id, notification_id, jsondata])
-            .then((returnid) => {
-                resolve(returnid)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(insertNotificationQuery, [
+        receiver_id,
+        notification_id,
+        jsondata
+    ])
 }
-
 
 module.exports.getNotifications = async (receiver_id) => {
     const sql = `
@@ -48,16 +43,5 @@ module.exports.getNotifications = async (receiver_id) => {
             notification INNER JOIN users ON users.id = CAST((notification.data ->> 'userid') AS INTEGER) 
             INNER JOIN notificationmessage ON notification.notification_id = notificationmessage.id 
         WHERE (notification.receiver_id = $1) order by time desc`
-    return new Promise((resolve, reject) => {
-        connection
-            .query(sql, [receiver_id])
-            .then((result) => {
-                resolve(result)
-            })
-            .catch((err) => {
-                console.log(err)
-                reject(err)
-            })
-    })
+    return connection.query(sql, [receiver_id])
 }
-

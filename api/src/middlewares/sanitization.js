@@ -19,7 +19,6 @@ const sanitization = {
         }
         next()
     }
-
 }
 
 module.exports = sanitization

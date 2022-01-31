@@ -10,6 +10,7 @@ const validation = require('./middlewares/validation')
 const sanitization = require('./middlewares/sanitization')
 const authorization = require('./middlewares/authorization')
 const notificationController = require('./controllers/notificationController')
+
 module.exports = (router) => {
     router.post(
         '/api/login',
@@ -176,11 +177,7 @@ module.exports = (router) => {
         friendController.declineRequests
     )
 
-    router.post(
-        '/api/like',
-        authorization.verifyUser,
-        likeController.like
-    )
+    router.post('/api/like', authorization.verifyUser, likeController.like)
     router.delete(
         '/api/like/:id',
         authorization.verifyUser,

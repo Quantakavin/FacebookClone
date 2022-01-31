@@ -37,8 +37,8 @@ module.exports.getConversation = async (req, res) => {
     const conversationID = req.params.id
     const { userid } = req.body
     try {
-        const results = await conversation.get(conversationID, userid) 
-        if (results.rows.length == 0) {
+        const results = await conversation.get(conversationID, userid)
+        if (results.rows.length === 0) {
             return res.status(402).json({ message: 'You do not have access' })
         }
         return res.status(200).send(results)
