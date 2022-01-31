@@ -37,7 +37,7 @@ const Search = () => {
   function handleOnSearch({ currentTarget = {} }) {
     const { value } = currentTarget;
     setFilteredData(value);
-    setresults(fuse.search(value.replace(/  +/g, ' ')))
+    setresults(fuse.search(value.replace(/\s\s+/g, ' ')))
     console.log(results)
   }
 
