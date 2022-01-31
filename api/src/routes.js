@@ -94,15 +94,11 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.deletePost
     )
-<<<<<<< HEAD
-    router.get('/api/comments/:id', commentController.getAllComments)
-=======
     router.get(
         '/api/comments/:id',
         sanitization.sanitizeResult,
         commentController.getAllComments
     )
->>>>>>> 9af8cd643440b49cf30c2cc436f79e27e2af8d5a
     router.get(
         '/api/comment/:id',
         authorization.verifyUser,
@@ -235,16 +231,12 @@ module.exports = (router) => {
         notificationController.friendNotification
     )
 
-<<<<<<< HEAD
-    router.get('/api/notification', notificationController.getNotifications)
-=======
     router.get(
         '/api/notification',
         authorization.verifyUser,
         sanitization.sanitizeResult,
         notificationController.getNotifications
     )
->>>>>>> 9af8cd643440b49cf30c2cc436f79e27e2af8d5a
 
     router.put(
         '/api/privacytrue',
