@@ -146,6 +146,7 @@ const Messages = ({ match }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
     const onSubmit = message => {
+        message.trim()
         socket.emit('chat', message.content);
         saveMessage(message.content)
         reset()
