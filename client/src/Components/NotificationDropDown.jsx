@@ -10,7 +10,7 @@ const NotificationDropDown = ({ notifications, setNotificationState }) => {
         setNotificationState(false);
     }
     return (
-        <div style={{height: "600px", overflowY: "scroll"}}>
+        <div style={{height: "500px", overflowY: "scroll"}}>
             <motion.button whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="save-button"
