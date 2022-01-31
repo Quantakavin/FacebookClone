@@ -26,6 +26,9 @@ module.exports = {
     'no-console': 'off',
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
+    'guard-for-in': 'off',
+    'no-loop-func': 'off',
+    'no-param-reassign': 'off',
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
   },
 };
