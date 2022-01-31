@@ -7,6 +7,7 @@ const likeController = require('./controllers/likeController')
 const messageController = require('./controllers/messageController')
 const conversationController = require('./controllers/conversationController')
 const validation = require('./middlewares/validation')
+const sanitization = require('./middlewares/sanitization')
 const authorization = require('./middlewares/authorization')
 const notificationController = require('./controllers/notificationController')
 module.exports = (router) => {
@@ -20,7 +21,11 @@ module.exports = (router) => {
         validation.validateRegister,
         userController.registerUser
     )
-    router.get('/api/UserData/:gottenID', userController.retrieveUserById)
+    router.get(
+        '/api/UserData/:gottenID',
+        sanitization.sanitizeResult,
+        userController.retrieveUserById
+    )
     router.put(
         '/api/User/',
         authorization.verifyUser,
@@ -37,9 +42,17 @@ module.exports = (router) => {
         validation.validateImage,
         userController.updatePFP
     )
-    router.get('/api/users', authorization.verifyUser, userController.allUsers)
-    router.get('/api/privacy', userController.privacyStatus)
-
+    router.get(
+        '/api/users',
+        authorization.verifyUser,
+        sanitization.sanitizeResult,
+        userController.allUsers
+    )
+    router.get(
+        '/api/privacy',
+        sanitization.sanitizeResult,
+        userController.privacyStatus
+    )
     router.post(
         '/api/text',
         authorization.verifyUser,
@@ -81,11 +94,21 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.createVideo
     )
-    router.get('/api/feed', authorization.verifyUser, postController.getFeed)
-    router.get('/api/posts/:userid', postController.getPosts)
+    router.get(
+        '/api/feed',
+        authorization.verifyUser,
+        sanitization.sanitizeResult,
+        postController.getFeed
+    )
+    router.get(
+        '/api/posts/:userid',
+        sanitization.sanitizeResult,
+        postController.getPosts
+    )
     router.get(
         '/api/post/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         postController.getPost
     )
     router.delete(
@@ -93,11 +116,15 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.deletePost
     )
-
-    router.get('/api/comments/:id', commentController.getAllComments)
+    router.get(
+        '/api/comments/:id',
+        sanitization.sanitizeResult,
+        commentController.getAllComments
+    )
     router.get(
         '/api/comment/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         commentController.getComment
     )
     router.put(
@@ -125,20 +152,27 @@ module.exports = (router) => {
         authorization.verifyUser,
         friendController.unfriend
     )
-    router.get('/api/friendship', friendController.checkFriendship)
+    router.get(
+        '/api/friendship',
+        sanitization.sanitizeResult,
+        friendController.checkFriendship
+    )
     router.get(
         '/api/getFriendship',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         friendController.getRequests
     )
     router.get(
         '/api/getMutualFriends',
-        
+        authorization.verifyUser,
+        sanitization.sanitizeResult,
         friendController.getMutualFriends
     )
     router.get(
         '/api/getFriendList/:userid',
-        
+        authorization.verifyUser,
+        sanitization.sanitizeResult,
         friendController.getFriendList
     )
     router.put(
@@ -152,7 +186,11 @@ module.exports = (router) => {
         friendController.declineRequests
     )
 
-    router.post('/api/like', authorization.verifyUser, likeController.like)
+    router.post(
+        '/api/like',
+        authorization.verifyUser,
+        likeController.like
+    )
     router.delete(
         '/api/like/:id',
         authorization.verifyUser,
@@ -161,10 +199,14 @@ module.exports = (router) => {
     router.get(
         '/api/userlike/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         likeController.checklike
     )
-    router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
-    
+    router.get(
+        '/api/FeedLikes/:id',
+        sanitization.sanitizeResult,
+        likeController.getLikesInfo
+    )
     router.post(
         '/api/conversation',
         authorization.verifyUser,
@@ -173,17 +215,20 @@ module.exports = (router) => {
     router.get(
         '/api/checkConversation',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         conversationController.checkConversation
     )
     router.get(
         '/api/conversations',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         conversationController.getConversations
     )
 
     router.get(
         '/api/conversation/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         conversationController.getConversation
     )
 
@@ -195,35 +240,48 @@ module.exports = (router) => {
     router.get(
         '/api/messages/:id',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         messageController.getMessages
+    )
+
+    router.put(
+        '/api/readmessage/:conversationid',
+        authorization.verifyUser,
+        messageController.updateRead
     )
 
     router.get(
         '/api/unreadmessagescount',
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         messageController.getUnread
     )
-
     router.put(
         '/api/messages/:conversationid',
         authorization.verifyUser,
         messageController.updateRead
     )
-    router.get('/api/searchUser', searchController.searchUser)
-
+    router.get(
+        '/api/searchUser',
+        sanitization.sanitizeResult,
+        searchController.searchUser
+    )
     router.post(
         '/api/notification',
         authorization.verifyUser,
         notificationController.commentNotification
     )
-
     router.post(
         '/api/notification',
         authorization.verifyUser,
         notificationController.friendNotification
     )
 
-    router.get('/api/notification', notificationController.getNotifications)
+    router.get(
+        '/api/notification',
+        sanitization.sanitizeResult,
+        notificationController.getNotifications
+    )
 
     router.put(
         '/api/privacytrue',
@@ -233,7 +291,7 @@ module.exports = (router) => {
 
     router.put(
         '/api/privacyfalse',
-        // authorization.verifyUser,
+        authorization.verifyUser,
         userController.privacyFalse
     )
 

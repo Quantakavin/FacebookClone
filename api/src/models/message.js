@@ -34,6 +34,6 @@ module.exports.getUnread = (user_id) => {
     return connection.query(getMessagesQuery, [user_id])
 }
 module.exports.updateRead = (conversation_id, user_id) => {
-    const getMessagesQuery = `UPDATE message SET read=true WHERE conversation_id = $1 and user_id = $2`
+    const getMessagesQuery = `UPDATE message SET read=true WHERE conversation_id = $1 and user_id != $2`
     return connection.query(getMessagesQuery, [conversation_id, user_id])
 }
