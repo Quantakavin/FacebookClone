@@ -57,8 +57,10 @@ const TopBar = () => {
 
 
   useEffect(() => {
-    getRequests()
-    getUnreadMessages()
+    if (localStorage.getItem('token') !== null) {
+      getRequests()
+      getUnreadMessages()
+    }
   }, [])
   if (localStorage.getItem("token") == null) {
     return (

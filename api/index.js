@@ -32,9 +32,11 @@ io.on('connection', (socket) => {
 
 
     //new code
+    /*
     if (!users[socket.id]) {
         users[socket.id] = socket.id;
     }
+    */
 
 
 
@@ -53,7 +55,7 @@ io.on('connection', (socket) => {
             date: new Date().toISOString()
         });
     });
-    /*
+    
     socket.on("callUser", (data) => {
         const p_user = get_Current_User(socket.id);
         io.to(p_user.conversationid).emit('callReceived', {signal: data.signalData, from: data.from});
@@ -62,8 +64,9 @@ io.on('connection', (socket) => {
         const p_user = get_Current_User(socket.id);
         io.to(p_user.conversationid).emit('callAccepted', data.signal);
     })
-    */
 
+
+    /*
     socket.emit("yourID", socket.id);
     io.sockets.emit("allUsers", users);
     socket.on('disconnect', () => {
@@ -71,13 +74,13 @@ io.on('connection', (socket) => {
     })
 
     socket.on("callUser", (data) => {
-        io.to(data.userToCall).emit('hey', {signal: data.signalData, from: data.from});
+        io.to(data.userToCall).emit('callReceived', {signal: data.signalData, from: data.from});
     })
 
     socket.on("acceptCall", (data) => {
         io.to(data.to).emit('callAccepted', data.signal);
     })
-
+*/
     //end of new code
 
     socket.on("disconnect", () => {

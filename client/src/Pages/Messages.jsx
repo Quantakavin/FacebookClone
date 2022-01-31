@@ -5,9 +5,7 @@ import TopBar from '../Components/TopBar';
 import { Container, Form, Image, Button, Alert} from 'react-bootstrap';
 import SendIcon from '@mui/icons-material/Send';
 import {useQuery, useQueryClient } from 'react-query';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
+import VideocamIcon from '@mui/icons-material/Videocam';
 import { useHistory } from "react-router-dom";
 import Skeleton from '@mui/material/Skeleton';
 import profilephoto from '../Images/profilephoto.png';
@@ -79,6 +77,7 @@ const Messages = ({ match }) => {
     const [socketMessages, setSocketMessages] = useState([]);
     const [socketMessageLoading, setSocketMessagesLoading] = useState(false);
     const socket = useContext(SocketContext);
+    const history = useHistory();
 
     const conversationQuery = useQuery(['currentConversation', match.params.id], async () =>
     await axios.get(`${config.baseURL}/conversation/${match.params.id}`,  {
@@ -204,6 +203,7 @@ const Messages = ({ match }) => {
             <>
             {conversationQuery.data.data.rows[0].picurl==null ? <Image src={profilephoto} style={{flexShrink: 2}} roundedCircle width="65px" height="65px" /> : <Image src={conversationQuery.data.data.rows[0].picurl} style={{flexShrink: 2}} roundedCircle width="65px" height="65px"/> }
             <h2 style={{marginLeft: 20, marginTop: 10,textTransform: "capitalize", flexGrow: 15}}>{conversationQuery.data.data.rows[0].name}</h2>
+            <div onClick = {() => {history.push(`/video/${match.params.id}`)}}><VideocamIcon style={{marginTop: 15, fontSize: 30}}/> </div>
             </>}
             </div>
             }
@@ -253,7 +253,7 @@ const Messages = ({ match }) => {
                     {socketMessages.map(message => 
                     <React.Fragment key={message.id}>
                     {message.case === true ?
-                    <>
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
                     <div style={{display: "flex", flexDirection: "row"}}>
                         <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
@@ -262,9 +262,9 @@ const Messages = ({ match }) => {
                         </MessageBox> 
                     </div>
                     <p className="yourmessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
-                    </>
+                    </motion.div>
                     : 
-                    <>
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
                     <div key={message.id} style={{display: "flex", flexDirection: "row"}}>
                         <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
                             <div style={{flexGrow: 9}}>
@@ -273,7 +273,7 @@ const Messages = ({ match }) => {
                         </MessageBox>
                     </div>
                     <p className="othermessagedate" style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</p>
-                    </>
+                    </motion.div>
                     }
                     </ React.Fragment>
                 )}

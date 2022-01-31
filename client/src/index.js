@@ -11,22 +11,6 @@ import {
     useLocation
 } from "react-router-dom";
 import {  QueryClient, QueryClientProvider } from 'react-query';
-import Login from './Pages/Login';
-import Home from './Pages/Home';
-import Register from './Pages/Register';
-import UserHome from './Pages/UserHome';
-import Users from './Pages/Users';
-import Requests from './Pages/Requests'
-import EditPost from './Pages/EditPost';
-import EditComment from './Pages/EditComment';
-import ViewProfile from './Pages/ViewProfile';
-import Conversations from './Pages/Conversations';
-import Messages from './Pages/Messages';
-import PageNotFound from './Pages/404';
-import InternalServer from './Pages/500';
-import Notifications from './Pages/Notifications'
-import ViewPost from './Pages/ViewPost'
-import VideoChat2 from './Pages/VideoChat2'
 import {SocketContext, socket} from './context/socket';
 import { AnimatePresence } from "framer-motion"
 import 'bootstrap/dist/css/bootstrap.min.css';
