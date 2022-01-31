@@ -46,13 +46,13 @@ const NotificationDropDown = ({ notifications, setNotificationState }) => {
                             {
                                 n.notification_id === 1 ?
                                     <>
-                                        <span onClick={() => { history.push(`./profile/${n.userid}`) }} style={{ fontWeight: 'bold' }}> {n.name}</span>
-                                        <span onClick={() => { history.push(`./requests/`) }}>{n.notification_message}</span>
+                                        <span onClick={() => { history.push(`/profile/${n.userid}`) }} style={{ fontWeight: 'bold' }}> {n.name}</span>
+                                        <span onClick={() => { history.push(`/requests/`) }}>{n.notification_message}</span>
                                     </>
                                     :
                                     <>
-                                        <span onClick={() => { history.push(`./profile/${n.userid}`) }} style={{ fontWeight: 'bold' }}> {n.name}</span>
-                                        <span onClick={() => { history.push(`./post/${n.postid}`) }}>{n.notification_message}</span>
+                                        <span onClick={() => { history.push(`/profile/${n.userid}`) }} style={{ fontWeight: 'bold' }}> {n.name}</span>
+                                        <span onClick={() => { history.push(`/post/${n.postid}`) }}>{n.notification_message}</span>
                                     </>
                             }
                         </div>
