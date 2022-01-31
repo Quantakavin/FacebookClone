@@ -168,7 +168,7 @@ const TopBar = () => {
 
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} id="navbarScrollingDropdown" title="Games">
                   <NavDropdown.Item href = "/2048">
-                    2048</NavDropdown.Item>
+                    Space Fighter</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item href = "/DinoGame">
                     Dino Game
