@@ -137,7 +137,6 @@ const TopBar = () => {
   } else {
     return (
       <>
-
         <Navbar variant="dark" expand="lg" fixed="top" style={{ backgroundColor: "#4267B2" }}>
           <Container fluid>
             <Navbar.Brand className="brand" href="/userhome"><img
@@ -157,7 +156,7 @@ const TopBar = () => {
                 navbarScroll>
                 {/* <Nav.Link style={{ color: "white" }} onClick={() => openNotification}>Notifications</Nav.Link> */}
                 <Nav.Link style={{ color: "white" }} onClick={openNotification}>Notification</Nav.Link>
-                {notificationState === true && <div style={{ height: "600px", width: "400px"}}><NotificationDropDown notifications={notifications} setNotificationState={setNotificationState} /></div>}
+
                 <div className={"iconSection"}>
                   <Nav.Link style={{ color: "white" }} href="/requests">Requests</Nav.Link>
                   {users.length != 0 ?
@@ -188,10 +187,12 @@ const TopBar = () => {
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>
+            {notificationState === true && <div style={{ height: "600px", width: "400px", position: 'absolute', top: "80px", right: 180 }}><NotificationDropDown notifications={notifications} setNotificationState={setNotificationState} /></div>}
           </Container>
+          
         </Navbar>
 
-
+        
       </>
     )
 
