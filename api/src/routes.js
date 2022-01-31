@@ -24,7 +24,6 @@ module.exports = (router) => {
     )
     router.get(
         '/api/UserData/:gottenID',
-        sanitization.sanitizeResult,
         userController.retrieveUserById
     )
     router.put(
@@ -46,12 +45,10 @@ module.exports = (router) => {
     router.get(
         '/api/users',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         userController.allUsers
     )
     router.get(
         '/api/privacy',
-        sanitization.sanitizeResult,
         userController.privacyStatus
     )
     router.post(
@@ -98,18 +95,15 @@ module.exports = (router) => {
     router.get(
         '/api/feed',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         postController.getFeed
     )
     router.get(
         '/api/posts/:userid',
-        sanitization.sanitizeResult,
         postController.getPosts
     )
     router.get(
         '/api/post/:id',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         postController.getPost
     )
     router.delete(
@@ -119,13 +113,11 @@ module.exports = (router) => {
     )
     router.get(
         '/api/comments/:id',
-        sanitization.sanitizeResult,
         commentController.getAllComments
     )
     router.get(
         '/api/comment/:id',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         commentController.getComment
     )
     router.put(
@@ -155,25 +147,21 @@ module.exports = (router) => {
     )
     router.get(
         '/api/friendship',
-        sanitization.sanitizeResult,
         friendController.checkFriendship
     )
     router.get(
         '/api/getFriendship',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         friendController.getRequests
     )
     router.get(
         '/api/getMutualFriends',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         friendController.getMutualFriends
     )
     router.get(
         '/api/getFriendList/:userid',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         friendController.getFriendList
     )
     router.put(
@@ -196,12 +184,10 @@ module.exports = (router) => {
     router.get(
         '/api/userlike/:id',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         likeController.checklike
     )
     router.get(
         '/api/FeedLikes/:id',
-        sanitization.sanitizeResult,
         likeController.getLikesInfo
     )
     router.post(
@@ -212,20 +198,17 @@ module.exports = (router) => {
     router.get(
         '/api/checkConversation',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         conversationController.checkConversation
     )
     router.get(
         '/api/conversations',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         conversationController.getConversations
     )
 
     router.get(
         '/api/conversation/:id',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         conversationController.getConversation
     )
 
@@ -237,7 +220,6 @@ module.exports = (router) => {
     router.get(
         '/api/messages/:id',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         messageController.getMessages
     )
 
@@ -250,7 +232,6 @@ module.exports = (router) => {
     router.get(
         '/api/unreadmessagescount',
         authorization.verifyUser,
-        sanitization.sanitizeResult,
         messageController.getUnread
     )
     router.put(
@@ -260,7 +241,6 @@ module.exports = (router) => {
     )
     router.get(
         '/api/searchUser',
-        sanitization.sanitizeResult,
         searchController.searchUser
     )
     router.post(
@@ -276,7 +256,6 @@ module.exports = (router) => {
 
     router.get(
         '/api/notification',
-        sanitization.sanitizeResult,
         notificationController.getNotifications
     )
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Form,
   Button,
@@ -10,34 +10,32 @@ import {
   Image,
   Container,
   Row,
-} from "react-bootstrap";
-import "../Styles/home.scss";
-import profilephoto from "../Images/profilephoto.png";
-import likephoto from "../Images/like.png";
-import dots from "../Images/dots.png";
-import { useHistory } from "react-router-dom";
-import config from "../config/config";
-import "../Styles/post.scss";
-import ReactPlayer from "react-player";
-import DOMPurify from "dompurify";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+} from 'react-bootstrap';
+import '../Styles/home.scss';
+import { useHistory } from 'react-router-dom';
+import '../Styles/post.scss';
+import ReactPlayer from 'react-player';
+import DOMPurify from 'dompurify';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import config from '../config/config';
+import dots from '../Images/dots.png';
+import likephoto from '../Images/like.png';
+import profilephoto from '../Images/profilephoto.png';
 
-const Post = (props) => {
+function Post(props) {
   const history = useHistory();
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
-  const [borderColor, setBorderColor] = useState("transparent");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [borderColor, setBorderColor] = useState('transparent');
+  const [errorMsg, setErrorMsg] = useState('');
   const [commentsRerender, setCommentsRerender] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
-  const createMarkup = (html) => {
-    return {
-      __html: DOMPurify.sanitize(html),
-    };
-  };
+  const createMarkup = (html) => ({
+    __html: DOMPurify.sanitize(html),
+  });
 
   const getLikeCount = () => {
     axios
@@ -51,11 +49,11 @@ const Post = (props) => {
   };
 
   const getLiked = () => {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem('token') != null) {
       axios
         .get(`${config.baseURL}/userlike/${props.post.postid}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         })
         .then((response) => {
@@ -99,12 +97,12 @@ const Post = (props) => {
 
   const [showTextForm, setShowTextForm] = useState(false);
   const handleCloseTextForm = () => {
-    setBorderColor("transparent");
-    setErrorMsg("");
+    setBorderColor('transparent');
+    setErrorMsg('');
     setShowTextForm(false);
     setTextInput({
       ...TextInput,
-      content: "",
+      content: '',
     });
   };
   const handleShowTextForm = () => setShowTextForm(true);
@@ -112,7 +110,7 @@ const Post = (props) => {
   const [textFormLoading, setTextFormLoading] = useState(false);
 
   const [TextInput, setTextInput] = useState({
-    content: "",
+    content: '',
   });
   const handleTextChange = (event) => {
     setTextInput({
@@ -129,9 +127,9 @@ const Post = (props) => {
         { content: TextInput.content, postid: props.post.postid },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-        }
+        },
       )
       .then((response) => {
         setTextFormLoading(false);
@@ -141,25 +139,25 @@ const Post = (props) => {
       })
       .catch((error) => {
         setTextFormLoading(false);
-        setBorderColor("red");
+        setBorderColor('red');
         setErrorMsg(error.response.data.message);
       });
 
-    //Notification for commenting
+    // Notification for commenting
     axios
       .post(
         `${config.baseURL}/notification`,
         {
           receiver_id: props.post.id,
           notification_id: 3,
-          userid: localStorage.getItem("user_id"),
+          userid: localStorage.getItem('user_id'),
           postid: props.post.postid,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-        }
+        },
       )
       .then((response) => {
         console.log(response);
@@ -173,10 +171,10 @@ const Post = (props) => {
     axios
       .delete(`${config.baseURL}/post/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .then((response) => {
+      .then(() => {
         props.setRerender((rerender) => !rerender);
       })
       .catch((error) => {
@@ -185,16 +183,16 @@ const Post = (props) => {
   };
 
   const likepost = () => {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem('token') != null) {
       axios
         .post(
           `${config.baseURL}/like`,
           { postid: props.post.postid },
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
-          }
+          },
         )
         .then((response) => {
           console.log(response);
@@ -213,14 +211,14 @@ const Post = (props) => {
           {
             receiver_id: props.post.id,
             notification_id: 4,
-            userid: localStorage.getItem("user_id"),
+            userid: localStorage.getItem('user_id'),
             postid: props.post.postid,
           },
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
-          }
+          },
         )
         .then((response) => {
           console.log(response);
@@ -234,11 +232,11 @@ const Post = (props) => {
   };
 
   const unlikepost = () => {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem('token') != null) {
       axios
         .delete(`${config.baseURL}/like/${props.post.postid}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         })
         .then((response) => {
@@ -259,7 +257,7 @@ const Post = (props) => {
     axios
       .delete(`${config.baseURL}/comment/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .then((response) => {
@@ -276,7 +274,7 @@ const Post = (props) => {
         <Modal.Header closeButton>
           <Modal.Title
             className="text-center"
-            style={{ fontWeight: 600, fontSize: "1.25em" }}
+            style={{ fontWeight: 600, fontSize: '1.25em' }}
           >
             Create Comment
           </Modal.Title>
@@ -288,28 +286,29 @@ const Post = (props) => {
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Control
-                style={{ borderColor: borderColor }}
+                style={{ borderColor }}
                 name="content"
                 className="text-secondary"
                 as="textarea"
                 rows={5}
                 placeholder={`Whats on your mind, ${localStorage.getItem(
-                  "username"
+                  'username',
                 )}?`}
                 value={TextInput.content}
                 onChange={handleTextChange}
               />
             </Form.Group>
-            {errorMsg != "" ? (
-              <p style={{ color: "red", fontSize: "0.85em", marginLeft: 15 }}>
-                {errorMsg}!
+            {errorMsg != '' ? (
+              <p style={{ color: 'red', fontSize: '0.85em', marginLeft: 15 }}>
+                {errorMsg}
+                !
               </p>
             ) : (
               <></>
             )}
             {!textFormLoading ? (
               <Button
-                style={{ backgroundColor: "#4267B2", width: "100%" }}
+                style={{ backgroundColor: '#4267B2', width: '100%' }}
                 variant="primary"
                 type="submit"
               >
@@ -319,7 +318,7 @@ const Post = (props) => {
               <Button
                 variant="primary"
                 disabled
-                style={{ backgroundColor: "#4267B2", width: "100%" }}
+                style={{ backgroundColor: '#4267B2', width: '100%' }}
               >
                 <Spinner
                   as="span"
@@ -338,7 +337,7 @@ const Post = (props) => {
         <Modal.Header closeButton>
           <Modal.Title
             className="text-center"
-            style={{ fontWeight: 600, fontSize: "1.25em" }}
+            style={{ fontWeight: 600, fontSize: '1.25em' }}
           >
             No Access!
           </Modal.Title>
@@ -350,7 +349,7 @@ const Post = (props) => {
 
       <Container className="shadow post">
         <div
-          style={{ display: "flex", flexDirection: "row", padding: 5 }}
+          style={{ display: 'flex', flexDirection: 'row', padding: 5 }}
           onClick={() => {
             history.push(`./profile/${props.post.id}`);
           }}
@@ -377,7 +376,7 @@ const Post = (props) => {
               style={{
                 marginLeft: 10,
                 fontWeight: 600,
-                textTransform: "capitalize",
+                textTransform: 'capitalize',
               }}
             >
               {props.post.name}
@@ -387,23 +386,27 @@ const Post = (props) => {
                 style={{
                   marginLeft: 10,
                   marginTop: -15,
-                  fontSize: "0.8em",
-                  color: "#838383",
+                  fontSize: '0.8em',
+                  color: '#838383',
                 }}
               >
-                {props.post.date.substring(0, 16).replace("T", " ")}
+                {props.post.date.substring(0, 16).replace('T', ' ')}
               </p>
             ) : (
               <p
                 style={{
                   marginLeft: 10,
                   marginTop: -15,
-                  fontSize: "0.8em",
-                  color: "#838383",
+                  fontSize: '0.8em',
+                  color: '#838383',
                 }}
               >
-                {props.post.date.substring(0, 16).replace("T", " ")} (Edited{" "}
-                {props.post.editdate.substring(0, 16).replace("T", " ")})
+                {props.post.date.substring(0, 16).replace('T', ' ')}
+                {' '}
+                (Edited
+                {' '}
+                {props.post.editdate.substring(0, 16).replace('T', ' ')}
+                )
               </p>
             )}
           </div>
@@ -411,16 +414,16 @@ const Post = (props) => {
         <hr
           style={{
             marginTop: -5,
-            marginRight: "-2%",
-            marginLeft: "-2%",
-            color: "d3d3d3",
+            marginRight: '-2%',
+            marginLeft: '-2%',
+            color: 'd3d3d3',
           }}
         />
         {props.post.cloudinaryurl == null ? (
           <p
-            style={{ marginLeft: "1%", fontSize: "1.15em" }}
+            style={{ marginLeft: '1%', fontSize: '1.15em' }}
             dangerouslySetInnerHTML={createMarkup(props.post.content)}
-          ></p>
+          />
         ) : (
           <>
             {props.post.caption == null ? (
@@ -430,13 +433,17 @@ const Post = (props) => {
                 onClick={() => {
                   history.push(`./post/${props.post.postid}`);
                 }}
-                style={{ marginLeft: "1%", fontSize: "1.15em" }}
+                style={{ marginLeft: '1%', fontSize: '1.15em' }}
               >
                 {props.post.caption}
               </p>
             )}
             {props.post.type == "image" ? (
+              
               <Image
+               onClick={() => {
+                  history.push(`/post/${props.post.postid}`);
+                }}
                 width="100%"
                 style={{ marginBottom: 15 }}
                 src={props.post.cloudinaryurl}
@@ -445,7 +452,7 @@ const Post = (props) => {
             ) : (
               <ReactPlayer
                 width="100%"
-                controls={true}
+                controls
                 style={{ marginBottom: 15 }}
                 url={props.post.cloudinaryurl}
               />
@@ -453,23 +460,23 @@ const Post = (props) => {
           </>
         )}
 
-        {props.post.id == localStorage.getItem("user_id") ? (
+        {props.post.id == localStorage.getItem('user_id') ? (
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyItems: "center",
+              display: 'flex',
+              flexDirection: 'row',
+              justifyItems: 'center',
             }}
           >
             {liked == true ? (
               <Button
                 onClick={() => unlikepost()}
                 style={{
-                  justifySelf: "start",
+                  justifySelf: 'start',
                   marginBottom: 15,
-                  backgroundColor: "#4267B2",
-                  border: "solid 1px #d3d3d3",
-                  color: "white",
+                  backgroundColor: '#4267B2',
+                  border: 'solid 1px #d3d3d3',
+                  color: 'white',
                   fontWeight: 600,
                 }}
               >
@@ -477,18 +484,21 @@ const Post = (props) => {
                   src={likephoto}
                   style={{ width: 20, marginTop: -5 }}
                   fluid
-                />{" "}
-                Liked {likeCount}
+                />
+                {' '}
+                Liked
+                {' '}
+                {likeCount}
               </Button>
             ) : (
               <Button
                 onClick={() => likepost()}
                 style={{
-                  justifySelf: "start",
+                  justifySelf: 'start',
                   marginBottom: 15,
-                  backgroundColor: "#e3e8ee",
-                  border: "solid 1px #d3d3d3",
-                  color: "#4267B2",
+                  backgroundColor: '#e3e8ee',
+                  border: 'solid 1px #d3d3d3',
+                  color: '#4267B2',
                   fontWeight: 600,
                 }}
               >
@@ -496,21 +506,24 @@ const Post = (props) => {
                   src={likephoto}
                   style={{ width: 20, marginTop: -5 }}
                   fluid
-                />{" "}
-                Like {likeCount}
+                />
+                {' '}
+                Like
+                {' '}
+                {likeCount}
               </Button>
             )}
             <DropdownButton
-              id={`dropdown-button-drop-up`}
-              drop={"up"}
-              style={{ justifySelf: "end", marginLeft: "auto" }}
-              title={
+              id="dropdown-button-drop-up"
+              drop="up"
+              style={{ justifySelf: 'end', marginLeft: 'auto' }}
+              title={(
                 <Image
                   style={{ marginBottom: 15, height: 20 }}
                   src={dots}
                   fluid
-                ></Image>
-              }
+                />
+              )}
             >
               <Dropdown.Item
                 eventKey="1"
@@ -523,7 +536,7 @@ const Post = (props) => {
               <Dropdown.Divider />
               <Dropdown.Item
                 eventKey="2"
-                style={{ color: "red" }}
+                style={{ color: 'red' }}
                 onClick={() => handleDelete(props.post.postid)}
               >
                 Delete
@@ -533,9 +546,9 @@ const Post = (props) => {
         ) : (
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
             }}
           >
             {liked == true ? (
@@ -543,9 +556,9 @@ const Post = (props) => {
                 onClick={() => unlikepost()}
                 style={{
                   marginBottom: 15,
-                  backgroundColor: "#4267B2",
-                  border: "solid 1px #d3d3d3",
-                  color: "white",
+                  backgroundColor: '#4267B2',
+                  border: 'solid 1px #d3d3d3',
+                  color: 'white',
                   fontWeight: 600,
                 }}
               >
@@ -553,17 +566,20 @@ const Post = (props) => {
                   src={likephoto}
                   style={{ width: 20, marginTop: -5 }}
                   fluid
-                />{" "}
-                Liked {likeCount}
+                />
+                {' '}
+                Liked
+                {' '}
+                {likeCount}
               </Button>
             ) : (
               <Button
                 onClick={() => likepost()}
                 style={{
                   marginBottom: 15,
-                  backgroundColor: "#e3e8ee",
-                  border: "solid 1px #d3d3d3",
-                  color: "#4267B2",
+                  backgroundColor: '#e3e8ee',
+                  border: 'solid 1px #d3d3d3',
+                  color: '#4267B2',
                   fontWeight: 600,
                 }}
               >
@@ -571,19 +587,22 @@ const Post = (props) => {
                   src={likephoto}
                   style={{ width: 20, marginTop: -5 }}
                   fluid
-                />{" "}
-                Like {likeCount}
+                />
+                {' '}
+                Like
+                {' '}
+                {likeCount}
               </Button>
             )}
           </div>
         )}
 
-        {/*localStorage.getItem("user_id")==null?<></>:
+        {/* localStorage.getItem("user_id")==null?<></>:
                 [
-                  (liked == true ? <Button onClick={() => unlikepost()} style={{backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>: 
+                  (liked == true ? <Button onClick={() => unlikepost()} style={{backgroundColor: "#4267B2", border: "solid 1px #d3d3d3", color: "white", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Liked {likeCount}</Button>:
                 <Button onClick={() => likepost()} style={{justifyContent: "flex-start", backgroundColor: "#e3e8ee", border: "solid 1px #d3d3d3", color: "#4267B2", fontWeight: 600}}><Image src={likephoto}  style={{width: 20, marginTop: -5}} fluid /> Like {likeCount}</Button>),
-                
-                (props.post.id == localStorage.getItem("user_id")? 
+
+                (props.post.id == localStorage.getItem("user_id")?
                 <div style={{display: "flex",flexDirection: "row", justifyContent: "flex-end"}}>
                     <DropdownButton
                       id={`dropdown-button-drop-up`}
@@ -598,28 +617,28 @@ const Post = (props) => {
                       <Dropdown.Item eventKey="2" style={{color: "red" }} onClick={() => handleDelete(props.post.postid)}>Delete</Dropdown.Item>
                     </DropdownButton>
                     </div>
-                    
+
                 : <></>)]
                     */}
 
-        <Row style={{ backgroundColor: "#e3e8ee" }}>
-          {localStorage.getItem("user_id") == null ? (
+        <Row style={{ backgroundColor: '#e3e8ee' }}>
+          {localStorage.getItem('user_id') == null ? (
             <></>
           ) : (
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               <button
                 onClick={handleShowTextForm}
                 style={{
-                  width: "100%",
-                  backgroundColor: "white",
-                  borderRadius: "20px",
-                  textAlign: "left",
+                  width: '100%',
+                  backgroundColor: 'white',
+                  borderRadius: '20px',
+                  textAlign: 'left',
                   marginBottom: 15,
                   marginTop: 15,
                 }}
@@ -636,19 +655,26 @@ const Post = (props) => {
             <>
               {showComments ? (
                 <a
-                  style={{ color: "#4267B2", marginLeft: 15, marginBottom: 10 }}
+                  style={{ color: '#4267B2', marginLeft: 15, marginBottom: 10 }}
                   onClick={() => setShowComments(!showComments)}
                 >
-                  Hide Comments {<ArrowDropUpIcon />}
+                  Hide Comments
+                  {' '}
+                  <ArrowDropUpIcon />
                 </a>
               ) : (
                 <a
-                  style={{ color: "#4267B2", marginLeft: 15, marginBottom: 10 }}
+                  style={{ color: '#4267B2', marginLeft: 15, marginBottom: 10 }}
                   onClick={() => setShowComments(!showComments)}
                 >
-                  View Comments ({comments.length}) {<ArrowDropDownIcon />}
+                  View Comments (
+                  {comments.length}
+                  )
+                  {' '}
+                  <ArrowDropDownIcon />
                 </a>
-              )}{" "}
+              )}
+              {' '}
             </>
           )}
 
@@ -666,8 +692,8 @@ const Post = (props) => {
                 >
                   <div
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
+                      display: 'flex',
+                      flexDirection: 'row',
                       padding: 5,
                     }}
                     onClick={() => {
@@ -696,7 +722,7 @@ const Post = (props) => {
                         style={{
                           marginLeft: 10,
                           fontWeight: 600,
-                          textTransform: "capitalize",
+                          textTransform: 'capitalize',
                         }}
                       >
                         {comment.name}
@@ -706,30 +732,33 @@ const Post = (props) => {
                           style={{
                             marginLeft: 10,
                             marginTop: -15,
-                            fontSize: "0.8em",
-                            color: "#838383",
+                            fontSize: '0.8em',
+                            color: '#838383',
                           }}
                         >
-                          {comment.date.substring(0, 16).replace("T", " ")}
+                          {comment.date.substring(0, 16).replace('T', ' ')}
                         </p>
                       ) : (
                         <p
                           style={{
                             marginLeft: 10,
                             marginTop: -15,
-                            fontSize: "0.8em",
-                            color: "#838383",
+                            fontSize: '0.8em',
+                            color: '#838383',
                           }}
                         >
-                          {comment.date.substring(0, 16).replace("T", " ")}{" "}
-                          (Edited{" "}
-                          {comment.editdate.substring(0, 16).replace("T", " ")})
+                          {comment.date.substring(0, 16).replace('T', ' ')}
+                          {' '}
+                          (Edited
+                          {' '}
+                          {comment.editdate.substring(0, 16).replace('T', ' ')}
+                          )
                         </p>
                       )}
                     </div>
                   </div>
                   <p>{comment.content}</p>
-                  {localStorage.getItem("user_id") == comment.id ? (
+                  {localStorage.getItem('user_id') == comment.id ? (
                     <div>
                       <button
                         className="commentedit"
@@ -759,5 +788,5 @@ const Post = (props) => {
       </Container>
     </>
   );
-};
+}
 export default Post;
