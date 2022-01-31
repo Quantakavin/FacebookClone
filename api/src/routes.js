@@ -22,10 +22,7 @@ module.exports = (router) => {
         validation.validateRegister,
         userController.registerUser
     )
-    router.get(
-        '/api/UserData/:gottenID',
-        userController.retrieveUserById
-    )
+    router.get('/api/UserData/:gottenID', userController.retrieveUserById)
     router.put(
         '/api/User/',
         authorization.verifyUser,
@@ -42,15 +39,8 @@ module.exports = (router) => {
         validation.validateImage,
         userController.updatePFP
     )
-    router.get(
-        '/api/users',
-        authorization.verifyUser,
-        userController.allUsers
-    )
-    router.get(
-        '/api/privacy',
-        userController.privacyStatus
-    )
+    router.get('/api/users', authorization.verifyUser, userController.allUsers)
+    router.get('/api/privacy', userController.privacyStatus)
     router.post(
         '/api/text',
         authorization.verifyUser,
@@ -92,15 +82,8 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.createVideo
     )
-    router.get(
-        '/api/feed',
-        authorization.verifyUser,
-        postController.getFeed
-    )
-    router.get(
-        '/api/posts/:userid',
-        postController.getPosts
-    )
+    router.get('/api/feed', authorization.verifyUser, postController.getFeed)
+    router.get('/api/posts/:userid', postController.getPosts)
     router.get(
         '/api/post/:id',
         authorization.verifyUser,
@@ -111,10 +94,7 @@ module.exports = (router) => {
         authorization.verifyUser,
         postController.deletePost
     )
-    router.get(
-        '/api/comments/:id',
-        commentController.getAllComments
-    )
+    router.get('/api/comments/:id', commentController.getAllComments)
     router.get(
         '/api/comment/:id',
         authorization.verifyUser,
@@ -145,10 +125,7 @@ module.exports = (router) => {
         authorization.verifyUser,
         friendController.unfriend
     )
-    router.get(
-        '/api/friendship',
-        friendController.checkFriendship
-    )
+    router.get('/api/friendship', friendController.checkFriendship)
     router.get(
         '/api/getFriendship',
         authorization.verifyUser,
@@ -186,10 +163,7 @@ module.exports = (router) => {
         authorization.verifyUser,
         likeController.checklike
     )
-    router.get(
-        '/api/FeedLikes/:id',
-        likeController.getLikesInfo
-    )
+    router.get('/api/FeedLikes/:id', likeController.getLikesInfo)
     router.post(
         '/api/conversation',
         authorization.verifyUser,
@@ -239,10 +213,7 @@ module.exports = (router) => {
         authorization.verifyUser,
         messageController.updateRead
     )
-    router.get(
-        '/api/searchUser',
-        searchController.searchUser
-    )
+    router.get('/api/searchUser', searchController.searchUser)
     router.post(
         '/api/notification',
         authorization.verifyUser,
@@ -254,10 +225,7 @@ module.exports = (router) => {
         notificationController.friendNotification
     )
 
-    router.get(
-        '/api/notification',
-        notificationController.getNotifications
-    )
+    router.get('/api/notification', notificationController.getNotifications)
 
     router.put(
         '/api/privacytrue',

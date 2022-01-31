@@ -177,7 +177,9 @@ const TopBar = () => {
                                 <div className={"iconSection"}>
                   <Nav.Link style={{ color: "white" }} href="/conversations">Messages</Nav.Link>
                   {unreadmessage.length != 0 ?
-                    <span className={"iconBadge"}>{unreadmessage[0].count}</span> : ""
+                  <>
+                  {unreadmessage[0].count > 0 ?
+                    <span className={"iconBadge"}>{unreadmessage[0].count}</span> : ""}</>: ""
                   }
                 </div>
                 <NavDropdown style={{ color: "white", textTransform: "capitalize" }} title={localStorage.getItem("username")} id="navbarScrollingDropdown">

@@ -10,7 +10,7 @@ module.exports.newMessage = async (req, res) => {
             return res.status(402).json({ message: 'You do not have access' })
         }
         const results2 = await message.insert(userid, conversationid, content)
-        return res.status(201).send(results)
+        return res.status(201).send(results2)
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: 'Internal Server Error!' })

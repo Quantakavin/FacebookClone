@@ -24,6 +24,8 @@ module.exports = {
     "prettier/prettier": "error",
     'camelcase': 'off',
     'no-console': 'off',
+    'no-plusplus': 'off',
+    'no-restricted-syntax': 'off',
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
   },
 };
