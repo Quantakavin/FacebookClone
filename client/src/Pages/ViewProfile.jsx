@@ -583,7 +583,6 @@ const Profile = ({ match }) => {
 
               ) : friendship[0].status == "accepted" ? (
                 <>
-                {alert(friendship[0].status)}
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
