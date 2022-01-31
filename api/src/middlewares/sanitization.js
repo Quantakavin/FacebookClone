@@ -3,8 +3,9 @@ const validator = require('validator')
 const sanitization = {
 
     sanitizeResult: function (req, res, next) {
-        for (i=0; i< result.length;i++) {
-            var row = result[i];
+
+        for (i = 0; i < res.length; i++) {
+            var row = res[i];
             console.log(row);
             for (var key in row) {
                 val = row[key];
@@ -14,7 +15,6 @@ const sanitization = {
                         message: 'Malicious Data Detected'
                     })
                 }
-    
             }
         }
         next()
