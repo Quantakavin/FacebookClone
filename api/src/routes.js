@@ -44,8 +44,8 @@ module.exports = (router) => {
     )
     router.get(
         '/api/users',
-        sanitization.sanitizeResult,
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         userController.allUsers
     )
     router.get(
@@ -123,8 +123,8 @@ module.exports = (router) => {
     )
     router.get(
         '/api/comment/:id',
-        sanitization.sanitizeResult,
         authorization.verifyUser,
+        sanitization.sanitizeResult,
         commentController.getComment
     )
     router.put(
@@ -285,7 +285,7 @@ module.exports = (router) => {
 
     router.put(
         '/api/privacyfalse',
-        // authorization.verifyUser,
+        authorization.verifyUser,
         userController.privacyFalse
     )
 
