@@ -98,6 +98,7 @@ const Messages = ({ match }) => {
             setMessages(response.data);
             setMessagesLoading(false);
             setMessagesLoaded(true)
+            setRead()
             scrollToBottom()
         })
         .catch(error => {
@@ -123,9 +124,23 @@ const Messages = ({ match }) => {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
+        }).then(
+            setRead()
+        )
+
+
+    }
+
+    const setRead = () => {
+        alert("hello")
+    }
+
+    const setRead2 = () => {
+        axios.put(`${config.baseURL}/unreadmessagescount/${match.params.id}`, {} , {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
         })
-
-
     }
 
     useEffect(() => {

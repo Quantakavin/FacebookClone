@@ -198,6 +198,12 @@ module.exports = (router) => {
         messageController.getMessages
     )
 
+    router.put(
+        '/api/readmessage/:conversationid',
+        authorization.verifyUser,
+        messageController.updateRead
+    )
+
     router.get(
         '/api/unreadmessagescount',
         authorization.verifyUser,
