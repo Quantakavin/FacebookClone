@@ -44,7 +44,7 @@ const EditComment = ({match}) => {
         event.preventDefault();
         setTextFormLoading(true);
         axios
-        .put(`${config.baseURL}/updateComment/${match.params.id}`, {"content": TextInput.content}, {
+        .put(`${config.baseURL}/comment/${match.params.id}`, {"content": TextInput.content}, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }

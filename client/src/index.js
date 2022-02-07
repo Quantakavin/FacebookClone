@@ -1,51 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import App from './App.jsx';
+import Navbar from './Components/Navbar';
 import reportWebVitals from './reportWebVitals';
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route,
+    useLocation
 } from "react-router-dom";
-
-import Login from './Pages/Login';
-import Home from './Pages/Home';
-import Register from './Pages/Register';
-import UserHome from './Pages/UserHome';
-import Users from './Pages/Users';
-import EditPost from './Pages/EditPost';
-import EditComment from './Pages/EditComment';
-import ViewProfile from './Pages/ViewProfile'
+import {  QueryClient, QueryClientProvider } from 'react-query';
+import {SocketContext, socket} from './context/socket';
+import { AnimatePresence } from "framer-motion"
 import 'bootstrap/dist/css/bootstrap.min.css';
 const dotenv = require('dotenv');
 dotenv.config();
 
+
+const queryClient = new QueryClient()
+
 ReactDOM.render(
-    <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+        <SocketContext.Provider value={socket}>
         <Router>
-            <Switch>
-                <Route path="/login">
-                    <Login></Login>
-                </Route>
-                <Route path="/register">
-                    <Register></Register>
-                </Route>
-
-
-                <Route path="/profile/:id" render={(props) => <ViewProfile {...props} />} />
-
-
-
-                <Route path="/users" render={(props) => <Users {...props} />} />
-                <Route path="/userhome" render={(props) => <UserHome {...props} />} />
-                <Route path="/editpost/:id" render={(props) => <EditPost {...props} />} />
-                <Route path="/editcomment/:id" render={(props) => <EditComment {...props} />} />
-                <Route path="/">
-                    <Home></Home>
-                </Route>
-            </Switch>
+            <App />
         </Router>
-    </React.StrictMode>,
+        </SocketContext.Provider>
+    </QueryClientProvider>
+    ,
     document.getElementById('root')
 );
 

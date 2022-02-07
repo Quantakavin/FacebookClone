@@ -1,18 +1,17 @@
-const { Pool, Client } = require('pg')
-const config = require('./config');
+const { Pool } = require('pg')
+const config = require('./config')
 
-const connectionString = "postgres://jquycoxe:xICSB_6qAsC-SnqW10a0_B3oy-1enV8H@fanny.db.elephantsql.com/jquycoxe";
+const connectionString = config.database
 
 const pool = new Pool({
-  connectionString,
-  max: 5
+    connectionString,
+    ssl: {
+        rejectUnauthorized: false
+    }
 })
+module.exports = pool
 
-
-
-  module.exports = pool;
-
-  /*
+/*
 
   DROP TABLE IF EXISTS users; 
   CREATE TABLE users (
@@ -23,31 +22,6 @@ const pool = new Pool({
   privacy BOOLEAN NOT NULL DEFAULT false,
   active BOOLEAN NOT NULL DEFAULT false
   )
-
-DROP TABLE IF EXISTS profile; 
-CREATE TABLE profile (
-id SERIAL PRIMARY KEY,
-user_id INT NOT NULL,
-bio VARCHAR,
-profilepic bytea,
-coverpic bytea,
-CONSTRAINT fk_user
-      FOREIGN KEY(user_id) 
-    REFERENCES users(id)
-)
-
-DROP TABLE IF EXISTS page; 
-CREATE TABLE page (
-id SERIAL PRIMARY KEY,
-user_id INT NOT NULL,
-description VARCHAR,
-url VARCHAR,
-pagepic bytea,
-coverpic bytea,
-CONSTRAINT fk_user
-      FOREIGN KEY(user_id) 
-    REFERENCES users(id)
-)
 
 DROP TABLE IF EXISTS post; 
 CREATE TABLE post (
@@ -84,17 +58,20 @@ PRIMARY KEY(user_id, friend_id)
 
 DROP TABLE IF EXISTS conversation;
 CREATE TABLE conversation (
+id SERIAL PRIMARY KEY,
 sender_id INT NOT NULL REFERENCES users(id),
 receiver_id INT NOT NULL REFERENCES users(id),
-PRIMARY KEY(sender_id, receiver_id)
+UNIQUE (sender_id, receiver_id)
 )
 
 DROP TABLE IF EXISTS message;
 CREATE TABLE message (
 id SERIAL PRIMARY KEY,
-sender_id INT NOT NULL,
-reciever_id INT NOT NULL,
-Foreign Key (sender_id, reciever_id ) REFERENCES conversation(sender_id, receiver_id),
+user_id INT NOT NULL,
+conversation_id INT NOT NULL,
+content VARCHAR NOT NULL,
+Foreign Key (conversation_id) REFERENCES conversation(id),
+Foreign Key (user_id) REFERENCES users(id),
 date TIMESTAMP,
 read BOOLEAN DEFAULT false
 )
@@ -145,6 +122,20 @@ ADD COLUMN editdate TIMESTAMP;
 ALTER TABLE comment
 ADD COLUMN editdate TIMESTAMP;
 
+CREATE INDEX post_userid ON post(user_id)
+
+CREATE INDEX comment_userid ON comment(user_id)
+CREATE INDEX comment_postid ON comment(post_id)
+
+CREATE INDEX like_userid ON likes(user_id)
+CREATE INDEX like_postid ON likes(post_id)
+
+CREATE INDEX message_userid ON message(user_id)
+CREATE INDEX message_conversationid ON message(conversation_id)
+
+CREATE INDEX post_time ON post(date)
+CREATE INDEX comment_time ON comment(date)
+CREATE INDEX message_time ON message(date)
 
 
   */

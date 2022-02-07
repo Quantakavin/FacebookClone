@@ -1,0 +1,340 @@
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import axios from 'axios';
+import config from '../config/config';
+import TopBar from '../Components/TopBar';
+import { Container, Form, Image, Button, Alert} from 'react-bootstrap';
+import SendIcon from '@mui/icons-material/Send';
+import {useQuery, useQueryClient } from 'react-query';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import { useHistory } from "react-router-dom";
+import Skeleton from '@mui/material/Skeleton';
+import profilephoto from '../Images/profilephoto.png';
+import '../Styles/messages.scss';
+import { useForm } from "react-hook-form";
+//import { io } from "socket.io-client";
+import styled from 'styled-components'
+import {SocketContext} from '../context/socket';
+import { motion } from "framer-motion"
+
+
+const ConversationsList = ()  => {
+    const history = useHistory();
+
+    const { isLoading, error, data } = useQuery(['conversationList'], async () =>
+    await axios.get(`${config.baseURL}/conversations`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
+        }
+    })
+    ) 
+
+    if (error) {
+        console.log(error)
+        return <p style={{color: "#838383"}}>No content to display</p> 
+    }
+    return (
+        <>
+        <div style={{backgroundColor: "white", paddingTop: 15}}>
+            <h4 style={{textAlign: "center", borderBottom: "solid 1px #d3d3d3", paddingBottom: 15}}>Conversations</h4>
+            {isLoading?
+            <>
+            {Array.from(new Array(5)).map((item, index) => 
+
+            <div key={index} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
+            <Skeleton style={{flexGrow: 1}} animation="wave" variant="circular" width={50} height={50} />
+            <div style={{flexGrow: 4}}>
+            <Skeleton animation="wave" width={70} height={15} style={{ }} />
+            </div>
+            </div>
+            
+            
+            )}
+            </>
+            
+            :
+            <>
+            {data.data.rows.map(conversation => 
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.8 }} key={conversation.conversationid} onClick = {()=>{history.push(`/messages/${conversation.conversationid}`)}} className="conversationbox" style={{display: "flex", flexDirection: "row", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
+                <div style={{flexGrow: 1}}>{conversation.picurl==null ? <Image src={profilephoto}  roundedCircle width="50px" height="50px" /> : <Image src={conversation.picurl}  roundedCircle width="50px" height="50px"/> }</div>
+                <div style={{flexGrow: 4}}>
+                    <p style={{textTransform: "capitalize", fontWeight: "bold", textAlign: "left"}}>{conversation.name}</p> 
+                </div>
+            </motion.div>
+            )}
+            </>
+        }
+        </div>
+        </>
+    )
+}
+
+
+const Messages = ({ match }) => { 
+    const [messages, setMessages] = useState();
+    const [messagesLoaded, setMessagesLoaded] = useState(false)
+    const [messagesLoading, setMessagesLoading] = useState(true);
+    const  [messageError, setMessageError] = useState('')
+    const messagesEndRef = useRef(null)
+    const [socketMessages, setSocketMessages] = useState([]);
+    const [socketMessageLoading, setSocketMessagesLoading] = useState(false);
+    const socket = useContext(SocketContext);
+    const history = useHistory();
+
+    const conversationQuery = useQuery(['currentConversation', match.params.id], async () =>
+    await axios.get(`${config.baseURL}/conversation/${match.params.id}`,  {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
+        }
+    })
+    ) 
+
+    const getMessages = () => {
+        axios.get(`${config.baseURL}/messages/${match.params.id}`,  {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+        .then(response => {
+            setMessages(response.data);
+            setMessagesLoading(false);
+            setMessagesLoaded(true)
+            setRead()
+            scrollToBottom()
+        })
+        .catch(error => {
+            console.log(error);
+            setMessageError(error)
+            setMessagesLoading(false);
+            setMessagesLoaded(true)
+        })
+    }
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    const setRoom = () => {
+        const userid = localStorage.getItem("user_id")
+        const conversationid = match.params.id
+        socket.emit("join room",{userid, conversationid})
+    }
+
+    const saveMessage = (message) => {
+        axios.post(`${config.baseURL}/message/${match.params.id}`, {content: message} , {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        }).then(response =>
+            setRead()
+        )
+
+
+    }
+
+    const setRead = () => {
+        axios.put(`${config.baseURL}/readmessage/${match.params.id}`, {} , {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (!messagesLoaded) {
+            getMessages();
+        }
+        setRoom();
+        socket.on('message', (addedmessage)  => {
+            let  belongstouser = (addedmessage.userid == localStorage.getItem("user_id"))
+            const newMessage = {id: 1, case: belongstouser, content: addedmessage.text, date: addedmessage.date}
+            setSocketMessages([...socketMessages, newMessage]);
+            scrollToBottom()
+        });  
+
+        return (() => {socket.off()})
+    }, [match.params.id, socketMessages])
+
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const onSubmit = message => {
+        message.content.trim()
+        socket.emit('chat', message.content);
+        saveMessage(message.content)
+        reset()
+    }
+
+    const MessageDate = styled.p`
+    @media screen and (min-width: 800px) {
+        margin-left: ${props => props.mymessage ? "auto" : "6%"};
+        margin-right: ${props => props.mymessage ? "6%" : "auto"};
+      }
+      @media screen and (max-width: 800px) {
+        margin-left: ${props => props.mymessage ? "auto" : "10px"};
+        margin-right: ${props => props.mymessage ? "10px" : "auto"};
+      }
+    `
+    
+    const MessageBox = styled.div`
+    background-color: ${props => props.mymessage ? "#006AFF" : "white"};
+    color: ${props => props.mymessage ? "white" : "black"};
+    align-self: ${props => props.mymessage ? "flex-start" : "flex-end"};
+    border: 1px solid #d3d3d3;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 2%;
+    padding-right: 2%;
+    font-weight: 500;
+    @media screen and (min-width: 900px) {
+      width: 350px !important;
+      margin-left: ${props => props.mymessage ? "auto" : "5%"};
+      margin-right: ${props => props.mymessage ? "5%" : "auto"};
+    }
+    @media screen and (max-width: 800px) {
+        max-width: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    `
+
+    return(
+        <>
+        <header>
+            <TopBar />
+        </header>
+        <div style={{display: "flex", width: "100%", minHeight: "calc(100vh - 80px)"}}> 
+            <div style={{flexGrow: 1}} className="d-none d-sm-block">
+            <ConversationsList />
+            </div>
+            <div style={{flexGrow:9, borderLeft: "solid 1px #d3d3d3"}} >
+            <div style={{height: "auto", display: "block", backgroundColor: "white", borderBottom: "solid 1px #d3d3d3", paddingTop: 15, paddingBottom: 15, paddingLeft: "5%", paddingRight: "5%"}}>
+            {(conversationQuery.isLoading)? 
+            <div style={{display: "flex", flexDirection: "row"}}>
+                <Skeleton style={{ flexShrink: 2 }} animation="wave" variant="circular" width={65} height={65} />
+                <div style={{flexGrow: 15}}>
+                <Skeleton animation="wave" width={150} height={25} style={{ marginTop: 10, marginLeft: 20}} />
+                </div>
+            </div>
+            
+            : 
+            <div style={{display: "flex", flexDirection: "row"}}>
+            {conversationQuery.error? 
+            <Container style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Alert style={{width: "80%"}} variant="danger">
+                    <Alert.Heading>Forbidden!</Alert.Heading>
+                    <p>You do not have access to view this conversation. </p>
+                </Alert>
+            </Container>
+            
+             :
+            <>
+            {conversationQuery.data.data.rows[0].picurl==null ? <Image src={profilephoto} style={{flexShrink: 2}} roundedCircle width="65px" height="65px" /> : <Image src={conversationQuery.data.data.rows[0].picurl} style={{flexShrink: 2}} roundedCircle width="65px" height="65px"/> }
+            <h2 style={{marginLeft: 20, marginTop: 10,textTransform: "capitalize", flexGrow: 15}}>{conversationQuery.data.data.rows[0].name}</h2>
+            <div onClick = {() => {history.push(`/video/${match.params.id}`)}}><VideocamIcon style={{marginTop: 15, fontSize: 30}}/> </div>
+            </>}
+            </div>
+            }
+            </div>
+
+            <div style={{display: "flex", flexDirection: "column"}} >
+
+            <div style={{overflowY: "scroll", height: "72vh", display: "flex", flexDirection: "column", backgroundColor: "#e3e8ee", flexGrow: 4}}>
+                {
+                    messagesLoading ? <></> :
+                    <div style={{paddingBottom: 20}}>
+                        {messageError === '' ?
+                    <>
+                    {messages.rows.map(message => 
+                    <React.Fragment key={message.id}>
+                    {message.case === true ?
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
+                    <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
+                        <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{flexGrow: 9}}>
+                            <p style={{ marginTop: 10}}>{message.content}</p>
+                            </div>
+                        </MessageBox> 
+                    </div>
+                    <div style={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}}>
+                    <MessageDate mymessage style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
+                    </div>
+                    </motion.div >
+                    : 
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
+                    <div key={message.id} style={{display: "flex", flexDirection: "row", justifyContent: "flex-start"}}>
+                        <MessageBox className="shadow" style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{flexGrow: 9}}>
+                            <p style={{ marginTop: 10}}>{message.content}</p> 
+                            </div>
+                        </MessageBox>
+                    </div>
+                    <MessageDate style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
+                    </motion.div>
+                    }
+                    </ React.Fragment>
+                )}
+                </> :<></>}
+                    </div>
+                }
+                {
+                    socketMessages.length == 0 ? <></> :
+                    <div style={{paddingBottom: 20}}>
+                    {socketMessages.map(message => 
+                    <React.Fragment key={message.id}>
+                    {message.case === true ?
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
+                    <div style={{display: "flex", flexDirection: "row"}}>
+                        <MessageBox className="shadow" mymessage style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{flexGrow: 9}}>
+                            <p style={{ marginTop: 10}}>{message.content}</p>
+                            </div>
+                        </MessageBox> 
+                    </div>
+                    <MessageDate mymessage style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
+                    </motion.div>
+                    : 
+                    <motion.div exit={{ x: "100%", y: "100%", opacity: 0 }} transition={{ duration: 0.5 }}>
+                    <div key={message.id} style={{display: "flex", flexDirection: "row"}}>
+                        <MessageBox  className="shadow" style={{display: "flex", flexDirection: "row"}}>
+                            <div style={{flexGrow: 9}}>
+                            <p style={{ marginTop: 10}}>{message.content}</p> 
+                            </div>
+                        </MessageBox>
+                    </div>
+                    <MessageDate style={{color: "#838383", fontSize: "0.8em"}}>{message.date.substring(0, 16).replace("T", " ")}</MessageDate>
+                    </motion.div>
+                    }
+                    </ React.Fragment>
+                )}
+                    </div>
+                }
+                <div ref={messagesEndRef} />
+                </div>
+
+                <div style={{backgroundColor: "white",bottom: 0, display: "block", width: "100%", paddingBottom: 15, paddingTop: 10, flexGrow: 1}}>
+                {(conversationQuery.isLoading || messagesLoading) ?
+                <><Skeleton animation="wave" width={"70%"} height={25} style={{ marginTop: 10, marginLeft: 20}} /></>:
+                <>
+                {(conversationQuery.error || messageError != "") ? <>
+                <p style={{color: "#838383"}}>No content to display</p> 
+                </>:
+                <Form onSubmit={handleSubmit(onSubmit)} style={{display: "flex", justifyContent: "center", alignItems:"center"}}>
+                <Form.Control type="text" placeholder="Send Message..." style={{width: "auto", minWidth: "70%", paddingTop: 10, paddingBottom: 10}} {...register("content",  { required: "Message cannot be empty!"})} />
+                <Button style={{backgroundColor: "#4267B2", marginLeft: 15}} type="submit" className=""><SendIcon /></Button>
+                </Form>
+                }
+                </>
+                }
+                </div>
+
+                </div>
+            </div>
+        </div>
+        </>
+    )
+
+}
+
+export default Messages;

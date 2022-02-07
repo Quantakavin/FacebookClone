@@ -1,248 +1,256 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import TopBar from '../Components/TopBar';
 import { Alert, Button, Form, Container, Spinner } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import '../Styles/form.scss';
 import config from '../config/config';
+import { useForm } from "react-hook-form";
+import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { convertToHTML } from 'draft-convert';
+import DOMPurify from 'dompurify';
 
-const EditPost = ({match}) => { 
-    const [post, setPost] = useState([]);
+const TextForm = (props) => {
+    const queryClient = useQueryClient()
+
     const history = useHistory();
-    const [borderColor, setBorderColor]= useState('transparent');
-    const [errorMsg, setErrorMsg]= useState('');
 
+    const post = props.data.data;
 
-    useEffect(() => {
-        axios
-        .get(`${config.baseURL}/post/${match.params.id}`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+    const [editorState, setEditorState] = useState(
+        () => EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(DOMPurify.sanitize(post.content))
+            )
+          ),
+    );
+
+    const  [convertedContent, setConvertedContent] = useState(null);
+
+    const handleEditorChange = (state) => {
+        setEditorState(state);
+        convertContentToHTML(); 
+      }
+      const convertContentToHTML = () => {
+        
+        let currentContentAsHTML = convertToHTML({
+            blockToHTML: (block) => {
+              if (block.type === 'PARAGRAPH') {
+                return <p />;
+              }
+            },
+            entityToHTML: (entity, originalText) => {
+              if (entity.type === 'LINK') {
+                return <a href={entity.data.url} target="_blank" rel="noopener noreferrer">{originalText}</a>;
+              }
+              return originalText;
             }
-        })
-        .then(response => {
-          console.log('promise fulfilled')
-          setPost(response.data)
-        })
-        .catch(error => {
-          console.log(error);
-      })
-    }, [])
-
-    const [textFormLoading,setTextFormLoading] = useState(false);
-    const [TextInput, setTextInput] = useState({
-        content: post.content
-      });
-    const handleTextChange = (event) => {
-        setTextInput({
-            ...TextInput,
-            [event.target.name]: event.target.value
-
-        })
+          })(editorState.getCurrentContent())
+          
+        setConvertedContent(currentContentAsHTML);
     }
-    const createTextPost = (event) => { 
-        event.preventDefault();
-        setTextFormLoading(true);
-        axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .put(`${config.baseURL}/text/${match.params.id}`, {"content": TextInput.content}, {
+
+    const mutation = useMutation( async (data) => {
+        await axios.put(`${config.baseURL}/text/${post.postid}`, {"content": data}, {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
-          })
-        .then(response => {
-            setTextFormLoading(false)
-            console.log(response);
-            setBorderColor('transparent')
-            setErrorMsg('');
+        })
+    })
+
+    const handleSubmit = () => {
+
+        mutation.mutate(convertedContent, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
             history.push('/userhome')
-        })
-        .catch(error => {
-            setTextFormLoading(false)
-            setBorderColor('red')
-            setErrorMsg(error.response.data.message);
-        })
+        }})
     }
 
-    const [ImageFormLoading,setImageFormLoading] = useState(false);
+    return(
+        <>
+        <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+        <div style={{width:"85%"}}>
+        <Editor defaultEditorState={editorState} onEditorStateChange={handleEditorChange} editorClassName="editor-class" />
+        </div>
+        </div>
+        {mutation.isError ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{mutation.error.response.data.message}!</p>: <></>}
+        <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+        {!mutation.isLoading ?
+        <Button className="submitbutton"  variant="primary" onClick={handleSubmit} >Submit</Button>:
+        <Button className="submitbutton"  variant="primary" disabled>
+        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+        </Button>}
+        </div>
+        </>
+    )
+}
 
-    const [ImageInput, setImageInput] = useState({
-        caption: post.caption,
-        file: ''
-      });
-    const handleImageChange = (event) => {
-        setImageInput({
-            ...ImageInput,
-            [event.target.name]: event.target.value
-        })
-    }
+const ImageForm = (props) => {
+    const queryClient = useQueryClient()
 
-    const handleImageUploadChange = (event) => {
-        let files = event.target.files
-        setImageInput({
-            ...ImageInput,
-            file: files[0]
-        })
-    }
-    const createImagePost = (event) => { 
-        event.preventDefault();
-        setImageFormLoading(true);
+    const history = useHistory();
 
-        let webFormData = new FormData();
-        webFormData.append('caption', ImageInput.caption);
-        webFormData.append("file", ImageInput.file);
+    const post = props.data.data;
 
-        axios
-        //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-        .put(`${config.baseURL}/photo/${match.params.id}`, webFormData, {
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const mutation = useMutation(async (data) => {
+        await axios.put(`${config.baseURL}/photo/${post.postid}`, data, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${localStorage.getItem('token')}` 
             }
-          })
-        .then(response => {
-            setImageFormLoading(false)
-            console.log(response);
-            setBorderColor('transparent')
-            setErrorMsg('');
-            history.push('/userhome')
         })
-        .catch(error => {
-            setImageFormLoading(false)
-            setBorderColor('red')
-            setErrorMsg(error.response.data.message);
-        }) 
+    })
+
+    const onSubmit = data => {
+        let webFormData = new FormData();
+        webFormData.append('caption', data.caption);
+        webFormData.append("file", data.file[0]);
+        mutation.mutate(webFormData, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
+            history.push('/userhome')}
+        })
     }
 
-    const [VideoFormLoading,setVideoFormLoading] = useState(false);
+    return(
+        <Form onSubmit={handleSubmit(onSubmit)}> 
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Form.Control style={{width: "85%",borderColor: 'transparent'}} className="text-secondary" as="textarea" rows={1} placeholder="Image caption (optional)" {...register("caption")}/>
+                </div>
+            </Form.Group>
+            <Form.Group controlId="formFileSm" className="mb-3">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Form.Control style={{width: "85%"}} type="file" size="sm"  {...register("file",  { required: "Please select a file!" })}/>
+                </div>
+            </Form.Group>
+            <p style={{color: "red", fontSize: "0.85em", marginLeft: 15, marginLeft: '8%'}}>{errors.file?.message}</p>
+            {mutation.isError ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{mutation.error.response.data.message}!</p>: <></>}
+            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
+            {!mutation.isLoading?
+                <Button className="submitbutton"  variant="primary" type="submit" >Submit</Button>:
+                <Button className="submitbutton" variant="primary" disabled>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+            </Button>}
+            </div>
 
-        const [VideoInput, setVideoInput] = useState({
-            caption: post.caption,
-            file: ''
-          });
-        const handleVideoChange = (event) => {
-            setVideoInput({
-                ...VideoInput,
-                [event.target.name]: event.target.value
-            })
+        </Form>
+    )
+    
+}
+
+const VideoForm = (props) => {
+    const queryClient = useQueryClient()
+
+    const history = useHistory();
+
+    const post = props.data.data;
+
+    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const mutation = useMutation(async (data) => {
+        await axios.put(`${config.baseURL}/video/${post.postid}`, data, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+    })
+
+    const onSubmit = data => {
+        let webFormData = new FormData();
+        webFormData.append('caption', data.caption);
+        webFormData.append("file", data.file[0]);
+        mutation.mutate(webFormData, {onSuccess: () => {
+            queryClient.invalidateQueries('currentPost')
+            queryClient.invalidateQueries('feedPosts')
+            history.push('/userhome')}
+        })
+    }
+
+    return(
+        <Form onSubmit={handleSubmit(onSubmit)}> 
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Form.Control style={{width: "85%",borderColor: 'transparent'}} className="text-secondary" as="textarea" rows={1} placeholder="Video caption (optional)" {...register("caption")}/>
+                </div>
+            </Form.Group>
+            <Form.Group controlId="formFileSm" className="mb-3">
+                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+                <Form.Control style={{width: "85%"}} type="file" size="sm"  {...register("file",  { required: "Please select a file!" })}/>
+                </div>
+            </Form.Group>
+            <p style={{color: "red", fontSize: "0.85em", marginLeft: 15, marginLeft: '8%'}}>{errors.file?.message}</p>
+            {mutation.isError ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{mutation.error.response.data.message}!</p>: <></>}
+            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
+            {!mutation.isLoading?
+                <Button className="submitbutton"  variant="primary" type="submit" >Submit</Button>:
+                <Button className="submitbutton" variant="primary" disabled>
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
+            </Button>}
+            </div>
+
+        </Form>
+    )
+    
+}
+
+
+const EditPost = ({match}) => { 
+
+    let form;
+
+    const { isLoading, error, data } = useQuery('currentPost', async () =>
+        await axios.get(`${config.baseURL}/post/${match.params.id}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            }
+        })
+    ) 
+
+
+    if (data) {
+        console.log(data.data.type)
+        if (data.data.type === "text") {
+            form = <TextForm data={data}/>
+        } else if (data.data.type === "image") {
+            form = <ImageForm data={data}/>
+        } else if (data.data.type === "video") {
+            form = <VideoForm data={data}/>
         }
-    
-        const handleVideoUploadChange = (event) => {
-            let files = event.target.files
-            setVideoInput({
-                ...VideoInput,
-                file: files[0]
-            })
-        }
-        const createVideoPost = (event) => { 
-            event.preventDefault();
-            setVideoFormLoading(true);
-    
-            let webFormData = new FormData();
-            webFormData.append('caption', VideoInput.caption);
-            webFormData.append("file", VideoInput.file);
-    
-            axios
-            //.post('http://evening-plateau-18994.herokuapp.com/api/login', {"email": Input.email,"password": Input.password})
-            .put(`${config.baseURL}/video/${match.params.id}`, webFormData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}` 
-                }
-              })
-            .then(response => {
-                setVideoFormLoading(false)
-                console.log(response);
-                setBorderColor('transparent')
-                setErrorMsg('');
-                history.push('/userhome')
-            })
-            .catch(error => {
-                setVideoFormLoading(false)
-                setBorderColor('red')
-                setErrorMsg(error.response.data.message);
-            })
-          }
+
+    }
+          
     return (
-      <>
+    <>
       <header>
           <TopBar />
       </header>
     <div  style={{backgroundColor: "#e3e8ee", height: "100vh",overflow: 'auto'}}>
-      {localStorage.getItem("user_id")==post.id?
+    {!isLoading?
+    <>
+        {
+        error?
+        <Container style={{marginTop: 50,display: 'flex',  justifyContent:'center', alignItems:'center'}}>
+        <Alert style={{width: "80%"}} variant="danger">
+         <Alert.Heading>Forbidden!</Alert.Heading>
+         <p>
+           You do not have access to edit this post. 
+         </p>
+       </Alert>
+     </Container>:<>
+    {localStorage.getItem("user_id")==data.data.id?
     <Container className="formcontainer shadow" style={{marginTop: 100}}>
-          {post.type == "text" ? 
-          <>
-          <h2 style={{marginLeft: '8%',paddingBottom: 20, fontWeight: 600}}>Edit Post</h2>
-          <Form onSubmit={createTextPost}>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                <Form.Control style={{borderColor: borderColor,width: "85%"}} name="content" className="text-secondary" as="textarea" rows={5} placeholder={post.content} value={TextInput.content} onChange={handleTextChange}/>
-            </div>
-            </Form.Group>
-            {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{errorMsg}!</p>: <></>}
-            <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
-            {!textFormLoading?
-            <Button className="submitbutton" variant="primary" type="submit" >Submit</Button>:
-            <Button className="submitbutton" variant="primary" disabled>
-            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
-        </Button>}
-        </div>
-        </Form>
-        </>
-        : <></>
-        }
-        {post.type == "image" ? 
-                <>
-                <h2 style={{marginLeft: '8%',paddingBottom: 20, fontWeight: 600}}>Edit Post</h2>
-                <Form onSubmit={createImagePost}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Form.Control style={{borderColor: borderColor,width: "85%"}} name="caption" className="text-secondary" as="textarea" rows={1} placeholder="Image caption (optional)" value={ImageInput.caption} onChange={handleImageChange}/>
-                </div>
-                </Form.Group>
-                <Form.Group controlId="formFileSm" className="mb-3">
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Form.Control style={{width: "85%"}} name="file" type="file" size="sm" onChange={handleImageUploadChange} />
-                </div>
-                </Form.Group>
-                {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{errorMsg}!</p>: <></>}
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
-                {!ImageFormLoading?
-                <Button className="submitbutton"  variant="primary" type="submit" >Submit</Button>:
-                <Button className="submitbutton" variant="primary" disabled>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
-            </Button>}
-            </div>
-            </Form>
-            </>
-             :<></>}
-                  {post.type == "video" ? 
-                <>
-                <h2 style={{marginLeft: '8%',paddingBottom: 20, fontWeight: 600}}>Edit Post</h2>
-                <Form onSubmit={createVideoPost}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Form.Control style={{borderColor: borderColor,width: "85%"}} name="caption" className="text-secondary" as="textarea" rows={1} placeholder="Video caption (optional)" value={VideoInput.caption} onChange={handleVideoChange}/>
-                </div>
-                </Form.Group>
-                <Form.Group controlId="formFileSm" className="mb-3">
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
-                    <Form.Control style={{width: "85%"}} name="file" type="file" size="sm" onChange={handleVideoUploadChange} />
-                </div>
-                </Form.Group>
-                {errorMsg != '' ? <p style={{color: "red", fontSize: "0.85em", marginLeft: '8%'}}>{errorMsg}!</p>: <></>}
-                <div style={{display: 'flex',  justifyContent:'center', alignItems:'center', marginTop: 40}}>
-                {!VideoFormLoading?
-                <Button className="submitbutton"  variant="primary" type="submit" >Submit</Button>:
-                <Button className="submitbutton" variant="primary" disabled>
-                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>
-            </Button>}
-            </div>
-            </Form>
-            </>
-             :<></>}
-    </Container>: 
+        <h2 style={{marginLeft: '8%',paddingBottom: 20, fontWeight: 600}}>Edit Post</h2>
+        {form}
+    </Container>
+    : 
     <Container style={{marginTop: 50,display: 'flex',  justifyContent:'center', alignItems:'center'}}>
        <Alert style={{width: "80%"}} variant="danger">
         <Alert.Heading>Forbidden!</Alert.Heading>
@@ -251,6 +259,15 @@ const EditPost = ({match}) => {
         </p>
       </Alert>
     </Container>
+    }
+    </>
+    }
+    </>
+        :
+        <div style={{textAlign: "center", marginTop: 100}}>
+        <Spinner animation="border" style={{color: "#4267B2"}} />
+        </div>
+        
     }
     </div>
     </>
